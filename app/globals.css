@@ -1,10 +1,14 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
+  --landing-dark: hsl(45, 93%, 30%);
+  --landing: hsl(45, 93%, 47%);
+  --landing-bright: hsl(45, 93%, 55%);
   --background: 0 0% 0%;
   --foreground: 0 0% 100%;
   --card: 0 0% 0%;
@@ -31,3 +35,17 @@ body {
   font-feature-settings: "rlig" 1, "calt" 1;
 }
 
+.glowing-text {
+  color: #fff; /* Set the text color */
+  animation: breathingGlow 3s ease-in-out infinite;
+}
+
+/* Keyframes for breathing glow effect */
+@keyframes breathingGlow {
+  0%, 100% {
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
+  }
+  50% {
+    text-shadow: 0 0 20px rgba(255, 255, 255, 1);
+  }
+}
