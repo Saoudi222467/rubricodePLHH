@@ -17,6 +17,11 @@ module.exports = {
     },
     extend: {
       colors: {
+        "landing-dark": "hsl(45, 93%, 30%)",
+        "landing": "hsl(45, 93%, 47%)",
+        "landing-bright": "hsl(45, 93%, 55%)",
+
+
         // Primary Colors
         "forest-green": "#539241", // Deep Forest Green
         "aqua-blue": "#5fb9c3", // Soft Aqua Blue
@@ -69,7 +74,8 @@ module.exports = {
         },
       },
       fontFamily: {
-        montserrat: ["var(--font-montserrat)"],
+        montserrat: ["montserrat"],
+        lora: ["lora"]
       },
       keyframes: {
         "accordion-down": {
