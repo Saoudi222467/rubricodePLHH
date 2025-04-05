@@ -8,16 +8,16 @@ const InfinityLoop = () => {
   `;
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-black relative">
+    <div className="inline-block  relative">
       {/* Centered subtle backdrop glow */}
-      <div className="absolute inset-0 flex items-center justify-center">
-        <div className="w-[300px] h-[200px] rounded-full bg-[#7b245a] blur-[80px] opacity-25"></div>
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+        <div className="w-[600px] h-[400px] rounded-full bg-[#7b245a] blur-[80px] opacity-25"></div>
       </div>
 
       <svg
-        width="900"
-        height="700"
-        viewBox="0 0 800 600"
+        width="640"
+        height="600"
+        viewBox="240 150 320 300"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
       >
@@ -30,7 +30,7 @@ const InfinityLoop = () => {
           opacity="0.2"
         />
 
-        {/* Seamless glowing animated pulse along the path */}
+        {/* Glowing animated pulse along the path */}
         <path
           d={path}
           stroke="#FFE060"
@@ -51,7 +51,7 @@ const InfinityLoop = () => {
           />
         </path>
 
-        {/* Optional second pulse for even smoother feel */}
+        {/* Optional second pulse */}
         <path
           d={path}
           stroke="#FFE060"
@@ -72,7 +72,7 @@ const InfinityLoop = () => {
           />
         </path>
 
-        {/* Glow effect filter */}
+        {/* Glow filter */}
         <defs>
           <filter id="glowFilter" x="-50%" y="-50%" width="200%" height="200%">
             <feGaussianBlur in="SourceGraphic" stdDeviation="6" result="blur" />
