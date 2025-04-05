@@ -13,34 +13,58 @@ export default function LandingSection() {
     damping: 30,
   });
 
-  const contentOpacity = useTransform(smoothScrollYProgress, [0.8, 0.9], [1, 0]);
+  // Content and shape animations remain unchanged:
+  const contentOpacity = useTransform(smoothScrollYProgress, [0.95, 1], [1, 0]);
 
-  const leftHorizScale = useTransform(smoothScrollYProgress, [0, 0.3], [0, 1]);
-  const leftDiagTopScale = useTransform(smoothScrollYProgress, [0.3, 0.6], [0, 1]);
-  const leftDiagBottomScale = useTransform(smoothScrollYProgress, [0.6, 0.9], [0, 1]);
+  const leftHorizScale = useTransform(smoothScrollYProgress, [0, 0.2], [0, 0.5]);
+  const leftDiagTopScale = useTransform(smoothScrollYProgress, [0.2, 0.4], [0, 1]);
+  const leftDiagBottomScale = useTransform(smoothScrollYProgress, [0.4, 0.5], [0, 1]);
 
-  const rightHorizScale = useTransform(smoothScrollYProgress, [0, 0.3], [0, 1]);
-  const rightDiagTopScale = useTransform(smoothScrollYProgress, [0.3, 0.6], [0, 1]);
-  const rightDiagBottomScale = useTransform(smoothScrollYProgress, [0.6, 0.9], [0, 1]);
+  const rightHorizScale = useTransform(smoothScrollYProgress, [0, 0.2], [0, 0.5]);
+  const rightDiagTopScale = useTransform(smoothScrollYProgress, [0.2, 0.4], [0, 1]);
+  const rightDiagBottomScale = useTransform(smoothScrollYProgress, [0.4, 0.5], [0, 1]);
 
-  const blobScale = useTransform(smoothScrollYProgress, [0, 0.9], [0, 3]);
-  const blobOpacity = useTransform(smoothScrollYProgress, [0.9, 1], [0.8, 0]);
+  const lineOpacity = useTransform(smoothScrollYProgress, [0.4, 0.6], [1, 0]);
 
-  // Separate transforms for each text element:
-  const text1Opacity = useTransform(smoothScrollYProgress, [0.7, 0.75], [0, 1]);
-  const text1Y = useTransform(smoothScrollYProgress, [0.7, 0.75], [50, 0]);
+  const blobScale = useTransform(smoothScrollYProgress, [0, 0.4], [0, 3]);
+  const blobOpacity = useTransform(smoothScrollYProgress, [0.4, 0.5], [0.8, 0]);
 
-  const text2Opacity = useTransform(smoothScrollYProgress, [0.75, 0.8], [0, 1]);
-  const text2Y = useTransform(smoothScrollYProgress, [0.75, 0.8], [50, 0]);
+  // Define a common timing and transform range for all text elements:
+  const textAnimStart = 0.65;
+  const initialY = 50;
+  const finalY = 0;
 
-  const text3Opacity = useTransform(smoothScrollYProgress, [0.8, 0.85], [0, 1]);
-  const text3Y = useTransform(smoothScrollYProgress, [0.8, 0.85], [50, 0]);
+  // Apply the same transforms to each text element:
+  const text1Opacity = useTransform(smoothScrollYProgress, [textAnimStart, textAnimStart + 0.05 * 1], [0, 1]);
+  const text1Y = useTransform(
+    smoothScrollYProgress,
+    [textAnimStart, textAnimStart + 0.05 * 1],
+    [initialY, finalY]
+  );
 
-  const text4Opacity = useTransform(smoothScrollYProgress, [0.85, 0.9], [0, 1]);
-  const text4Y = useTransform(smoothScrollYProgress, [0.85, 0.9], [50, 0]);
+  const text2Opacity = useTransform(smoothScrollYProgress, [textAnimStart, textAnimStart + 0.05 * 2], [0, 1]);
+  const text2Y = useTransform(
+    smoothScrollYProgress,
+    [textAnimStart, textAnimStart + 0.05 * 2],
+    [initialY, finalY]
+  );
+
+  const text3Opacity = useTransform(smoothScrollYProgress, [textAnimStart, textAnimStart + 0.05 * 3], [0, 1]);
+  const text3Y = useTransform(
+    smoothScrollYProgress,
+    [textAnimStart, textAnimStart + 0.05 * 3],
+    [initialY, finalY]
+  );
+
+  const text4Opacity = useTransform(smoothScrollYProgress, [textAnimStart, textAnimStart + 0.05 * 4], [0, 1]);
+  const text4Y = useTransform(
+    smoothScrollYProgress,
+    [textAnimStart, textAnimStart + 0.05 * 4],
+    [initialY, finalY]
+  );
 
   return (
-    <section ref={ref} className="relative w-full h-[200vh] bg-black font-montserrat">
+    <section ref={ref} className="relative w-full h-[500vh] bg-black font-montserrat">
       {/* Fixed container: background elements remain fixed while scrolling */}
       <div className="fixed inset-0 overflow-hidden">
         <motion.div style={{ opacity: contentOpacity }} className="relative h-full w-full">
@@ -48,13 +72,24 @@ export default function LandingSection() {
           <motion.div
             className="absolute bg-landing h-[2px] w-[50vw]"
             style={{
-              top: "50%",
+              top: "15%",
               left: 0,
               scaleX: leftHorizScale,
               transformOrigin: "left center",
+              opacity: lineOpacity,
             }}
           />
           <motion.div
+            className="absolute bg-landing h-[2px] w-[50vw]"
+            style={{
+              top: "95%",
+              left: 0,
+              scaleX: leftHorizScale,
+              transformOrigin: "left center",
+              opacity: lineOpacity,
+            }}
+          />
+          {/* <motion.div
             className="absolute bg-landing h-[2px] w-[70vw]"
             style={{
               top: 0,
@@ -62,9 +97,10 @@ export default function LandingSection() {
               scaleX: leftDiagTopScale,
               transformOrigin: "top left",
               rotate: "45deg",
+              opacity: lineOpacity,
             }}
-          />
-          <motion.div
+          /> */}
+          {/* <motion.div
             className="absolute bg-landing h-[2px] w-[70vw]"
             style={{
               bottom: 0,
@@ -72,19 +108,31 @@ export default function LandingSection() {
               scaleX: leftDiagBottomScale,
               transformOrigin: "bottom left",
               rotate: "-45deg",
+              opacity: lineOpacity,
             }}
-          />
+          /> */}
           {/* --- Right Side Lines --- */}
           <motion.div
             className="absolute bg-landing h-[2px] w-[50vw]"
             style={{
-              top: "50%",
+              top: "15%",
               right: 0,
               scaleX: rightHorizScale,
               transformOrigin: "right center",
+              opacity: lineOpacity,
             }}
           />
           <motion.div
+            className="absolute bg-landing h-[2px] w-[50vw]"
+            style={{
+              top: "95%",
+              right: 0,
+              scaleX: rightHorizScale,
+              transformOrigin: "right center",
+              opacity: lineOpacity,
+            }}
+          />
+          {/* <motion.div
             className="absolute bg-landing h-[2px] w-[70vw]"
             style={{
               top: 0,
@@ -92,9 +140,10 @@ export default function LandingSection() {
               scaleX: rightDiagTopScale,
               transformOrigin: "top right",
               rotate: "-45deg",
+              opacity: lineOpacity,
             }}
-          />
-          <motion.div
+          /> */}
+          {/* <motion.div
             className="absolute bg-landing h-[2px] w-[70vw]"
             style={{
               bottom: 0,
@@ -102,8 +151,9 @@ export default function LandingSection() {
               scaleX: rightDiagBottomScale,
               transformOrigin: "bottom right",
               rotate: "45deg",
+              opacity: lineOpacity,
             }}
-          />
+          /> */}
           {/* --- Center Glowing Blob with Breathing Effect --- */}
           <motion.div
             className="absolute w-64 h-64 rounded-full mix-blend-screen"
@@ -137,18 +187,30 @@ export default function LandingSection() {
             />
           </motion.div>
 
-          {/* --- Text Overlay --- */}
-          <div className="absolute inset-0 z-10 flex flex-col justify-center items-center">
-            <motion.h2 style={{ opacity: text1Opacity, y: text1Y }} className="glowing-text text-white text-5xl font-bold">
+          {/* --- Text Overlay with increased vertical spacing --- */}
+          <div className="absolute inset-0 z-10 flex flex-col justify-center items-center space-y-12">
+            <motion.h2
+              style={{ opacity: text1Opacity, y: text1Y }}
+              className="glowing-text text-white text-5xl font-bold"
+            >
               Remember.
             </motion.h2>
-            <motion.h2 style={{ opacity: text2Opacity, y: text2Y }} className="glowing-text text-white text-5xl font-bold">
+            <motion.h2
+              style={{ opacity: text2Opacity, y: text2Y }}
+              className="glowing-text text-white text-5xl font-bold"
+            >
               Connect.
             </motion.h2>
-            <motion.h2 style={{ opacity: text3Opacity, y: text3Y }} className="glowing-text text-white text-5xl font-bold">
+            <motion.h2
+              style={{ opacity: text3Opacity, y: text3Y }}
+              className="glowing-text text-white text-5xl font-bold"
+            >
               Heal.
             </motion.h2>
-            <motion.h2 style={{ opacity: text4Opacity, y: text4Y }} className="glowing-text text-white text-5xl font-bold">
+            <motion.h2
+              style={{ opacity: text4Opacity, y: text4Y }}
+              className="glowing-text text-white text-5xl font-bold"
+            >
               Create.
             </motion.h2>
           </div>
