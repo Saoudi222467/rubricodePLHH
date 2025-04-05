@@ -1,0 +1,115 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities
+
+@layer base {
+  :root {
+    --background: 164 80% 94%; /* Soft Mint White */
+    --foreground: 0 0% 10%; /* Near-Black */
+
+    --card: 164 80% 94%;
+    --card-foreground: 0 0% 10%;
+
+    --popover: 164 80% 94%;
+    --popover-foreground: 0 0% 10%;
+
+    --primary: 120 38% 41%; /* Deep Forest Green */
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 188 50% 57%; /* Soft Aqua Blue */
+    --secondary-foreground: 0 0% 10%;
+
+    --muted: 0 0% 75%; /* Silver */
+    --muted-foreground: 0 0% 10%;
+
+    --accent: 46 68% 52%; /* Warm Gold */
+    --accent-foreground: 0 0% 10%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 46 68% 52%; /* Warm Gold */
+    --input: 46 68% 52%; /* Warm Gold */
+    --ring: 46 68% 52%; /* Warm Gold */
+
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 120 38% 15%; /* Dark Forest Green */
+    --foreground: 0 0% 98%; /* White */
+
+    --card: 120 38% 15%;
+    --card-foreground: 0 0% 98%;
+
+    --popover: 120 38% 15%;
+    --popover-foreground: 0 0% 98%;
+
+    --primary: 46 68% 52%; /* Warm Gold */
+    --primary-foreground: 0 0% 10%;
+
+    --secondary: 188 50% 57%; /* Soft Aqua Blue */
+    --secondary-foreground: 0 0% 10%;
+
+    --muted: 0 0% 40%;
+    --muted-foreground: 0 0% 98%;
+
+    --accent: 188 50% 57%; /* Soft Aqua Blue */
+    --accent-foreground: 0 0% 10%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 46 68% 52%; /* Warm Gold */
+    --input: 120 38% 25%;
+    --ring: 46 68% 52%; /* Warm Gold */
+  }
+}
+
+body {
+  font-family: 'Lora', serif; /* Secondary font for body text */
+}
+
+h1, h2, h3 {
+  font-family: 'Montserrat', sans-serif; /* Primary font for headlines */
+}
+
+blockquote, .quote {
+  font-family: 'Playfair Display', serif;
+  font-style: italic; /* Accent font for quotes */
+}
+
+
+
+
+
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+.text-balance {
+  text-wrap: balance;
+}
+
+.stats_justify_center {
+  @apply justify-center sm:justify-start;
+}
+
+
+
+
+@media screen and (max-width: 1100px) {
+  
+  .timerCountdown{
+    position: relative;
+  }
+  
+}
+
+
