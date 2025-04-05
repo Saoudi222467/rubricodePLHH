@@ -1,3 +1,4 @@
+"use client"
 import Header from "@/components/CryptoHeader";
 import { Footer } from "@/components/sections/footer";
 import LandingSection from "@/components/LandingSection";
