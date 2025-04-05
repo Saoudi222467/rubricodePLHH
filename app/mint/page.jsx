@@ -11,11 +11,13 @@ const page = () => {
       <Ticker />
       <Header />
       <section className="bg-black text-white h-[200vh]">
-        <div className="h-screen fixed p-10 top-10 flex  justify-center items-center">
+        <div
+          style={{ width: "100%" }}
+          className="h-screen fixed top-10 w-[100vw]  flex  justify-center items-center"
+        >
           {/* Left Text */}
 
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold">
-            {" "}
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-nowrap">
             Rooted in <span style={{ color: "#D48A61" }}>Numerology</span>
           </h2>
           <div className="flex  justify-center items-center flex-col">
