@@ -36,16 +36,21 @@ body {
 }
 
 .glowing-text {
-  color: #fff; /* Set the text color */
   animation: breathingGlow 3s ease-in-out infinite;
 }
 
 /* Keyframes for breathing glow effect */
 @keyframes breathingGlow {
   0%, 100% {
-    text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
+    text-shadow: 0 0 5px currentColor
   }
   50% {
-    text-shadow: 0 0 20px rgba(255, 255, 255, 1);
+    text-shadow: 0 0 20px currentColor;
+  }
+}
+
+@media (max-width: 630px) {
+  .wave-container {
+    width: 200vw;
   }
 }

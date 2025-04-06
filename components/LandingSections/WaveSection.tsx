@@ -30,18 +30,20 @@ export default function WaveSection() {
         overflow-hidden
       "
     >
-      {/* --- Animated Background Wave and Orbs Container --- */}
+      {/* --- Background Wave and Orbs Container --- */}
       <motion.div
         style={{ opacity: contentOpacity }}
         className="w-full relative flex items-center justify-evenly"
       >
-        <div className="absolute inset-0 pointer-events-none">
+        <div className="wave-container absolute inset-0 pointer-events-none">
           <svg
             width="1915"
             height="634"
             viewBox="0 0 1915 634"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
+            preserveAspectRatio="none"
+            className="w-full"
           >
             <g filter="url(#filter0_f_276_1564)">
               <motion.path
@@ -68,56 +70,83 @@ export default function WaveSection() {
             </defs>
           </svg>
         </div>
+
         {/* --- Orb + Text 1 --- */}
-        <div className="relative flex flex-col items-center">
-          <motion.div
-            className="w-16 h-16 bg-teal-500 rounded-full shadow-lg"
-            initial={{ scale: 0.8 }}
-            animate={{ scale: 1 }}
-            transition={{
-              duration: 1,
-              repeat: Infinity,
-              repeatType: "reverse",
-              ease: "easeInOut",
-            }}
-          />
-          <p className="mt-2 text-white text-lg">
-            Technology with <span className="text-cyan-400">Soul.</span>
-          </p>
-        </div>
-        {/* --- Orb + Text 2 --- */}
-        <div className="relative flex flex-col items-center">
-          <motion.div
-            className="w-16 h-16 bg-green-600 rounded-full shadow-lg"
-            initial={{ scale: 0.8 }}
-            animate={{ scale: 1 }}
-            transition={{
-              duration: 1,
-              repeat: Infinity,
-              repeatType: "reverse",
-              ease: "easeInOut",
-            }}
-          />
-          <p className="mt-2 text-white text-lg">
-            Nature with <span className="text-green-300">Purpose.</span>
-          </p>
-        </div>
-        {/* --- Orb + Text 3 --- */}
-        <div className="relative flex flex-col items-center">
-          <motion.div
-            className="w-16 h-16 bg-orange-600 rounded-full shadow-lg"
-            initial={{ scale: 0.8 }}
-            animate={{ scale: 1 }}
-            transition={{
-              duration: 1,
-              repeat: Infinity,
-              repeatType: "reverse",
-              ease: "easeInOut",
-            }}
-          />
-          <p className="mt-2 text-white text-lg">
-            Humanity with <span className="text-orange-300">Vision.</span>
-          </p>
+        <div className="orb-container-wrapper w-full relative flex justify-evenly sm:translate-y-[70%] flex-wrap sm:flex-nowrap gap-12 translate-y-[0%] flex-col sm:flex-row">
+          <div className="relative flex flex-col items-center">
+            <motion.div
+              className="absolute w-40 h-40 rounded-full pointer-events-none"
+              style={{
+                background: "radial-gradient(circle, #024242, transparent 70%, #024242)",
+              }}
+              animate={{ scale: [1, 1.5, 1] }}
+              transition={{
+                duration: 6,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+            />
+            <motion.div
+              className="w-40 h-40 rounded-full shadow-lg"
+              style={{
+                background:
+                  "radial-gradient(circle, #001B1B 0%, transparent 10%, transparent 50%, #024242 100%)",
+              }}
+            />
+            <p className="mt-2 text-white text-4xl font-bold w-64 text-center glowing-text font-montserrat">
+              Technology with <span className="text-cyan-400 glowing-text">Soul.</span>
+            </p>
+          </div>
+          {/* --- Orb + Text 2 --- */}
+          <div className="relative flex flex-col items-center sm:translate-y-[100%]">
+            <p className="mb-2 sm:mt-2 text-white text-4xl font-bold w-64 text-center glowing-text font-montserrat">
+              Nature with <span className="text-green-300 glowing-text">Purpose.</span>
+            </p>
+            <motion.div
+              className="absolute w-40 h-40 rounded-full pointer-events-none bottom-0"
+              style={{
+                background: "radial-gradient(circle, #003D20, transparent 70%, #003D20)",
+              }}
+              animate={{ scale: [1, 1.5, 1] }}
+              transition={{
+                duration: 6,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+            />
+            <motion.div
+              className="w-40 h-40 rounded-full shadow-lg"
+              style={{
+                background:
+                  "radial-gradient(circle, #003D20 0%, transparent 10%, transparent 50%, #004A26 100%)",
+              }}
+            />
+          </div>
+          {/* --- Orb + Text 3 --- */}
+          <div className="relative flex flex-col items-center">
+            <motion.div
+              className="absolute w-40 h-40 rounded-full pointer-events-none"
+              style={{
+                background: "radial-gradient(circle, #9C4003, transparent 70%, #9C4003)",
+              }}
+              animate={{ scale: [1, 1.5, 1] }}
+              transition={{
+                duration: 6,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+            />
+            <motion.div
+              className="w-40 h-40 rounded-full shadow-lg"
+              style={{
+                background:
+                  "radial-gradient(circle, #9C4003 0%, transparent 10%, transparent 50%, #9C4003 100%)",
+              }}
+            />
+            <p className="mt-2 text-white glowing-text text-4xl font-bold w-64 text-center font-montserrat">
+              Humanity with <span className="text-orange-300 glowing-text">Vision.</span>
+            </p>
+          </div>
         </div>
       </motion.div>
     </section>
