@@ -1,8 +1,9 @@
 "use client";
 import { useRef, useState, useEffect } from "react";
 import { motion, useScroll, useSpring, useTransform } from "framer-motion";
+import Link from "next/link";
 
-export default function DreamFieldSection() {
+export default function FictionFunction() {
   const ref = useRef(null);
 
   // Track the scroll progress over this section
@@ -33,36 +34,30 @@ export default function DreamFieldSection() {
   }, [smoothScrollYProgress]);
 
   // Approximate positions to match the first image
-  const blobs = [
+  const nodes = [
     {
       id: 1,
-      style: "top-[15%] left-[25%]",
-      size: "w-4 h-4",
-      text: "Garden",
+      text: "Community",
+      path: "/community",
+      position: "left-20 top-64",
     },
     {
       id: 2,
-      style: "top-[15%] left-[70%]",
-      size: "w-5 h-5",
-      text: "Garden",
+      text: "Tokenomics",
+      path: "/tokenomics",
+      position: "right-28 top-44",
     },
     {
       id: 3,
-      style: "top-[45%] left-[50%]",
-      size: "w-6 h-6",
-      text: "Garden",
+      text: "Governance",
+      path: "/governance",
+      position: "left-24 bottom-52",
     },
     {
       id: 4,
-      style: "top-[70%] left-[20%]",
-      size: "w-4 h-4",
-      text: "Garden",
-    },
-    {
-      id: 5,
-      style: "top-[70%] left-[70%]",
-      size: "w-4 h-4",
-      text: "Garden",
+      text: "DAO",
+      path: "/dao",
+      position: "right-60 bottom-48",
     },
   ];
 
@@ -83,7 +78,8 @@ export default function DreamFieldSection() {
           transition={{ duration: 1.2 }}
           className="text-4xl font-bold mb-4"
         >
-          This is not a <span className="text-yellow-400">Dream.</span>
+          The world you saw is not{" "}
+          <span className="text-yellow-400">Fiction.</span>
         </motion.h2>
         <motion.h2
           initial={{ opacity: 0, y: 50 }}
@@ -92,7 +88,7 @@ export default function DreamFieldSection() {
           transition={{ duration: 1.2, delay: 0.5 }}
           className="text-4xl font-bold"
         >
-          This is a <span className="text-[#539241]">Field.</span>
+          It is <span className="text-yellow-400">Function.</span>
         </motion.h2>
       </div>
 
@@ -102,39 +98,36 @@ export default function DreamFieldSection() {
         whileInView={{ scale: 1, opacity: 1 }}
         viewport={{ once: true }}
         transition={{ duration: 1.5, delay: 0.5 }}
-        className="relative mt-16"
+        className="relative mt-16 flex items-center justify-center "
       >
         <img
-          src="/assets/images/landing/globe.png"
+          src="/assets/images/landing/fiction.png"
           alt="Globe"
-          className="w-[350px] h-[350px] object-cover"
+          className="w-[85%]"
         />
-
-        {/* Blobs with hover tooltips */}
-        {blobs.map((blob) => (
-          <motion.div
-            key={blob.id}
-            className={`absolute ${blob.style} cursor-pointer`}
-            whileHover="hover"
-            initial="rest"
-            animate="rest"
-          >
-            {/* Gardenircle */}
-            <div className={`${blob.size} bg-yellow-400 rounded-full`}></div>
-            {/* Tooltip text displayed on hover */}
-            <motion.div
-              variants={{
-                rest: { opacity: 0, y: -10 },
-                hover: { opacity: 1, y: 0 },
-              }}
-              transition={{ duration: 0.3 }}
-              className="absolute -top-6 left-1/2 transform -translate-x-1/2 text-sm text-white whitespace-nowrap"
-            >
-              <p className="font-bold font-montserrat text-lg">{blob.text}</p>
-            </motion.div>
-          </motion.div>
-        ))}
       </motion.div>
+      {/* Nodes and Paths */}
+      {nodes.map((node, index) => (
+        <div key={node.id} className={`absolute ${node.position}`}>
+          {/* Node Text with Link */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5, delay: 2 + index * 0.3 }}
+            className="relative group"
+          >
+            <Link
+              href={node.path}
+              className="text-white text-5xl font-bold tracking-wide relative transition-all duration-600 group-hover:text-yellow-400"
+            >
+              {node.text}
+              <span className="absolute inset-0 opacity-0 group-hover:opacity-100 blur-[2px] text-yellow-400 transition-opacity duration-500">
+                {node.text}
+              </span>
+            </Link>
+          </motion.div>
+        </div>
+      ))}
     </motion.section>
   );
 }

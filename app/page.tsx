@@ -9,6 +9,8 @@ import EarthSection from "@/components/LandingSections/EarthSection";
 import CoinSection from "@/components/LandingSections/CoinSection";
 import CoCreateSection from "@/components/LandingSections/CoCreateSection";
 import DreamFieldSection from "@/components/LandingSections/DreamFieldSection";
+import FictionFunction from "@/components/LandingSections/FictionFunction";
+import ReadySection from "@/components/LandingSections/ReadySection";
 
 export default function Home() {
   useEffect(() => {
@@ -25,6 +27,8 @@ export default function Home() {
       <CoinSection />
       <CoCreateSection />
       <DreamFieldSection />
+      <FictionFunction />
+      <ReadySection/>
       {/* Sections here */}
       {/* <Footer /> */}
     </main>
