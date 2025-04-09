@@ -10,45 +10,45 @@ export default function MintLanding() {
     offset: ["start start", "end end"],
   })
 
-  // Smooth out the scroll progress
   const smoothScrollYProgress = useSpring(scrollYProgress, {
     stiffness: 100,
     damping: 30,
   })
 
-  // Define scroll-based animations for text elements
-  // Each text appears at different scroll positions
+  const sectionOpacity = useTransform(
+    smoothScrollYProgress,
+    [0, 0.1, 0.9, 1],
+    [0, 1, 1, 0]
+  )
+
   const initialY = 50
   const finalY = 0
 
-  // Left text animation (appears first)
   const leftTextOpacity = useTransform(smoothScrollYProgress, [0.1, 0.2], [0, 1])
   const leftTextY = useTransform(smoothScrollYProgress, [0.1, 0.2], [initialY, finalY])
 
-  // Top text animations (appear second and third)
   const topText1Opacity = useTransform(smoothScrollYProgress, [0.25, 0.35], [0, 1])
   const topText1Y = useTransform(smoothScrollYProgress, [0.25, 0.35], [initialY, finalY])
 
   const topText2Opacity = useTransform(smoothScrollYProgress, [0.35, 0.45], [0, 1])
   const topText2Y = useTransform(smoothScrollYProgress, [0.35, 0.45], [initialY, finalY])
 
-  // Infinity loop animation (appears fourth)
   const loopOpacity = useTransform(smoothScrollYProgress, [0.45, 0.55], [0, 1])
   const loopScale = useTransform(smoothScrollYProgress, [0.45, 0.55], [0.8, 1])
 
-  // Bottom text animation (appears fifth)
   const bottomTextOpacity = useTransform(smoothScrollYProgress, [0.55, 0.65], [0, 1])
   const bottomTextY = useTransform(smoothScrollYProgress, [0.55, 0.65], [initialY, finalY])
 
-  // Right text animation (appears last)
   const rightTextOpacity = useTransform(smoothScrollYProgress, [0.65, 0.75], [0, 1])
   const rightTextY = useTransform(smoothScrollYProgress, [0.65, 0.75], [initialY, finalY])
 
   return (
-    <section ref={ref} className="bg-black text-white h-[200vh]">
-      {/* Fixed the header overlap by adjusting top value to account for header height */}
-      <div className="h-screen fixed top-[80px] w-full flex flex-col md:flex-row justify-center items-center px-4 md:px-8">
-        {/* Left Text - Appears as you scroll */}
+    <section ref={ref} className="bg-black text-white h-[100vh] snap-start">
+      <motion.div
+        className="h-screen fixed top-0 w-full flex flex-col md:flex-row justify-center items-center px-4 md:px-8 pt-[100px]"
+        style={{ opacity: sectionOpacity }}
+      >
+        {/* Left Text */}
         <motion.h2
           className="text-2xl sm:text-3xl md:text-4xl font-bold text-nowrap mb-6 md:mb-0 md:mr-8"
           style={{
@@ -59,9 +59,9 @@ export default function MintLanding() {
           Rooted in <span style={{ color: "#D48A61" }}>Numerology</span>
         </motion.h2>
 
-        <div className="flex justify-center items-center flex-col">
-          {/* Top Text - Appears as you scroll */}
-          <div className="text-center mb-6">
+        <div className="flex justify-center items-center flex-col max-w-2xl">
+          {/* Top Texts */}
+          <div className="text-center mb-2">
             <motion.h2
               className="text-2xl sm:text-3xl md:text-4xl font-bold"
               style={{
@@ -71,22 +71,20 @@ export default function MintLanding() {
             >
               This is not just a <span className="text-yellow-500">Minting Model</span>.
             </motion.h2>
-            <br />
             <motion.h2
-              className="text-2xl sm:text-3xl md:text-4xl font-bold"
+              className="text-2xl sm:text-3xl md:text-4xl font-bold mt-2"
               style={{
                 opacity: topText2Opacity,
                 y: topText2Y,
               }}
             >
-              This is an <span className="text-yellow-500 drop-shadow-lg">energetic</span>{" "}
-              <span className="text-white">sequence.</span>
+              This is an <span className="text-yellow-500 drop-shadow-lg">energetic</span> <span className="text-white">sequence.</span>
             </motion.h2>
           </div>
 
-          {/* Infinity Loop - Appears as you scroll */}
+          {/* Infinity Loop */}
           <motion.div
-            className="p-6 md:p-10"
+            className="transform scale-50 md:scale-60 my-0"
             style={{
               opacity: loopOpacity,
               scale: loopScale,
@@ -95,19 +93,21 @@ export default function MintLanding() {
             <InfinityLoop />
           </motion.div>
 
-          {/* Bottom Text - Appears as you scroll */}
-          <motion.h2
-            className="text-2xl sm:text-3xl md:text-4xl font-bold text-center"
+          {/* Bottom Text */}
+          <motion.div
+            className="absolute bottom-20 md:bottom-24 lg:bottom-32"
             style={{
               opacity: bottomTextOpacity,
               y: bottomTextY,
             }}
           >
-            Aligned with the <span className="text-yellow-500">infinity</span>
-          </motion.h2>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center">
+              Aligned with the <span className="text-yellow-500">infinity</span>
+            </h2>
+          </motion.div>
         </div>
 
-        {/* Right Text - Appears as you scroll */}
+        {/* Right Text */}
         <motion.h2
           className="text-2xl sm:text-3xl md:text-4xl font-bold text-nowrap mt-6 md:mt-0 md:ml-8"
           style={{
@@ -117,7 +117,7 @@ export default function MintLanding() {
         >
           Guided by <span style={{ color: "#892D06" }}>harmony</span>
         </motion.h2>
-      </div>
+      </motion.div>
     </section>
   )
 }
