@@ -1,5 +1,4 @@
 "use client"
-import { useRef } from "react"
 import CryptoHeader from "@/components/CryptoHeader"
 import Ticker from "@/components/sections/ticker"
 import MintLanding from "@/components/MintingSections/MintLanding"
@@ -7,29 +6,15 @@ import InfinityPhasesSection from "@/components/MintingSections/InfinityPhasesSe
 import MotionSection from "@/components/MintingSections/MotionSection"
 import PhasePrices from "@/components/MintingSections/PhasePrices"
 import MintingSection from "@/components/MintingSections/MintingSection"
-import { useScroll } from "framer-motion"
 
 export default function Home() {
-  const scrollRef = useRef(null)
-
-  // Track overall scroll progress for the entire page
-  const { scrollYProgress } = useScroll({
-    target: scrollRef,
-    offset: ["start start", "end end"],
-  })
-
   return (
-    <main
-      ref={scrollRef}
-      className="bg-black text-white snap-y snap-mandatory overflow-y-scroll scroll-smooth h-screen"
-    >
-      {/* Ticker with highest z-index */}
-      <div className="relative z-40">
+    <main className="bg-black text-white snap-y snap-mandatory overflow-y-scroll scroll-smooth h-screen">
+      {/* Fixed header and ticker */}
+      <div className="fixed top-0 left-0 right-0 z-50">
         <Ticker />
+        <CryptoHeader />
       </div>
-
-      {/* Header with high z-index */}
-      <CryptoHeader />
 
       {/* Content Sections */}
       <div className="relative z-10 pt-[40px]">
