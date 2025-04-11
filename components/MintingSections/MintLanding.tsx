@@ -15,7 +15,9 @@ export default function MintLanding() {
     damping: 30,
   })
 
-  const sectionOpacity = useTransform(smoothScrollYProgress, [0, 0.1, 0.9, 1], [0, 1, 1, 0])
+  // Adjust opacity transition to be more gradual and overlap with next section
+  // Start at full opacity (1) and maintain it longer before fading out
+  const sectionOpacity = useTransform(smoothScrollYProgress, [0, 0.05, 0.85, 0.95], [0, 1, 1, 0])
 
   const initialY = 50
   const finalY = 0
@@ -54,7 +56,7 @@ export default function MintLanding() {
       <div className="fixed inset-0 overflow-hidden">
         <motion.div
           style={{ opacity: sectionOpacity }}
-          className="h-screen w-full flex flex-col md:flex-row justify-center items-center px-4 md:px-8 pt-[150px]"
+          className="h-screen w-full flex flex-col md:flex-row justify-center items-center px-4 md:px-8 pt-[150px] bg-black"
         >
           {/* Left Text */}
           <motion.h2

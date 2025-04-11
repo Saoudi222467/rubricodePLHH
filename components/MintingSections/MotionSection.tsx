@@ -15,7 +15,8 @@ export default function MotionSection() {
     damping: 30,
   })
 
-  const sectionOpacity = useTransform(smoothScrollYProgress, [0, 0.1, 0.9, 1], [0, 1, 1, 0])
+  // Adjust opacity transition to be more gradual and overlap with adjacent sections
+  const sectionOpacity = useTransform(smoothScrollYProgress, [0, 0.05, 0.85, 0.95], [0, 1, 1, 0])
 
   const initialY = 50
   const finalY = 0
@@ -43,7 +44,7 @@ export default function MotionSection() {
     <section ref={ref} className="relative w-full h-[200vh] bg-black text-white snap-start">
       <div className="fixed inset-0 overflow-hidden">
         <motion.div
-          className="h-screen w-full flex flex-col md:flex-row justify-center items-center px-4 md:px-8 pt-[200px]"
+          className="h-screen w-full flex flex-col md:flex-row justify-center items-center px-4 md:px-8 pt-[180px] bg-black"
           style={{ opacity: sectionOpacity }}
         >
           <div className="flex justify-center items-center flex-col max-w-2xl">
@@ -87,13 +88,13 @@ export default function MotionSection() {
               <InfinityLoop />
             </motion.div>
             <motion.div
-              className="absolute bottom-20 md:bottom-28 lg:bottom-34"
+              className="absolute bottom-20 md:bottom-24 lg:bottom-32"
               style={{
                 opacity: bottomTextOpacity,
                 y: bottomTextY,
               }}
             >
-              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center MT-4">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center">
                 <span className="text-yellow-500">Infinity in Motion.</span>
               </h2>
             </motion.div>

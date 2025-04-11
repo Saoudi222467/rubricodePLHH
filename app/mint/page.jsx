@@ -17,7 +17,7 @@ export default function Home() {
       </div>
 
       {/* Content Sections */}
-      <div className="relative z-10 pt-[40px]">
+      <div className="relative z-10 pt-[40px] bg-black">
         <MintLanding />
         <InfinityPhasesSection />
         <MotionSection />

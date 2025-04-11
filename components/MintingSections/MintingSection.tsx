@@ -19,7 +19,8 @@ export default function MintingSection() {
   })
 
   // Fade in the section but don't fade out since it's the last section
-  const sectionOpacity = useTransform(smoothScrollYProgress, [0, 0.1], [0, 1])
+  // Start with a more gradual fade-in to prevent the black line
+  const sectionOpacity = useTransform(smoothScrollYProgress, [0, 0.05], [0, 1])
 
   // Sequential animation timing
   const sequenceStart = 0.1
@@ -54,12 +55,12 @@ export default function MintingSection() {
       <div className="fixed inset-0 overflow-hidden">
         <motion.div
           style={{ opacity: sectionOpacity }}
-          className="h-screen w-full flex items-center justify-center pt-[180px]" // Increased top padding
+          className="h-screen w-full flex items-center justify-center pt-[180px] bg-black"
         >
-          <div className="max-w-lg w-full px-4 py-8 flex flex-col items-center space-y-6 relative">
+          <div className="max-w-lg w-full px-4  py-8 flex flex-col items-center space-y-6 relative">
             {/* Infinity loop positioned at the top */}
             <motion.div
-              className="flex justify-center absolute top-[-200px]" // Moved up a bit
+              className="flex justify-center absolute top-[-200px]"
               style={{
                 opacity: loopOpacity,
                 scale: loopScale,

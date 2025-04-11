@@ -16,8 +16,9 @@ export default function InfinityPhasesSection() {
     damping: 30,
   })
 
-  // Fade in/out the section
-  const sectionOpacity = useTransform(smoothScrollYProgress, [0, 0.1, 0.9, 1], [0, 1, 1, 0])
+  // Adjust opacity transition to be more gradual and overlap with adjacent sections
+  // This creates a smoother transition between sections
+  const sectionOpacity = useTransform(smoothScrollYProgress, [0, 0.05, 0.85, 0.95], [0, 1, 1, 0])
 
   const initialY = 50
   const finalY = 0
@@ -45,7 +46,7 @@ export default function InfinityPhasesSection() {
       {/* Fixed container with proper header spacing */}
       <div className="fixed inset-0 overflow-hidden">
         <motion.div
-          className="h-screen w-full flex justify-center items-center px-4 md:px-8 pt-[120px]"
+          className="h-screen w-full flex justify-center items-center px-4 md:px-8 pt-[120px] bg-black"
           style={{ opacity: sectionOpacity }}
         >
           <div className="w-full max-w-7xl flex justify-between items-center">

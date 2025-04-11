@@ -18,8 +18,8 @@ export default function PhasePrices() {
     damping: 30,
   })
 
-  // Fade out all content at the end of the scroll
-  const contentOpacity = useTransform(smoothScrollYProgress, [0.95, 1], [1, 0])
+  // Adjust opacity transition to be more gradual and overlap with adjacent sections
+  const contentOpacity = useTransform(smoothScrollYProgress, [0, 0.05, 0.85, 0.95], [0, 1, 1, 0])
 
   // Optional InfinityLoop animation
   const loopOpacity = useTransform(smoothScrollYProgress, [0.45, 0.55], [0, 1])
@@ -105,7 +105,7 @@ export default function PhasePrices() {
       <div className="fixed inset-0 overflow-hidden">
         <motion.div
           style={{ opacity: contentOpacity }}
-          className="relative h-full w-full flex flex-col items-center justify-center pt-[150px]" // Increased top padding
+          className="relative h-full w-full flex flex-col items-center justify-center pt-[150px] bg-black"
         >
           <motion.table className="table-auto border-separate border-spacing-x-8 border-spacing-y-4 text-3xl sm:text-4xl md:text-5xl font-bold">
             <thead>

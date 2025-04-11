@@ -116,6 +116,13 @@ main {
   padding-top: 120px; /* Adjust based on your header height */
 }
 
+/* Ensure black background throughout */
+.minting-section,
+.minting-scroll-container {
+  background-color: black;
+}
+
+
 
 
 
