@@ -1,6 +1,11 @@
 "use client"
+import React from "react"
 
-const InfinityLoopVertical = () => {
+interface InfinityLoopVerticalProps {
+  scale?: number
+}
+
+const InfinityLoopVertical: React.FC<InfinityLoopVerticalProps> = ({ scale = 1 }) => {
   const path = `
     M 400 300 
     C 240 150, 240 450, 400 300 
@@ -8,8 +13,14 @@ const InfinityLoopVertical = () => {
   `
 
   return (
-    <div className="inline-block relative transform rotate-90">
-      {/* Centered subtle backdrop glow - increased size */}
+    <div
+      className="inline-block relative"
+      style={{
+        transform: `scale(${scale}) rotate(90deg)`,
+        transformOrigin: "center",
+      }}
+    >
+      {/* Centered subtle backdrop glow */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
         <div className="w-[500px] h-[350px] rounded-full bg-[#7b245a] blur-[60px] opacity-30"></div>
       </div>
