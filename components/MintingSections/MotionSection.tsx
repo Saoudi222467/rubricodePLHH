@@ -44,7 +44,7 @@ export default function MotionSection() {
     <section ref={ref} className="relative w-full h-[200vh] bg-black text-white snap-start">
       <div className="fixed inset-0 overflow-hidden">
         <motion.div
-          className="h-screen w-full flex flex-col md:flex-row justify-center items-center px-4 md:px-8 pt-[180px] bg-black"
+          className="h-screen w-full flex flex-col md:flex-row justify-center items-center px-4 md:px-8 pt-[300px] bg-black"
           style={{ opacity: sectionOpacity }}
         >
           <div className="flex justify-center items-center flex-col max-w-2xl">
