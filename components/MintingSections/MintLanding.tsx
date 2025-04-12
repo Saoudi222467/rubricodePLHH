@@ -50,16 +50,24 @@ export default function MintLanding() {
           style={{ opacity: sectionOpacity }}
           className="h-screen w-full flex flex-col lg:flex-row justify-center items-center px-4 sm:px-6 md:px-10 pt-[228px] lg:pt-[150px] bg-black text-center lg:text-left max-w-screen-xl mx-auto"
         >
-          {/* Left Text */}
+          {/* Right Text (shown on top on small screens) */}
           <motion.h2
-            className="text-base sm:text-lg md:text-lg lg:text-2xl xl:text-3xl font-bold font-[Montserrat] mb-4 lg:mb-0 lg:mr-8 max-w-xs sm:max-w-md break-words"
+            className="order-1 lg:order-3 text-base sm:text-lg md:text-lg lg:text-2xl xl:text-3xl font-bold font-[Montserrat] mb-4 lg:mb-0 lg:ml-8 max-w-xs sm:max-w-md break-words"
+            style={{ opacity: rightTextOpacity, y: rightTextY }}
+          >
+            Guided by <span className="text-[#892D06]">Harmony</span>
+          </motion.h2>
+
+          {/* Left Text (shown below right text on small screens) */}
+          <motion.h2
+            className="order-2 lg:order-1 text-base sm:text-lg md:text-lg lg:text-2xl xl:text-3xl font-bold font-[Montserrat] mb-4 lg:mb-0 lg:mr-8 max-w-xs sm:max-w-md break-words"
             style={{ opacity: leftTextOpacity, y: leftTextY }}
           >
             Rooted in <span className="text-[#D48A61]">Numerology</span>
           </motion.h2>
 
           {/* Center Block */}
-          <div className="flex justify-center items-center flex-col max-w-2xl w-full px-4 sm:px-0">
+          <div className="order-3 lg:order-2 flex justify-center items-center flex-col max-w-2xl w-full px-4 sm:px-0">
             {/* Top Texts */}
             <div className="text-center mb-4">
               <motion.h2
@@ -101,14 +109,6 @@ export default function MintLanding() {
               </h2>
             </motion.div>
           </div>
-
-          {/* Right Text */}
-          <motion.h2
-            className="text-base sm:text-lg md:text-lg lg:text-2xl xl:text-3xl font-bold font-[Montserrat] mt-4 lg:mt-0 lg:ml-8 max-w-xs sm:max-w-md break-words"
-            style={{ opacity: rightTextOpacity, y: rightTextY }}
-          >
-            Guided by <span className="text-[#892D06]">harmony</span>
-          </motion.h2>
         </motion.div>
       </div>
     </section>
