@@ -48,7 +48,7 @@ export default function MintLanding() {
       <div className="fixed inset-0 overflow-hidden pt-[80px]">
         <motion.div
           style={{ opacity: sectionOpacity }}
-          className="h-screen w-full flex flex-col lg:flex-row justify-center items-center px-4 sm:px-6 md:px-10 pt-28 lg:pt-[150px] bg-black text-center lg:text-left max-w-screen-xl mx-auto"
+          className="h-screen w-full flex flex-col lg:flex-row justify-center items-center px-4 sm:px-6 md:px-10 pt-[228px] lg:pt-[150px] bg-black text-center lg:text-left max-w-screen-xl mx-auto"
         >
           {/* Left Text */}
           <motion.h2
