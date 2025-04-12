@@ -1,72 +1,76 @@
 "use client";
-import { useEffect, useState, useRef } from "react";
+import { useRef } from "react";
 import { motion, useScroll, useSpring, useTransform } from "framer-motion";
 
-export default function TextSection() {
-  const ref = useRef(null);
+export default function EarthSection() {
+  const ref = useRef<HTMLDivElement>(null);
+
+  // Get scroll progress relative to this section.
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ["start start", "end end"],
   });
+  // Smooth the scroll progress.
   const smoothScrollYProgress = useSpring(scrollYProgress, {
     stiffness: 100,
     damping: 30,
   });
 
-  const [finalOpacity, setFinalOpacity] = useState(0);
+  // Fade out the entire pinned container near the end of the section,
+  // matching the behavior of InitialSection (fading from 95% to 100% scroll).
+  const contentOpacity = useTransform(smoothScrollYProgress, [0.95, 1], [1, 0]);
 
-  const sectionOpacity = useTransform(smoothScrollYProgress, [0, 1], [0, 1]);
+  // Sequential fade-ins (and slight upward motion) for the background and text.
+  const bgOpacity = useTransform(smoothScrollYProgress, [0, 0.1], [0, 1]);
+  const text1Opacity = useTransform(smoothScrollYProgress, [0.1, 0.2], [0, 1]);
+  const text2Opacity = useTransform(smoothScrollYProgress, [0.2, 0.3], [0, 1]);
+  const text3Opacity = useTransform(smoothScrollYProgress, [0.3, 0.4], [0, 1]);
 
-  useEffect(() => {
-    const unsubscribe = smoothScrollYProgress.onChange((value) => {
-      if (value >= 0.9) {
-        setFinalOpacity(1);
-        unsubscribe();
-      }
-    });
-    return () => unsubscribe && unsubscribe();
-  }, [smoothScrollYProgress]);
-  
+  const text1Y = useTransform(smoothScrollYProgress, [0.1, 0.2], [20, 0]);
+  const text2Y = useTransform(smoothScrollYProgress, [0.2, 0.3], [20, 0]);
+  const text3Y = useTransform(smoothScrollYProgress, [0.3, 0.4], [40, 0]);
 
   return (
-    <motion.section
+    <section
       ref={ref}
       id="text-section"
-      className="relative h-[100vh] w-full flex flex-col justify-center items-center overflow-hidden font-montserrat bg-cover bg-center"
-      style={{
-        backgroundImage: "url('/images/bghero2.jpeg')",
-        opacity: finalOpacity || sectionOpacity,
-      }}
+      className="relative h-[200vh] w-full snap-start"
     >
-      <div className="absolute inset-0 bg-black opacity-50 z-0" />
+      {/* Pinned container to hold the content during scrolling */}
+      <div className="fixed inset-0">
+        <motion.div style={{ opacity: contentOpacity }} className="relative h-full w-full">
+          {/* Background image with sequential fade-in */}
+          <motion.div
+            className="absolute inset-0 bg-cover bg-center"
+            style={{
+              backgroundImage: "url('/images/bghero2.jpeg')",
+              opacity: bgOpacity,
+            }}
+          />
 
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.5, delay: 1 }}
-        className="mb-8 text-white text-4xl font-bold relative z-10"
-      >
-        The Earth is Alive.
-      </motion.div>
-
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 1.5 }}
-        className="mb-8 text-white text-4xl font-bold relative z-10"
-      >
-        Every Garden is a Seed.
-      </motion.div>
-
-      <motion.div
-        initial={{ opacity: 0, y: 40 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 2 }}
-        className="text-white text-4xl font-bold relative z-10"
-      >
-        Every seed is a promise.
-      </motion.div>
-    </motion.section>
+          {/* Sequential text content */}
+          <div className="relative z-10 flex flex-col justify-center items-center h-full">
+            <motion.div
+              style={{ opacity: text1Opacity, y: text1Y }}
+              className="mb-8 text-white text-4xl font-bold"
+            >
+              The Earth is Alive.
+            </motion.div>
+            <motion.div
+              style={{ opacity: text2Opacity, y: text2Y }}
+              className="mb-8 text-white text-4xl font-bold"
+            >
+              Every Garden is a Seed.
+            </motion.div>
+            <motion.div
+              style={{ opacity: text3Opacity, y: text3Y }}
+              className="text-white text-4xl font-bold"
+            >
+              Every seed is a promise.
+            </motion.div>
+          </div>
+        </motion.div>
+      </div>
+    </section>
   );
 }
