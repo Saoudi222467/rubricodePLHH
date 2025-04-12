@@ -43,7 +43,7 @@ export default function InfinityPhasesSection() {
     const handleResize = () => {
       const width = window.innerWidth
       if (width < 640) {
-        setLoopScaleValue(0.3)
+        setLoopScaleValue(0.5)
         setTextSize({
           heading: "text-3xl",
           subHeading: "text-xl",
@@ -52,22 +52,22 @@ export default function InfinityPhasesSection() {
           rowGap: "gap-4",
         })
       } else if (width < 768) {
-        setLoopScaleValue(0.4)
+        setLoopScaleValue(0.5)
         setTextSize({
-          heading: "text-4xl",
-          subHeading: "text-2xl",
-          number: "text-6xl",
-          body: "text-base",
-          rowGap: "gap-6",
+          heading: "text-3xl",
+          subHeading: "text-xl",
+          number: "text-5xl",
+          body: "text-sm",
+          rowGap: "gap-4",
         })
       } else if (width < 1024) {
         setLoopScaleValue(0.5)
         setTextSize({
-          heading: "text-5xl",
-          subHeading: "text-3xl",
-          number: "text-7xl",
-          body: "text-lg",
-          rowGap: "gap-8",
+          heading: "text-3xl",
+          subHeading: "text-xl",
+          number: "text-5xl",
+          body: "text-sm",
+          rowGap: "gap-4",
         })
       } else {
         setLoopScaleValue(0.6)
@@ -89,7 +89,7 @@ export default function InfinityPhasesSection() {
   return (
     <section
       ref={ref}
-      className="relative w-full h-[200vh] bg-black text-white snap-start font-[Montserrat] overflow-hidden"
+      className="relative w-full h-[200vh] bg-black text-white snap-start font-[Montserrat] overflow-hidden "
     >
       <div className="fixed inset-0 overflow-hidden">
         <motion.div
