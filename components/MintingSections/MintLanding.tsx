@@ -50,7 +50,7 @@ export default function MintLanding() {
           style={{ opacity: sectionOpacity }}
           className="h-screen w-full flex flex-col lg:flex-row justify-center items-center px-4 sm:px-6 md:px-10 pt-28 lg:pt-[150px] bg-black text-center lg:text-left max-w-screen-xl mx-auto"
         >
-          {/* Left Text */}
+          {/* Right Text (shown on top on small screens) */}
           <motion.h2
             className="text-base sm:text-lg md:text-lg lg:text-2xl xl:text-3xl font-bold font-[Montserrat] mb-4 lg:mb-0 lg:mr-8 max-w-xs sm:max-w-md break-words"
             style={{ opacity: leftTextOpacity, y: leftTextY }}
