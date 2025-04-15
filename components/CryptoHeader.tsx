@@ -75,10 +75,7 @@ export default function CryptoHeader() {
       return (
         <div className="hidden md:flex flex-col items-center">
           {/* Text container with balance and wallet address */}
-          <div className="mb-2 text-sm text-white text-center">
-            <span className="block font-bold">0.437 SUI</span>
-            <span className="block">{shortenAddress(walletState.walletAddress)}</span>
-          </div>
+         
           {/* Connected button container */}
           <div
             className="wkit-connected-container bg-gradient-to-r from-yellow-600 via-amber-500 to-yellow-600 
