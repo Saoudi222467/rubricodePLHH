@@ -3,90 +3,106 @@ import { motion, useScroll, useTransform, useSpring } from "framer-motion"
 import { useRef } from "react"
 import InfinityLoop from "../InfinityLoop"
 
-export default function MintingSection() {
+export default function MintingSection({ isMobile }: { isMobile: boolean }) {
   const ref = useRef(null)
 
-  // Track scroll progress for the section
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ["start start", "end end"],
   })
 
-  // Smooth out scroll progress
   const smoothScrollYProgress = useSpring(scrollYProgress, {
     stiffness: 100,
     damping: 30,
   })
 
-  // Fade in the section but don't fade out since it's the last section
-  // Start with a more gradual fade-in to prevent the black line
-  const sectionOpacity = useTransform(smoothScrollYProgress, [0, 0.05], [0, 1])
+  const animated = (val: any, fallback: any) => (isMobile ? fallback : val)
 
-  // Sequential animation timing
+  // Animations
+  const sectionOpacity = useTransform(smoothScrollYProgress, [0, 0.05], [0, 1])
   const sequenceStart = 0.1
   const sequenceStep = 0.15
 
-  // First, the infinity loop appears
   const loopOpacity = useTransform(smoothScrollYProgress, [sequenceStart, sequenceStart + 0.1], [0, 1])
   const loopScale = useTransform(smoothScrollYProgress, [sequenceStart, sequenceStart + 0.1], [0.7, 1])
 
-  // Then the headings
   const headingStart = sequenceStart + sequenceStep
   const headingOpacity = useTransform(smoothScrollYProgress, [headingStart, headingStart + 0.1], [0, 1])
   const headingY = useTransform(smoothScrollYProgress, [headingStart, headingStart + 0.1], [50, 0])
 
-  // Then the payment options
   const paymentStart = headingStart + sequenceStep
   const paymentOpacity = useTransform(smoothScrollYProgress, [paymentStart, paymentStart + 0.1], [0, 1])
   const paymentY = useTransform(smoothScrollYProgress, [paymentStart, paymentStart + 0.1], [50, 0])
 
-  // Then the amount input
   const amountStart = paymentStart + sequenceStep
   const amountOpacity = useTransform(smoothScrollYProgress, [amountStart, amountStart + 0.1], [0, 1])
   const amountY = useTransform(smoothScrollYProgress, [amountStart, amountStart + 0.1], [50, 0])
 
-  // Finally the bottom section
   const bottomStart = amountStart + sequenceStep
   const bottomOpacity = useTransform(smoothScrollYProgress, [bottomStart, bottomStart + 0.1], [0, 1])
   const bottomY = useTransform(smoothScrollYProgress, [bottomStart, bottomStart + 0.1], [50, 0])
 
   return (
-    <section ref={ref} className="relative w-full h-[200vh] bg-black text-white snap-start">
-      <div className="fixed inset-0 overflow-hidden">
+    <section
+      ref={ref}
+      className={`w-full ${isMobile ? "py-24 overflow-x-hidden" : "h-[200vh] snap-start relative"} bg-black text-white`}
+    >
+      <div className={`${isMobile ? "" : "fixed inset-0 overflow-hidden"}`}>
         <motion.div
-          style={{ opacity: sectionOpacity }}
-          className="h-screen w-full flex items-center justify-center pt-[180px] bg-black"
+          style={{ opacity: animated(sectionOpacity, 1) }}
+          className={`${
+            isMobile ? "relative pt-[100px] overflow-x-hidden" : "h-screen"
+          } w-full flex items-center justify-center bg-black`}
         >
-          <div className="max-w-lg w-full px-4  py-8 flex flex-col items-center space-y-6 relative">
-            {/* Infinity loop positioned at the top */}
-            <motion.div
-              className="flex justify-center absolute top-[-200px]"
-              style={{
-                opacity: loopOpacity,
-                scale: loopScale,
-              }}
-            >
-              <InfinityLoop />
-            </motion.div>
-
-            {/* Headings */}
-            <motion.div
-              className="text-center"
-              style={{
-                opacity: headingOpacity,
-                y: headingY,
-              }}
-            >
-              <h1 className="text-3xl md:text-4xl font-bold mb-2 mt-12">Purchase PLHH</h1>
-              <h2 className="text-lg md:text-xl text-yellow-500 tracking-wider">PLHH PRESALE</h2>
-            </motion.div>
+          <div className={`max-w-lg w-full px-4 py-8 flex flex-col items-center space-y-6 relative ${isMobile ? "overflow-x-hidden" : ""}`}>
+            
+            {/* Infinity Loop as background for heading on mobile */}
+            {isMobile ? (
+              <div className="relative w-full flex justify-center items-center">
+                <div className="absolute  z-0 scale-75 opacity-70">
+                  <InfinityLoop />
+                </div>
+                <motion.div
+                  className="text-center z-10"
+                  style={{
+                    opacity: 1,
+                    y: 0,
+                  }}
+                >
+                  <h1 className="text-3xl md:text-4xl font-bold mb-2 mt-12">Purchase PLHH</h1>
+                  <h2 className="text-lg md:text-xl text-yellow-500 tracking-wider">PLHH PRESALE</h2>
+                </motion.div>
+              </div>
+            ) : (
+              <>
+                <motion.div
+                  className="flex justify-center absolute top-[-200px] z-0"
+                  style={{
+                    opacity: loopOpacity,
+                    scale: loopScale,
+                  }}
+                >
+                  <InfinityLoop />
+                </motion.div>
+                <motion.div
+                  className="text-center z-10"
+                  style={{
+                    opacity: headingOpacity,
+                    y: headingY,
+                  }}
+                >
+                  <h1 className="text-3xl md:text-4xl font-bold mb-2 mt-12">Purchase PLHH</h1>
+                  <h2 className="text-lg md:text-xl text-yellow-500 tracking-wider">PLHH PRESALE</h2>
+                </motion.div>
+              </>
+            )}
 
             {/* Payment Method Options */}
             <motion.div
-              className="w-full border border-gray-700 p-4 rounded-lg"
+              className="w-full border border-gray-700 p-4 rounded-lg bg-black/70 backdrop-blur-md z-10"
               style={{
-                opacity: paymentOpacity,
-                y: paymentY,
+                opacity: animated(paymentOpacity, 1),
+                y: animated(paymentY, 0),
               }}
             >
               <p className="text-xl md:text-2xl font-semibold mb-3">Select Payment Method</p>
@@ -102,10 +118,10 @@ export default function MintingSection() {
 
             {/* PLHH Amount Input */}
             <motion.div
-              className="w-full border border-gray-700 p-4 rounded-lg"
+              className="w-full border border-gray-700 p-4 rounded-lg bg-black/70 backdrop-blur-md z-10"
               style={{
-                opacity: amountOpacity,
-                y: amountY,
+                opacity: animated(amountOpacity, 1),
+                y: animated(amountY, 0),
               }}
             >
               <p className="text-xl md:text-2xl font-semibold mb-3">Amount of PLHH</p>
@@ -118,10 +134,10 @@ export default function MintingSection() {
 
             {/* Bottom Section: Rate & Wallet Connect */}
             <motion.div
-              className="w-full flex items-center justify-between border border-gray-700 p-4 rounded-lg"
+              className="w-full flex items-center justify-between border border-gray-700 p-4 rounded-lg bg-black/70 backdrop-blur-md z-10"
               style={{
-                opacity: bottomOpacity,
-                y: bottomY,
+                opacity: animated(bottomOpacity, 1),
+                y: animated(bottomY, 0),
               }}
             >
               <p className="text-sm md:text-base text-gray-300">
