@@ -2,22 +2,22 @@
 import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 import { useRef } from "react";
 
-export default function WaveSection() {
+export default function WaveSection({ isMobile }: { isMobile: boolean }) {
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ["start start", "end end"],
   });
+
   const smoothScrollYProgress = useSpring(scrollYProgress, {
     stiffness: 100,
     damping: 30,
   });
 
-  // Overall fade out once scrolling out of section (like InitialSection)
+  const animated = (val: any, fallback: any) => (isMobile ? fallback : val);
+
   const contentOpacity = useTransform(smoothScrollYProgress, [0.95, 1], [1, 0]);
 
-  // Sequential animations for the elements:
-  // Wave (line) fades in first, then orb1, orb2, orb3 (with a slight upward slide)
   const waveLineOpacity = useTransform(smoothScrollYProgress, [0, 0.1], [0, 1]);
   const orb1Opacity = useTransform(smoothScrollYProgress, [0.1, 0.2], [0, 1]);
   const orb2Opacity = useTransform(smoothScrollYProgress, [0.2, 0.3], [0, 1]);
@@ -31,13 +31,20 @@ export default function WaveSection() {
     <section
       ref={ref}
       id="wave-section"
-      className="relative h-[200vh] w-full overflow-hidden snap-start"
+      className={`relative w-full overflow-hidden ${
+        isMobile ? "py-24" : "h-[200vh] snap-start"
+      } bg-black text-white no-scrollbar`}
     >
-      {/* Pinned container: content remains fixed as we scroll */}
-      <div className="fixed inset-0">
-        <motion.div style={{ opacity: contentOpacity }} className="relative h-full w-full">
-          {/* --- Background Wave (Line) --- */}
-          <div className="wave-container absolute inset-0 pointer-events-none">
+      <div className={`${isMobile ? "" : "fixed inset-0"}`}>
+        <motion.div
+          style={{ opacity: animated(contentOpacity, 1) }}
+          className="relative h-full w-full"
+        >
+          {/* Background wave line with controlled opacity */}
+          <motion.div
+            className="wave-container absolute inset-0 pointer-events-none"
+            style={{ opacity: animated(waveLineOpacity, 0) }}
+          >
             <svg
               width="1915"
               height="634"
@@ -52,7 +59,7 @@ export default function WaveSection() {
                   d="M-88 12.5C226 81.5 527 662.5 981 618.5C1548.5 563.5 1521 194 1959 125.5"
                   stroke="var(--landing)"
                   strokeWidth="9"
-                  style={{ opacity: waveLineOpacity }}
+                  style={{ opacity: animated(waveLineOpacity, 1) }}
                 />
               </g>
               <defs>
@@ -66,24 +73,45 @@ export default function WaveSection() {
                   colorInterpolationFilters="sRGB"
                 >
                   <feFlood floodOpacity="0" result="BackgroundImageFix" />
-                  <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape" />
-                  <feGaussianBlur stdDeviation="3.9" result="effect1_foregroundBlur_276_1564" />
+                  <feBlend
+                    mode="normal"
+                    in="SourceGraphic"
+                    in2="BackgroundImageFix"
+                    result="shape"
+                  />
+                  <feGaussianBlur
+                    stdDeviation="3.9"
+                    result="effect1_foregroundBlur_276_1564"
+                  />
                 </filter>
               </defs>
             </svg>
-          </div>
+          </motion.div>
 
-          {/* --- Orbs & Texts (positions remain unchanged) --- */}
-          <div className="orb-container-wrapper w-full relative flex justify-evenly sm:translate-y-[70%] flex-wrap sm:flex-nowrap gap-12 translate-y-[0%] flex-col sm:flex-row">
+          <div
+            className={`orb-container-wrapper w-full relative flex ${
+              isMobile
+                ? "flex-col items-center gap-y-20 pt-12"
+                : "flex-row justify-evenly sm:translate-y-[70%] gap-12"
+            }`}
+          >
             {/* Orb 1 */}
             <motion.div
-              style={{ opacity: orb1Opacity, y: orb1Y }}
+              style={{
+                opacity: animated(orb1Opacity, 1),
+                y: animated(orb1Y, 0),
+              }}
               className="relative flex flex-col items-center"
             >
+              <p className="mb-2 text-white text-4xl font-bold w-64 text-center glowing-text font-montserrat">
+                Technology with{" "}
+                <span className="text-cyan-400 glowing-text">Soul.</span>
+              </p>
               <motion.div
-                className="absolute w-40 h-40 rounded-full pointer-events-none"
+                className="absolute w-40 h-40 rounded-full pointer-events-none bottom-0"
                 style={{
-                  background: "radial-gradient(circle, #024242, transparent 70%, #024242)",
+                  background:
+                    "radial-gradient(circle, #024242, transparent 70%, #024242)",
                 }}
                 animate={{ scale: [1, 1.5, 1] }}
                 transition={{
@@ -99,23 +127,25 @@ export default function WaveSection() {
                     "radial-gradient(circle, #001B1B 0%, transparent 10%, transparent 50%, #024242 100%)",
                 }}
               />
-              <p className="mt-2 text-white text-4xl font-bold w-64 text-center glowing-text font-montserrat">
-                Technology with <span className="text-cyan-400 glowing-text">Soul.</span>
-              </p>
             </motion.div>
 
             {/* Orb 2 */}
             <motion.div
-              style={{ opacity: orb2Opacity, y: orb2Y }}
-              className="relative flex flex-col items-center top-64"
+              style={{
+                opacity: animated(orb2Opacity, 1),
+                y: animated(orb2Y, 0),
+              }}
+              className={`relative flex flex-col items-center ${!isMobile && 'top-60'}`}
             >
-              <p className="mb-2 sm:mt-2 text-white text-4xl font-bold w-64 text-center glowing-text font-montserrat">
-                Nature with <span className="text-green-300 glowing-text">Purpose.</span>
+              <p className="mb-2 text-white text-4xl font-bold w-64 text-center glowing-text font-montserrat">
+                Nature with{" "}
+                <span className="text-green-300 glowing-text">Purpose.</span>
               </p>
               <motion.div
                 className="absolute w-40 h-40 rounded-full pointer-events-none bottom-0"
                 style={{
-                  background: "radial-gradient(circle, #003D20, transparent 70%, #003D20)",
+                  background:
+                    "radial-gradient(circle, #003D20, transparent 70%, #003D20)",
                 }}
                 animate={{ scale: [1, 1.5, 1] }}
                 transition={{
@@ -135,13 +165,21 @@ export default function WaveSection() {
 
             {/* Orb 3 */}
             <motion.div
-              style={{ opacity: orb3Opacity, y: orb3Y }}
+              style={{
+                opacity: animated(orb3Opacity, 1),
+                y: animated(orb3Y, 0),
+              }}
               className="relative flex flex-col items-center"
             >
+              <p className="mb-2 text-white glowing-text text-4xl font-bold w-64 text-center font-montserrat">
+                Humanity with{" "}
+                <span className="text-orange-300 glowing-text">Vision.</span>
+              </p>
               <motion.div
-                className="absolute w-40 h-40 rounded-full pointer-events-none"
+                className="absolute w-40 h-40 rounded-full pointer-events-none bottom-0"
                 style={{
-                  background: "radial-gradient(circle, #9C4003, transparent 70%, #9C4003)",
+                  background:
+                    "radial-gradient(circle, #9C4003, transparent 70%, #9C4003)",
                 }}
                 animate={{ scale: [1, 1.5, 1] }}
                 transition={{
@@ -157,9 +195,6 @@ export default function WaveSection() {
                     "radial-gradient(circle, #9C4003 0%, transparent 10%, transparent 50%, #9C4003 100%)",
                 }}
               />
-              <p className="mt-2 text-white glowing-text text-4xl font-bold w-64 text-center font-montserrat">
-                Humanity with <span className="text-orange-300 glowing-text">Vision.</span>
-              </p>
             </motion.div>
           </div>
         </motion.div>
