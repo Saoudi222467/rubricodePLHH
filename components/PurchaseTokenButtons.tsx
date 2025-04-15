@@ -15,8 +15,8 @@ const PRESALE_CONFIG_ID = process.env.NEXT_PUBLIC_PRESALE_CONFIG_ID!;
 const CLOCK_OBJECT_ID = process.env.NEXT_PUBLIC_CLOCK_OBJECT_ID!;
 
 // Hard-coded PriceInfoObject ID (as used in your CLI call)
-const HARD_CODED_PRICE_INFO_OBJECT_ID =
-  "0x801dbc2f0053d34734814b2d6df491ce7807a725fe9a01ad74a07e9c51396c37";
+const HARD_CODED_PRICE_INFO_OBJECT_ID = process.env.NEXT_PUBLIC_PRICE_INFO_OBJECT_ID!;
+  
 
 interface WalletType {
   connected: boolean;
@@ -108,17 +108,6 @@ const PurchaseTokensButton: React.FC<PurchaseTokensButtonProps> = ({
       {/* ToastContainer placed at the top level so it appears in the top right of the screen */}
       <ToastContainer position="top-right" />
       <div className="space-y-4">
-        <div className="space-y-2 text-black">
-          <Label htmlFor="token-amount">Amount of PLHH</Label>
-          <Input
-            id="token-amount"
-            type="number"
-            placeholder="Enter amount"
-            value={amount}
-            onChange={(e) => setAmount(e.target.value)}
-            disabled={isPurchasing}
-          />
-        </div>
 
         {error && (
           <div className="flex items-center gap-2 text-red-500">
@@ -130,7 +119,7 @@ const PurchaseTokensButton: React.FC<PurchaseTokensButtonProps> = ({
         <Button
           onClick={purchaseTokens}
           disabled={isPurchasing || !wallet.connected}
-          className="w-full flex items-center justify-center"
+          className="w-full flex items-center justify-center bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-2 px-4 rounded-lg"
         >
           {isPurchasing ? (
             <>
