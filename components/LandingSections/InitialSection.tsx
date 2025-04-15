@@ -1,226 +1,191 @@
-  "use client";
-  import { motion, useScroll, useTransform, useSpring } from "framer-motion";
-  import { useRef } from "react";
+"use client";
+import { motion, useScroll, useTransform, useSpring } from "framer-motion";
+import { useRef } from "react";
 
-  export default function LandingSection() {
-    const ref = useRef(null);
-    const { scrollYProgress } = useScroll({
-      target: ref,
-      offset: ["start start", "end end"],
-    });
-    const smoothScrollYProgress = useSpring(scrollYProgress, {
-      stiffness: 100,
-      damping: 30,
-    });
+export default function LandingSection({ isMobile }: { isMobile: boolean }) {
+  const ref = useRef(null);
 
-    // Content and shape animations remain unchanged:
-    const contentOpacity = useTransform(smoothScrollYProgress, [0.95, 1], [1, 0]);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start start", "end end"],
+  });
 
-    const leftHorizScale = useTransform(smoothScrollYProgress, [0, 0.2], [0, 0.5]);
-    const leftDiagTopScale = useTransform(smoothScrollYProgress, [0.2, 0.4], [0, 1]);
-    const leftDiagBottomScale = useTransform(smoothScrollYProgress, [0.4, 0.5], [0, 1]);
+  const smoothScrollYProgress = useSpring(scrollYProgress, {
+    stiffness: 100,
+    damping: 30,
+  });
 
-    const rightHorizScale = useTransform(smoothScrollYProgress, [0, 0.2], [0, 0.5]);
-    const rightDiagTopScale = useTransform(smoothScrollYProgress, [0.2, 0.4], [0, 1]);
-    const rightDiagBottomScale = useTransform(smoothScrollYProgress, [0.4, 0.5], [0, 1]);
+  const animated = (val: any, fallback: any) => (isMobile ? fallback : val);
 
-    const lineOpacity = useTransform(smoothScrollYProgress, [0.4, 0.6], [1, 0]);
+  const contentOpacity = useTransform(smoothScrollYProgress, [0.95, 1], [1, 0]);
+  const leftHorizScale = useTransform(smoothScrollYProgress, [0, 0.2], [0, 0.5]);
+  const rightHorizScale = useTransform(smoothScrollYProgress, [0, 0.2], [0, 0.5]);
+  const lineOpacity = useTransform(smoothScrollYProgress, [0.4, 0.6], [1, 0]);
+  const blobScale = useTransform(smoothScrollYProgress, [0, 0.4], [0, 3]);
+  const blobOpacity = useTransform(smoothScrollYProgress, [0.4, 0.5], [0.8, 0]);
 
-    const blobScale = useTransform(smoothScrollYProgress, [0, 0.4], [0, 3]);
-    const blobOpacity = useTransform(smoothScrollYProgress, [0.4, 0.5], [0.8, 0]);
+  const textAnimStart = 0.65;
+  const initialY = 50;
+  const finalY = 0;
 
-    // Define a common timing and transform range for all text elements:
-    const textAnimStart = 0.65;
-    const initialY = 50;
-    const finalY = 0;
+  const text1Opacity = useTransform(smoothScrollYProgress, [textAnimStart, textAnimStart + 0.05 * 1], [0, 1]);
+  const text1Y = useTransform(smoothScrollYProgress, [textAnimStart, textAnimStart + 0.05 * 1], [initialY, finalY]);
 
-    // Apply the same transforms to each text element:
-    const text1Opacity = useTransform(smoothScrollYProgress, [textAnimStart, textAnimStart + 0.05 * 1], [0, 1]);
-    const text1Y = useTransform(
-      smoothScrollYProgress,
-      [textAnimStart, textAnimStart + 0.05 * 1],
-      [initialY, finalY]
-    );
+  const text2Opacity = useTransform(smoothScrollYProgress, [textAnimStart, textAnimStart + 0.05 * 2], [0, 1]);
+  const text2Y = useTransform(smoothScrollYProgress, [textAnimStart, textAnimStart + 0.05 * 2], [initialY, finalY]);
 
-    const text2Opacity = useTransform(smoothScrollYProgress, [textAnimStart, textAnimStart + 0.05 * 2], [0, 1]);
-    const text2Y = useTransform(
-      smoothScrollYProgress,
-      [textAnimStart, textAnimStart + 0.05 * 2],
-      [initialY, finalY]
-    );
+  const text3Opacity = useTransform(smoothScrollYProgress, [textAnimStart, textAnimStart + 0.05 * 3], [0, 1]);
+  const text3Y = useTransform(smoothScrollYProgress, [textAnimStart, textAnimStart + 0.05 * 3], [initialY, finalY]);
 
-    const text3Opacity = useTransform(smoothScrollYProgress, [textAnimStart, textAnimStart + 0.05 * 3], [0, 1]);
-    const text3Y = useTransform(
-      smoothScrollYProgress,
-      [textAnimStart, textAnimStart + 0.05 * 3],
-      [initialY, finalY]
-    );
+  const text4Opacity = useTransform(smoothScrollYProgress, [textAnimStart, textAnimStart + 0.05 * 4], [0, 1]);
+  const text4Y = useTransform(smoothScrollYProgress, [textAnimStart, textAnimStart + 0.05 * 4], [initialY, finalY]);
 
-    const text4Opacity = useTransform(smoothScrollYProgress, [textAnimStart, textAnimStart + 0.05 * 4], [0, 1]);
-    const text4Y = useTransform(
-      smoothScrollYProgress,
-      [textAnimStart, textAnimStart + 0.05 * 4],
-      [initialY, finalY]
-    );
-
-    return (
-      <section ref={ref} className="relative w-full h-[400vh] bg-black font-montserrat">
-        {/* Fixed container: background elements remain fixed while scrolling */}
-        <div className="fixed inset-0 overflow-hidden">
-          <motion.div style={{ opacity: contentOpacity }} className="relative h-full w-full">
-            {/* --- Left Side Lines --- */}
-            <motion.div
-              className="absolute bg-landing h-[2px] w-[50vw]"
-              style={{
-                top: "15%",
-                left: 0,
-                scaleX: leftHorizScale,
-                transformOrigin: "left center",
-                opacity: lineOpacity,
-              }}
-            />
-            <motion.div
-              className="absolute bg-landing h-[2px] w-[50vw]"
-              style={{
-                top: "95%",
-                left: 0,
-                scaleX: leftHorizScale,
-                transformOrigin: "left center",
-                opacity: lineOpacity,
-              }}
-            />
-            {/* <motion.div
-              className="absolute bg-landing h-[2px] w-[70vw]"
-              style={{
-                top: 0,
-                left: 0,
-                scaleX: leftDiagTopScale,
-                transformOrigin: "top left",
-                rotate: "45deg",
-                opacity: lineOpacity,
-              }}
-            /> */}
-            {/* <motion.div
-              className="absolute bg-landing h-[2px] w-[70vw]"
-              style={{
-                bottom: 0,
-                left: 0,
-                scaleX: leftDiagBottomScale,
-                transformOrigin: "bottom left",
-                rotate: "-45deg",
-                opacity: lineOpacity,
-              }}
-            /> */}
-            {/* --- Right Side Lines --- */}
-            <motion.div
-              className="absolute bg-landing h-[2px] w-[50vw]"
-              style={{
-                top: "15%",
-                right: 0,
-                scaleX: rightHorizScale,
-                transformOrigin: "right center",
-                opacity: lineOpacity,
-              }}
-            />
-            <motion.div
-              className="absolute bg-landing h-[2px] w-[50vw]"
-              style={{
-                top: "95%",
-                right: 0,
-                scaleX: rightHorizScale,
-                transformOrigin: "right center",
-                opacity: lineOpacity,
-              }}
-            />
-            {/* <motion.div
-              className="absolute bg-landing h-[2px] w-[70vw]"
-              style={{
-                top: 0,
-                right: 0,
-                scaleX: rightDiagTopScale,
-                transformOrigin: "top right",
-                rotate: "-45deg",
-                opacity: lineOpacity,
-              }}
-            /> */}
-            {/* <motion.div
-              className="absolute bg-landing h-[2px] w-[70vw]"
-              style={{
-                bottom: 0,
-                right: 0,
-                scaleX: rightDiagBottomScale,
-                transformOrigin: "bottom right",
-                rotate: "45deg",
-                opacity: lineOpacity,
-              }}
-            /> */}
-            {/* --- Center Glowing Blob with Breathing Effect --- */}
-            <motion.div
-              className="absolute w-64 h-64 rounded-full mix-blend-screen"
-              style={{
-                top: "50%",
-                left: "50%",
-                x: "-50%",
-                y: "-50%",
-                scale: blobScale,
-                opacity: blobOpacity,
-                background: "radial-gradient(circle, var(--landing) 0%, transparent 70%)",
-              }}
-            >
-              {/* Nested breathing glow element */}
+  return (
+    <section
+      ref={ref}
+      className={`w-full ${isMobile ? "h-screen" : "h-[400vh] snap-start relative"} bg-black font-montserrat`}
+    >
+      <div className={`${isMobile ? "" : "fixed inset-0 overflow-hidden"}`}>
+        <motion.div style={{ opacity: animated(contentOpacity, 1) }} className="relative h-full w-full">
+          {/* Horizontal Lines - only on desktop */}
+          {!isMobile && (
+            <>
               <motion.div
-                className="w-full h-full rounded-full"
-                animate={{
-                  scale: [1, 1.1, 1],
-                  filter: ["blur(25px)", "blur(24px)", "blur(2px)"],
-                  boxShadow: [
-                    "0px 0px 0px 0px var(--landing)",
-                    "0px 0px 20px 10px var(--landing)",
-                    "0px 0px 0px 0px var(--landing)",
-                  ],
-                }}
-                transition={{
-                  duration: 5,
-                  repeat: Infinity,
-                  ease: "easeInOut",
+                className="absolute bg-landing h-[2px] w-[50vw]"
+                style={{
+                  top: "15%",
+                  left: 0,
+                  scaleX: animated(leftHorizScale, 1),
+                  transformOrigin: "left center",
+                  opacity: animated(lineOpacity, 1),
                 }}
               />
-            </motion.div>
+              <motion.div
+                className="absolute bg-landing h-[2px] w-[50vw]"
+                style={{
+                  top: "95%",
+                  left: 0,
+                  scaleX: animated(leftHorizScale, 1),
+                  transformOrigin: "left center",
+                  opacity: animated(lineOpacity, 1),
+                }}
+              />
+              <motion.div
+                className="absolute bg-landing h-[2px] w-[50vw]"
+                style={{
+                  top: "15%",
+                  right: 0,
+                  scaleX: animated(rightHorizScale, 1),
+                  transformOrigin: "right center",
+                  opacity: animated(lineOpacity, 1),
+                }}
+              />
+              <motion.div
+                className="absolute bg-landing h-[2px] w-[50vw]"
+                style={{
+                  top: "95%",
+                  right: 0,
+                  scaleX: animated(rightHorizScale, 1),
+                  transformOrigin: "right center",
+                  opacity: animated(lineOpacity, 1),
+                }}
+              />
+            </>
+          )}
 
-            {/* --- Text Overlay with increased vertical spacing --- */}
-            <div className="absolute inset-0 z-10 flex flex-col justify-center items-center space-y-12">
-              <motion.h2
-                style={{ opacity: text1Opacity, y: text1Y }}
-                className="glowing-text text-white text-5xl font-bold"
-              >
-                Remember.
-              </motion.h2>
-              <motion.h2
-                style={{ opacity: text2Opacity, y: text2Y }}
-                className="glowing-text text-white text-5xl font-bold"
-              >
-                Connect.
-              </motion.h2>
-              <motion.h2
-                style={{ opacity: text3Opacity, y: text3Y }}
-                className="glowing-text text-white text-5xl font-bold"
-              >
-                Heal.
-              </motion.h2>
-              <motion.h2
-                style={{ opacity: text4Opacity, y: text4Y }}
-                className="glowing-text text-white text-5xl font-bold"
-              >
-                Create.
-              </motion.h2>
-            </div>
+          {/* Radial breathing background behind text on mobile */}
+          {isMobile && (
+            <motion.div
+              className="absolute top-[50px] left-[20%] -translate-x-1/2 -translate-y-1/2 w-[350px] h-[350px] rounded-full z-0"
+              style={{
+                background: "radial-gradient(circle, var(--landing) 0%, transparent 70%)",
+              }}
+              animate={{
+                scale: [1, 1.2, 1],
+                filter: ["blur(20px)", "blur(40px)", "blur(20px)"],
+              }}
+              transition={{
+                duration: 6,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+            />
+          )}
 
-            {/* --- Scroll Prompt --- */}
-            <motion.div className="glowing-text absolute bottom-10 left-1/2 transform -translate-x-1/2 text-white text-xl">
+          {/* Glowing Blob - behind text on mobile or centered on desktop */}
+          <motion.div
+            className={`rounded-full mix-blend-screen  ${
+              isMobile
+                ? "absolute w-48 h-48 left-1/3 top-[50%] -translate-x-1/2 z-0 hidden"
+                : "absolute w-64 h-64 inset-0 m-auto z-0"
+
+
+            }`}
+            style={{
+              scale: animated(blobScale, 1),
+              opacity: animated(blobOpacity, 1),
+              background: "radial-gradient(circle, var(--landing) 0%, transparent 70%)",
+            }}
+          >
+            <motion.div
+              className="w-full h-full rounded-full"
+              animate={{
+                scale: [1, 1.1, 1],
+                filter: ["blur(25px)", "blur(24px)", "blur(2px)"],
+                boxShadow: [
+                  "0px 0px 0px 0px var(--landing)",
+                  "0px 0px 20px 10px var(--landing)",
+                  "0px 0px 0px 0px var(--landing)",
+                ],
+              }}
+              transition={{
+                duration: 5,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+            />
+          </motion.div>
+
+          {/* Text Overlay */}
+          <div
+            className={`absolute inset-0 z-10 flex flex-col items-center space-y-12 px-4 ${
+              isMobile ? "justify-start pt-24" : "justify-center"
+            }`}
+          >
+            <motion.h2
+              style={{ opacity: animated(text1Opacity, 1), y: animated(text1Y, 0) }}
+              className="glowing-text text-white text-5xl font-bold text-center"
+            >
+              Remember.
+            </motion.h2>
+            <motion.h2
+              style={{ opacity: animated(text2Opacity, 1), y: animated(text2Y, 0) }}
+              className="glowing-text text-white text-5xl font-bold text-center"
+            >
+              Connect.
+            </motion.h2>
+            <motion.h2
+              style={{ opacity: animated(text3Opacity, 1), y: animated(text3Y, 0) }}
+              className="glowing-text text-white text-5xl font-bold text-center"
+            >
+              Heal.
+            </motion.h2>
+            <motion.h2
+              style={{ opacity: animated(text4Opacity, 1), y: animated(text4Y, 0) }}
+              className="glowing-text text-white text-5xl font-bold text-center"
+            >
+              Create.
+            </motion.h2>
+          </div>
+
+          {/* Scroll Prompt */}
+          {!isMobile && (
+            <motion.div className="glowing-text absolute bottom-10 left-1/2 transform -translate-x-1/2 text-white text-xl z-10">
               Scroll for an immersive Experience
             </motion.div>
-          </motion.div>
-        </div>
-      </section>
-    );
-  }
+          )}
+        </motion.div>
+      </div>
+    </section>
+  );
+}
