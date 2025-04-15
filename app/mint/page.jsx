@@ -23,8 +23,8 @@ export default function Home() {
 
   return (
     <main
-      className={`bg-black text-white ${
-        isMobile
+      className={`bg-black text-white overflow-x-hidden ${
+        !isMobile
           ? "overflow-y-auto"
           : "snap-y snap-mandatory overflow-y-scroll h-screen scroll-smooth"
       }`}
