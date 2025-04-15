@@ -3,8 +3,9 @@ import { motion, useScroll, useTransform, useSpring } from "framer-motion"
 import { useRef, useState, useEffect } from "react"
 import InfinityLoopVertical from "@/components/InfinityLoopVertical"
 
-export default function InfinityPhasesSection() {
+export default function InfinityPhasesSection({ isMobile }: { isMobile: boolean }) {
   const ref = useRef(null)
+
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ["start start", "end end"],
@@ -15,10 +16,11 @@ export default function InfinityPhasesSection() {
     damping: 30,
   })
 
-  const sectionOpacity = useTransform(smoothScrollYProgress, [0, 0.05, 0.85, 0.95], [0, 1, 1, 0])
   const initialY = 50
   const finalY = 0
 
+  // Always call hooks
+  const sectionOpacity = useTransform(smoothScrollYProgress, [0, 0.05, 0.85, 0.95], [0, 1, 1, 0])
   const loopOpacity = useTransform(smoothScrollYProgress, [0.1, 0.3], [0, 1])
   const loopScale = useTransform(smoothScrollYProgress, [0.1, 0.3], [0.8, 1])
 
@@ -29,6 +31,8 @@ export default function InfinityPhasesSection() {
   const rightTextY = useTransform(smoothScrollYProgress, [0.4, 0.5], [initialY, finalY])
   const rightTextX = useTransform(smoothScrollYProgress, [0.85, 1], [0, -300])
   const rightTextYEnd = useTransform(smoothScrollYProgress, [0.85, 1], [0, -200])
+
+  const animated = (val: any, fallback: any) => (isMobile ? fallback : val)
 
   const [loopScaleValue, setLoopScaleValue] = useState(0.6)
   const [textSize, setTextSize] = useState({
@@ -42,25 +46,7 @@ export default function InfinityPhasesSection() {
   useEffect(() => {
     const handleResize = () => {
       const width = window.innerWidth
-      if (width < 640) {
-        setLoopScaleValue(0.5)
-        setTextSize({
-          heading: "text-3xl",
-          subHeading: "text-xl",
-          number: "text-5xl",
-          body: "text-sm",
-          rowGap: "gap-4",
-        })
-      } else if (width < 768) {
-        setLoopScaleValue(0.5)
-        setTextSize({
-          heading: "text-3xl",
-          subHeading: "text-xl",
-          number: "text-5xl",
-          body: "text-sm",
-          rowGap: "gap-4",
-        })
-      } else if (width < 1024) {
+      if (width < 1024) {
         setLoopScaleValue(0.5)
         setTextSize({
           heading: "text-3xl",
@@ -89,43 +75,52 @@ export default function InfinityPhasesSection() {
   return (
     <section
       ref={ref}
-      className="relative w-full h-[200vh] bg-black text-white snap-start font-[Montserrat] overflow-hidden "
+      className={`w-full ${
+        isMobile ? "py-24" : "h-[200vh] snap-start relative"
+      } bg-black text-white font-[Montserrat] overflow-hidden`}
     >
-      <div className="fixed inset-0 overflow-hidden">
+      <div className={`${isMobile ? "" : "fixed inset-0 overflow-hidden"}`}>
         <motion.div
-          className="h-screen w-full flex justify-center items-center px-4 md:px-8 pt-[120px] bg-black"
-          style={{ opacity: sectionOpacity }}
+          className={`${
+            isMobile ? "relative pt-20" : "h-screen"
+          } w-full flex justify-center items-center px-4 md:px-8 bg-black`}
+          style={{ opacity: animated(sectionOpacity, 1) }}
         >
           <div
             className={`w-full max-w-7xl flex flex-col lg:flex-row justify-center items-center ${textSize.rowGap} text-center lg:text-left`}
           >
-            {/* PHASES + INFINITY LOOP GROUP */}
-            <div className={`flex flex-col items-center lg:items-start lg:flex-row ${textSize.rowGap}`}>
-              {/* Phases Text */}
+            {/* PHASES + LOOP */}
+            <div
+              className={`flex flex-col items-center lg:items-start lg:flex-row ${textSize.rowGap}`}
+            >
               <motion.h2
                 className={`${textSize.heading} font-bold text-[#A67C00]`}
                 style={{
-                  opacity: phasesTextOpacity,
-                  y: phasesTextY,
+                  opacity: animated(phasesTextOpacity, 1),
+                  y: animated(phasesTextY, 0),
                 }}
               >
                 Phases
               </motion.h2>
 
-              {/* Infinity Loop (scaled dynamically) */}
-              <motion.div style={{ opacity: loopOpacity, scale: loopScale }}>
+              <motion.div
+                style={{
+                  opacity: animated(loopOpacity, 1),
+                  scale: animated(loopScale, 1),
+                }}
+              >
                 <InfinityLoopVertical scale={loopScaleValue} />
               </motion.div>
             </div>
 
-            {/* Right Side Text */}
+            {/* RIGHT TEXT */}
             <motion.div
               className="font-bold text-center lg:text-right px-2 sm:px-4 md:px-6"
               style={{
-                opacity: rightTextOpacity,
-                y: rightTextY,
-                x: rightTextX,
-                translateY: rightTextYEnd,
+                opacity: animated(rightTextOpacity, 1),
+                y: animated(rightTextY, 0),
+                x: animated(rightTextX, 0),
+                translateY: animated(rightTextYEnd, 0),
               }}
             >
               <p className={`${textSize.subHeading} mb-2`}>Each Phase Lasts</p>
