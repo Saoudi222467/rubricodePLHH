@@ -1,27 +1,100 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import Link from "next/link"
-import Image from "next/image"
-import { ChevronDown, Wallet, Menu, ExternalLink, ChevronRight } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import Image from "next/image";
+import { ChevronDown, Wallet, Menu, ExternalLink, ChevronRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { ConnectButton } from "@suiet/wallet-kit";
+import "@suiet/wallet-kit/style.css";
+import { useWallet } from "@/lib/wallet-providers";
 
 export default function CryptoHeader() {
-  const [isScrolled, setIsScrolled] = useState(false)
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-  const [animateHeader, setAnimateHeader] = useState(false)
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [animateHeader, setAnimateHeader] = useState(false);
+  const wallet = useWallet();
+  const [walletState, setWalletState] = useState({
+    connected: wallet.connected,
+    walletAddress: wallet.walletAddress,
+  });
 
+  // Update wallet state when wallet context changes
+  useEffect(() => {
+    setWalletState({
+      connected: wallet.connected,
+      walletAddress: wallet.walletAddress,
+    });
+  }, [wallet?.connected, wallet?.walletAddress, wallet]);
+
+  // Listen to scroll events to update header style
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 10)
+      setIsScrolled(window.scrollY > 10);
+    };
+    window.addEventListener("scroll", handleScroll);
+    setAnimateHeader(true);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  // Helper to shorten wallet address (example: "0xa412b....08a7")
+  const shortenAddress = (address: string | undefined) => {
+    if (!address) return "";
+    return address.slice(0, 6) + "...." + address.slice(-4);
+  };
+
+  // Render the wallet button differently based on connection status.
+  // When disconnected, it shows the standard ConnectButton.
+  // When connected, the balance and address text are shown above a smaller connected button.
+  const renderWalletButton = (): React.ReactNode => {
+    const status = walletState.connected ? "connected" : "disconnected";
+
+    if (status === "disconnected") {
+      return (
+        <ConnectButton
+          className="hidden md:flex bg-gradient-to-r from-yellow-600 via-amber-500 to-yellow-600 hover:from-yellow-500 hover:via-amber-400 hover:to-yellow-500 text-amber-950 font-bold border-none rounded-md px-6 py-6 h-11 shadow-[0_0_20px_rgba(255,215,0,0.3),inset_0_1px_1px_rgba(255,255,255,0.4)] hover:shadow-[0_0_30px_rgba(255,215,0,0.5),inset_0_1px_2px_rgba(255,255,255,0.6)] transition-all duration-300 flex justify-center items-center border border-white shadow-sm whitespace-nowrap"
+          style={{
+            "--wkit-button-width": "auto",
+            "--wkit-border-radius": "8px",
+            height: "44px",
+            minWidth: "120px",
+          } as React.CSSProperties}
+        >
+          <Wallet className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" />
+          <span className="hidden sm:inline">Connect Wallet</span>
+          <span className="sm:hidden">Connect</span>
+        </ConnectButton>
+      );
+    } else {
+      return (
+        <div className="hidden md:flex flex-col items-center">
+          {/* Text container with balance and wallet address */}
+          <div className="mb-2 text-sm text-white text-center">
+            <span className="block font-bold">0.437 SUI</span>
+            <span className="block">{shortenAddress(walletState.walletAddress)}</span>
+          </div>
+          {/* Connected button container */}
+          <div
+            className="wkit-connected-container bg-gradient-to-r from-yellow-600 via-amber-500 to-yellow-600 
+              hover:from-yellow-500 hover:via-amber-400 hover:to-yellow-500 text-amber-950 font-bold border-none rounded-md 
+              px-6 py-6 h-11 shadow-[0_0_20px_rgba(255,215,0,0.3),inset_0_1px_1px_rgba(255,255,255,0.4)] 
+              hover:shadow-[0_0_30px_rgba(255,215,0,0.5),inset_0_1px_2px_rgba(255,255,255,0.6)] transition-all duration-300 
+              text-xs sm:text-sm flex justify-center items-center border border-white shadow-sm whitespace-nowrap"
+          >
+            <button className="wkit-connected-button flex items-center">
+              <Wallet className="mr-2 h-4 w-4" />
+            </button>
+          </div>
+        </div>
+      );
     }
-
-    window.addEventListener("scroll", handleScroll)
-    setAnimateHeader(true)
-
-    return () => window.removeEventListener("scroll", handleScroll)
-  }, [])
+  };
 
   return (
     <header
@@ -35,7 +108,7 @@ export default function CryptoHeader() {
         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-yellow-100/80 to-transparent -translate-x-full animate-[shimmer_3s_infinite]"></div>
       </div>
 
-      <div className="container mx-auto flex h-20 items-center justify-between px-4 ">
+      <div className="container mx-auto flex h-20 items-center justify-between px-4">
         <div className="flex items-center gap-4 group">
           <div className="relative h-16 w-16 overflow-hidden rounded-full shadow-[0_0_20px_rgba(255,215,0,0.5)] transition-all duration-500 group-hover:shadow-[0_0_30px_rgba(255,215,0,0.7)]">
             <div className="absolute inset-0 bg-gradient-to-r from-yellow-300/20 via-transparent to-yellow-300/20 rounded-full animate-[spin_8s_linear_infinite]"></div>
@@ -51,7 +124,7 @@ export default function CryptoHeader() {
             <div className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 via-amber-200 to-yellow-400 text-3xl font-bold tracking-wide transition-all duration-500 group-hover:from-yellow-200 group-hover:via-amber-100 group-hover:to-yellow-300">
               PLHH Coin
             </div>
-            <div className="text-amber-400/70 text-xs font-medium tracking-widest">PEACE LOVE & HARMONY</div>
+            <div className="text-amber-400/70 text-xs font-medium tracking-widest">PEACE LOVE &amp; HARMONY</div>
           </div>
         </div>
 
@@ -90,7 +163,10 @@ export default function CryptoHeader() {
                     { name: "Governance", href: "/governance" },
                     { name: "Analytics", href: "/analytics" },
                   ].map((item) => (
-                    <DropdownMenuItem key={item.name} className="hover:bg-gradient-to-r hover:from-amber-800/40 hover:to-amber-900/40 hover:text-yellow-300 cursor-pointer focus:bg-amber-800/40 focus:text-yellow-300 px-4 py-3 flex items-center justify-between border-b border-amber-800/30 last:border-0">
+                    <DropdownMenuItem
+                      key={item.name}
+                      className="hover:bg-gradient-to-r hover:from-amber-800/40 hover:to-amber-900/40 hover:text-yellow-300 cursor-pointer focus:bg-amber-800/40 focus:text-yellow-300 px-4 py-3 flex items-center justify-between border-b border-amber-800/30 last:border-0"
+                    >
                       <Link href={item.href} className="w-full flex justify-between items-center">
                         <span>{item.name}</span>
                         <ChevronRight className="h-4 w-4 opacity-50" />
@@ -114,13 +190,15 @@ export default function CryptoHeader() {
             Whitepaper
           </Link>
 
-          <Button className="hidden md:flex bg-gradient-to-r from-yellow-600 via-amber-500 to-yellow-600 hover:from-yellow-500 hover:via-amber-400 hover:to-yellow-500 text-amber-950 font-bold border-none rounded-md px-6 py-6 h-11 shadow-[0_0_20px_rgba(255,215,0,0.3),inset_0_1px_1px_rgba(255,255,255,0.4)] hover:shadow-[0_0_30px_rgba(255,215,0,0.5),inset_0_1px_2px_rgba(255,255,255,0.6)] transition-all duration-300 relative overflow-hidden group">
-            <span className="absolute inset-0 bg-gradient-to-r from-transparent via-yellow-100/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></span>
-            <Wallet className="mr-2 h-4 w-4" />
-            Connect Wallet
-          </Button>
+          <div className="flex items-center shrink-0">
+            {/* Wallet Button - desktop */}
+            <div className="hidden min-[851px]:block">{renderWalletButton()}</div>
+          </div>
 
-          <button className="xl:hidden text-amber-100 hover:text-yellow-300 bg-amber-800/20 hover:bg-amber-800/30 p-2 rounded-md transition-colors" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
+          <button
+            className="xl:hidden text-amber-100 hover:text-yellow-300 bg-amber-800/20 hover:bg-amber-800/30 p-2 rounded-md transition-colors"
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          >
             <Menu className="h-6 w-6" />
           </button>
         </div>
@@ -167,14 +245,12 @@ export default function CryptoHeader() {
                 </div>
               </li>
               <li className="pt-4">
-                <Button className="w-full bg-gradient-to-r from-yellow-600 via-amber-500 to-yellow-600 hover:from-yellow-500 hover:via-amber-400 hover:to-yellow-500 text-amber-950 font-bold border-none rounded-md px-6 py-6 h-12 shadow-[0_0_20px_rgba(255,215,0,0.3),inset_0_1px_1px_rgba(255,255,255,0.4)] hover:shadow-[0_0_30px_rgba(255,215,0,0.5),inset_0_1px_2px_rgba(255,255,255,0.6)] transition-all duration-300 relative overflow-hidden group">
-                  Connect Wallet
-                </Button>
+                <div className="pt-2">{renderWalletButton()}</div>
               </li>
             </ul>
           </div>
         </div>
       )}
     </header>
-  )
+  );
 }
