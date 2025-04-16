@@ -4,7 +4,7 @@ import CryptoHeader from "@/components/CryptoHeader"
 
 export default function StakingPage() {
   return (
-    <div className="bg-black text-white">
+    <div className="bg-black  text-white overflow-x-hidden">
       <CryptoHeader />
       <StakingHero />
       <StakingInterface />
