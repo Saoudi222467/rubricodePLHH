@@ -40,7 +40,7 @@ export default function MotionSection({ isMobile }: { isMobile: boolean }) {
         isMobile ? "py-24" : "h-[200vh] snap-start relative"
       } bg-black text-white`}
     >
-      <div className={`${isMobile ? "" : "fixed inset-0 overflow-hidden"}`}>
+      <div className={`${isMobile ? "" : "fixed inset-0 overflow-hidden pt-40"}`}>
         <motion.div
           className={`${
             isMobile ? "relative pt-20" : "h-screen"
