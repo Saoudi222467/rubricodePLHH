@@ -7,7 +7,7 @@ export default function StakingPage() {
     <div className="bg-black  text-white overflow-x-hidden">
       <CryptoHeader />
       <StakingHero />
-      {/* <StakingInterface /> */}
+      <StakingInterface />
     </div>
   )
 }
