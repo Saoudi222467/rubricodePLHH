@@ -40,7 +40,7 @@ export default function DreamFieldSection({ isMobile }: { isMobile: boolean }) {
       ref={ref}
       className={`w-full ${isMobile ? "py-24" : "h-[200vh] snap-start"} overflow-hidden bg-black text-white`}
     >
-      <div className={`${isMobile ? "" : "fixed inset-0 pt-20"}`}>
+      <div className={`${isMobile ? "" : "fixed inset-0 pt-28"}`}>
         <motion.div
           className="relative min-h-screen w-full flex flex-col items-center justify-center text-white overflow-hidden"
           style={{ opacity: animated(contentOpacity, 1) }}

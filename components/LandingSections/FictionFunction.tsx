@@ -59,9 +59,9 @@ export default function FictionFunction({ isMobile }: { isMobile: boolean }) {
   return (
     <section
       ref={ref}
-      className={`w-full ${isMobile ? "py-24" : "h-[200vh] snap-start"} overflow-hidden bg-black text-white`}
+      className={`w-full ${isMobile ? "py-24" : "h-[200vh] snap-start"} overflow-hidden bg-black text-white `}
     >
-      <div className={`${isMobile ? "" : "fixed inset-0 pt-20"}`}>
+      <div className={`${isMobile ? "" : "fixed inset-0 pt-28"}`}>
         <motion.div
           className="relative min-h-screen w-full flex flex-col items-center justify-start overflow-hidden"
           style={{ opacity: animated(contentOpacity, 1) }}

@@ -33,8 +33,8 @@ export default function Home() {
     <main
       className={`bg-black text-white overflow-x-hidden ${
         !isMobile
-          ? "overflow-y-auto"
-          : "snap-y snap-mandatory overflow-y-scroll h-screen scroll-smooth"
+          ? "overflow-y-auto "
+          : "snap-y snap-mandatory overflow-y-scroll h-screen scroll-smooth "
       }`}
     >
       {/* Fixed Header and Ticker */}
@@ -49,14 +49,14 @@ export default function Home() {
           isMobile
             ? "pt-[160px] space-y-16 overflow-x-hidden"
             : "relative z-10 pt-[40px]"
-        }`}
+        } `}
       >
         <LandingSection isMobile={isMobile} />
-       <WaveSection isMobile={isMobile} />
+        <WaveSection isMobile={isMobile} />
         <EarthSection isMobile={isMobile} />
-         <CoinSection isMobile={isMobile} />
+        <CoinSection isMobile={isMobile} />
         <CoCreateSection isMobile={isMobile} />
-         <DreamFieldSection isMobile={isMobile} />
+        <DreamFieldSection isMobile={isMobile} />
         <FictionFunction isMobile={isMobile} />
         <ReadySection isMobile={isMobile} />
         {/* <Footer /> */}

@@ -44,7 +44,7 @@ const CoinSection = ({ isMobile }: { isMobile: boolean }) => {
   return (
     <section
       ref={ref}
-      className={`w-full ${isMobile ? "py-24" : "h-[200vh] snap-start"} bg-black text-white no-scrollbar`}
+      className={`w-full ${isMobile ? "py-24" : "h-[200vh] snap-start "} bg-black text-white no-scrollbar`}
     >
       <div className={`${isMobile ? "" : "fixed inset-0"}`}>
         <motion.div

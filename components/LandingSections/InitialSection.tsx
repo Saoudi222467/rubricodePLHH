@@ -43,7 +43,7 @@ export default function LandingSection({ isMobile }: { isMobile: boolean }) {
   return (
     <section
       ref={ref}
-      className={`w-full ${isMobile ? "h-screen" : "h-[400vh] snap-start relative"} bg-black font-montserrat`}
+      className={`w-full ${isMobile ? "h-screen" : "h-[400vh] snap-start relative "} bg-black font-montserrat`}
     >
       <div className={`${isMobile ? "" : "fixed inset-0 overflow-hidden"}`}>
         <motion.div style={{ opacity: animated(contentOpacity, 1) }} className="relative h-full w-full">
