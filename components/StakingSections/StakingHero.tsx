@@ -82,10 +82,10 @@ const StakingHero = () => {
       )
 
       tl.fromTo(overlayGlowRef.current,
-        { scale: 0.2, opacity: 0, yPercent: 100 },
+        { scale: 0.2, opacity: 0.4, yPercent: 100 },
         {
           scale: 2.5,
-          opacity: 0.4,
+          opacity: 0.8,
           yPercent: -100,
           duration: 3,
           ease: "power2.out"
@@ -117,12 +117,12 @@ const StakingHero = () => {
         ref={treeRef}
         src="/tree.png"
         alt="Tree Background"
-        className="absolute inset-0 w-full h-full object-cover z-10 brightness-[0%] transition-all duration-500"
+        className="absolute inset-0 w-full h-full object-cover z-0 brightness-[0%] transition-all duration-500"
       />
 
       <div
         ref={overlayGlowRef}
-        className="absolute left-1/2 top-0 w-96 h-96 rounded-full bg-gradient-to-br from-[#f5e08e] to-transparent blur-3xl opacity-0 z-30 pointer-events-none transform -translate-x-1/2"
+        className="absolute  left-1/2 bottom-0 w-96 h-96 rounded-full bg-gradient-to-br from-[#f5e08e] to-transparent blur-3xl opacity-0 z-30 pointer-events-none transform -translate-x-1/2"
       />
 
       <div className="absolute inset-0 flex flex-col justify-between z-20 px-6 md:px-16 py-28">
