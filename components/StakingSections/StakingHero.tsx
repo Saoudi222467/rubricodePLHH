@@ -31,6 +31,7 @@ const StakingHero = () => {
         },
       })
 
+      // Background gradient animation
       tl.to(gradientRef.current, {
         backgroundPosition: "center 10%",
         filter: "brightness(200%)",
@@ -38,12 +39,19 @@ const StakingHero = () => {
         duration: 1,
       }, 0)
 
-      tl.to(treeRef.current, {
+      // Tree fade-in on scroll (starts from 40% brightness)
+      gsap.to(treeRef.current, {
+        scrollTrigger: {
+          trigger: heroRef.current,
+          start: "top top",
+          end: "bottom top",
+          scrub: true,
+        },
         filter: "brightness(100%)",
-        ease: "power1.inOut",
-        duration: 10,
-      }, 0)
+        ease: "none",
+      })
 
+      // Text entry animations
       tl.fromTo(imageTopLeftRef.current,
         { opacity: 0, y: -30 },
         { opacity: 1, y: 0, duration: 1.2, ease: "power2.out" },
@@ -54,7 +62,6 @@ const StakingHero = () => {
         { opacity: 1, y: 0, duration: 1.2, ease: "power2.out" },
         0.4
       )
-
       tl.to([imageTopLeftRef.current, imageBottomRightRef.current],
         { opacity: 0, duration: 0.8, ease: "power2.inOut" },
         1.2
@@ -102,6 +109,7 @@ const StakingHero = () => {
       ref={heroRef}
       className="relative w-full h-screen overflow-hidden text-white"
     >
+      {/* Gradient Background */}
       <div
         ref={gradientRef}
         className="absolute inset-0 z-0 transition-all duration-700"
@@ -113,18 +121,21 @@ const StakingHero = () => {
         }}
       />
 
+      {/* Tree Image - now starting at 40% brightness */}
       <img
         ref={treeRef}
         src="/tree.png"
         alt="Tree Background"
-        className="absolute inset-0 w-full h-full object-cover z-0 brightness-[0%] transition-all duration-500"
+        className="absolute inset-0 w-full h-full object-cover z-0 brightness-[40%] transition-all duration-500"
       />
 
+      {/* Overlay Glow */}
       <div
         ref={overlayGlowRef}
-        className="absolute  left-1/2 bottom-0 w-96 h-96 rounded-full bg-gradient-to-br from-[#f5e08e] to-transparent blur-3xl opacity-0 z-30 pointer-events-none transform -translate-x-1/2"
+        className="absolute left-1/2 bottom-0 w-96 h-96 rounded-full bg-gradient-to-br from-[#f5e08e] to-transparent blur-3xl opacity-0 z-30 pointer-events-none transform -translate-x-1/2"
       />
 
+      {/* Text Blocks */}
       <div className="absolute inset-0 flex flex-col justify-between z-20 px-6 md:px-16 py-28">
         <div
           ref={imageTopLeftRef}
