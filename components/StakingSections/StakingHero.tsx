@@ -18,7 +18,7 @@ const StakingHero = () => {
 
   return (
     <>
-      <div className="h-[50vh]"></div>
+      {/* <div className="h-[50vh]"></div> */}
 
       <section
         ref={sectionRef}
@@ -55,7 +55,7 @@ const StakingHero = () => {
       </section>
 
       {/* Spacer to allow scroll out */}
-      <div className="h-[50vh] "></div>
+      {/* <div className="h-[50vh] "></div> */}
     </>
   );
 };

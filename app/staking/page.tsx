@@ -17,7 +17,7 @@ export default function StakingPage() {
   });
 
   // Scale the radial gradient as you scroll
-  const size = useTransform(scrollYProgress, [0, 1], ["5vw", "100vw"]);
+  const size = useTransform(scrollYProgress, [0, 1], ["2vw", "100vw"]);
 
   return (
     <div

@@ -122,7 +122,7 @@ const StakingPhilosophy = () => {
       </section>
 
       {/* Spacer to allow scroll out */}
-      <div className="h-[100vh]"></div>
+      {/* <div className="h-[10vh]"></div> */}
     </>
   );
 };
