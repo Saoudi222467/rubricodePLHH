@@ -159,7 +159,7 @@ const StakingDetails = () => {
       </section>
 
       {/* Spacer to allow scroll out */}
-      <div className="h-[200vh] "></div>
+      <div className="h-[50vh] "></div>
     </>
   );
 };
