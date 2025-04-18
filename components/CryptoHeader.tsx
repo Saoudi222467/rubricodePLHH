@@ -3,7 +3,13 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { ChevronDown, Wallet, Menu, ExternalLink, ChevronRight } from "lucide-react";
+import {
+  ChevronDown,
+  Wallet,
+  Menu,
+  ExternalLink,
+  ChevronRight,
+} from "lucide-react";
 import { ConnectButton } from "@suiet/wallet-kit";
 import "@suiet/wallet-kit/style.css";
 import {
@@ -43,12 +49,14 @@ export default function CryptoHeader() {
       return (
         <ConnectButton
           className="hidden md:flex bg-gradient-to-r from-yellow-600 via-amber-500 to-yellow-600 hover:from-yellow-500 hover:via-amber-400 hover:to-yellow-500 text-amber-950 font-bold border-none rounded-md px-6 py-6 h-11 shadow-[0_0_20px_rgba(255,215,0,0.3),inset_0_1px_1px_rgba(255,255,255,0.4)] hover:shadow-[0_0_30px_rgba(255,215,0,0.5),inset_0_1px_2px_rgba(255,255,255,0.6)] transition-all duration-300"
-          style={{
-            "--wkit-button-width": "auto",
-            "--wkit-border-radius": "8px",
-            height: "44px",
-            minWidth: "120px",
-          } as React.CSSProperties}
+          style={
+            {
+              "--wkit-button-width": "auto",
+              "--wkit-border-radius": "8px",
+              height: "44px",
+              minWidth: "120px",
+            } as React.CSSProperties
+          }
         >
           <Wallet className="mr-1 h-4 w-4" />
           <span>Connect Wallet</span>
@@ -58,9 +66,7 @@ export default function CryptoHeader() {
 
     return (
       <div className="hidden md:flex flex-col items-center">
-        <div
-          className="wkit-connected-container bg-gradient-to-r from-yellow-600 via-amber-500 to-yellow-600 hover:from-yellow-500 hover:via-amber-400 hover:to-yellow-500 text-amber-950 font-bold border-none rounded-md px-6 py-6 h-11 shadow-[0_0_20px_rgba(255,215,0,0.3),inset_0_1px_1px_rgba(255,255,255,0.4)] hover:shadow-[0_0_30px_rgba(255,215,0,0.5),inset_0_1px_2px_rgba(255,255,255,0.6)] transition-all duration-300 text-xs sm:text-sm border border-white shadow-sm whitespace-nowrap"
-        >
+        <div className="wkit-connected-container bg-gradient-to-r from-yellow-600 via-amber-500 to-yellow-600 hover:from-yellow-500 hover:via-amber-400 hover:to-yellow-500 text-amber-950 font-bold border-none rounded-md px-6 py-6 h-11 shadow-[0_0_20px_rgba(255,215,0,0.3),inset_0_1px_1px_rgba(255,255,255,0.4)] hover:shadow-[0_0_30px_rgba(255,215,0,0.5),inset_0_1px_2px_rgba(255,255,255,0.6)] transition-all duration-300 text-xs sm:text-sm border border-white shadow-sm whitespace-nowrap">
           <button className="wkit-connected-button flex items-center">
             <Wallet className="mr-2 h-4 w-4" />
           </button>
@@ -75,7 +81,11 @@ export default function CryptoHeader() {
         isScrolled
           ? "bg-gradient-to-r from-amber-950/95 via-yellow-900/95 to-amber-950/95 shadow-[0_10px_30px_-10px_rgba(0,0,0,0.5)] backdrop-blur-md"
           : "bg-gradient-to-r from-amber-950 via-yellow-900 to-amber-950"
-      } ${animateHeader ? "translate-y-0 opacity-100" : "-translate-y-10 opacity-0"}`}
+      } ${
+        animateHeader
+          ? "translate-y-0 opacity-100"
+          : "-translate-y-10 opacity-0"
+      }`}
     >
       <div className="h-[3px] w-full bg-gradient-to-r from-amber-700/30 via-yellow-300 to-amber-700/30 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-yellow-100/80 to-transparent -translate-x-full animate-[shimmer_3s_infinite]"></div>
@@ -188,17 +198,19 @@ export default function CryptoHeader() {
         <div className="xl:hidden bg-gradient-to-b from-amber-900 to-amber-950 border-t border-yellow-700/30 shadow-[0_10px_30px_-5px_rgba(0,0,0,0.5)]">
           <div className="container mx-auto py-5 px-4">
             <ul className="space-y-1">
-              {["Home", "About", "Tokenomics", "Roadmap", "Community"].map((name) => (
-                <li key={name}>
-                  <Link
-                    href={`/${name.toLowerCase()}`}
-                    className="flex justify-between items-center px-4 py-3 text-amber-100 hover:text-yellow-300 transition-colors rounded-md hover:bg-amber-800/30 font-medium"
-                  >
-                    {name}
-                    <ChevronRight className="h-4 w-4 opacity-50" />
-                  </Link>
-                </li>
-              ))}
+              {["Home", "About", "Tokenomics", "Roadmap", "Community"].map(
+                (name) => (
+                  <li key={name}>
+                    <Link
+                      href={`/${name.toLowerCase()}`}
+                      className="flex justify-between items-center px-4 py-3 text-amber-100 hover:text-yellow-300 transition-colors rounded-md hover:bg-amber-800/30 font-medium"
+                    >
+                      {name}
+                      <ChevronRight className="h-4 w-4 opacity-50" />
+                    </Link>
+                  </li>
+                )
+              )}
               <li className="pt-4">{renderWalletButton()}</li>
             </ul>
           </div>
