@@ -24,12 +24,12 @@ export default function Home() {
 
         {/* Content Sections */}
         <div className="relative z-10 pt-[40px] bg-black">
-          {/* <LandingHero />
+          <LandingHero />
           <MissionStatement />
           <HarmonySpectrum />
           <EarthSection />
-          <FoundationSection /> */}
-          {/* <CoCreateSection /> */}
+          <FoundationSection />
+          <CoCreateSection />
           <DreamFieldSection />
           <FictionFunction />
         </div>
