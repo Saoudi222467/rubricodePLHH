@@ -5,6 +5,7 @@ import LandingHero from "@/components/LandingSections/LandingHero";
 import Ticker from "@/components/sections/ticker";
 import MissionStatement from "@/components/LandingSections/MissionStatement";
 import HarmonySpectrum from "@/components/LandingSections/HarmonySpectrum";
+import EarthSection from "@/components/LandingSections/EarthSection";
 
 export default function Home() {
   return (
@@ -19,10 +20,11 @@ export default function Home() {
 
         {/* Content Sections */}
         <div className="relative z-10 pt-[40px] bg-black">
+          {/* */}
           <LandingHero />
-
           <MissionStatement />
           <HarmonySpectrum />
+          <EarthSection />
         </div>
       </main>
     </>
