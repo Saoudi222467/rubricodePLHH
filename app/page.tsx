@@ -9,6 +9,7 @@ import EarthSection from "@/components/LandingSections/EarthSection";
 import FoundationSection from "@/components/LandingSections/FoundationSection";
 import CoCreateSection from "@/components/LandingSections/CoCreateSection";
 import DreamFieldSection from "@/components/LandingSections/DreamFieldSection";
+import FictionFunction from "@/components/LandingSections/FictionFunction";
 
 export default function Home() {
   return (
@@ -23,13 +24,14 @@ export default function Home() {
 
         {/* Content Sections */}
         <div className="relative z-10 pt-[40px] bg-black">
-          <LandingHero />
+          {/* <LandingHero />
           <MissionStatement />
           <HarmonySpectrum />
           <EarthSection />
-          <FoundationSection />
-          <CoCreateSection />
+          <FoundationSection /> */}
+          {/* <CoCreateSection /> */}
           <DreamFieldSection />
+          <FictionFunction />
         </div>
       </main>
     </>
