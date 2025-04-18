@@ -7,6 +7,7 @@ import MissionStatement from "@/components/LandingSections/MissionStatement";
 import HarmonySpectrum from "@/components/LandingSections/HarmonySpectrum";
 import EarthSection from "@/components/LandingSections/EarthSection";
 import FoundationSeciton from "@/components/LandingSections/FoundationSeciton";
+import CoCreateSection from "@/components/LandingSections/CoCreateSection";
 
 export default function Home() {
   return (
@@ -26,6 +27,7 @@ export default function Home() {
           <HarmonySpectrum />
           <EarthSection />
           <FoundationSeciton />
+          <CoCreateSection />
         </div>
       </main>
     </>

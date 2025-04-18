@@ -15,7 +15,7 @@ const FoundationSection = () => {
 
   return (
     <>
-      <div className="h-[100vh]" />
+      {/* <div className="h-[100vh]" /> */}
 
       <section
         ref={sectionRef}
