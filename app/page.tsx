@@ -6,8 +6,9 @@ import Ticker from "@/components/sections/ticker";
 import MissionStatement from "@/components/LandingSections/MissionStatement";
 import HarmonySpectrum from "@/components/LandingSections/HarmonySpectrum";
 import EarthSection from "@/components/LandingSections/EarthSection";
-import FoundationSeciton from "@/components/LandingSections/FoundationSeciton";
+import FoundationSection from "@/components/LandingSections/FoundationSection";
 import CoCreateSection from "@/components/LandingSections/CoCreateSection";
+import DreamFieldSection from "@/components/LandingSections/DreamFieldSection";
 
 export default function Home() {
   return (
@@ -26,8 +27,9 @@ export default function Home() {
           <MissionStatement />
           <HarmonySpectrum />
           <EarthSection />
-          <FoundationSeciton />
+          <FoundationSection />
           <CoCreateSection />
+          <DreamFieldSection />
         </div>
       </main>
     </>
