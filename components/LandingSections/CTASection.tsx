@@ -9,7 +9,7 @@ const CTASection = () => {
     visible: {
       transition: {
         staggerChildren: 0.7,
-        delayChildren: 1,
+        delayChildren: 2,
       },
     },
     hidden: {},

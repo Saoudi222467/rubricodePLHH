@@ -31,10 +31,10 @@ export default function Home() {
           <EarthSection />
           <FoundationSection />
           <CoCreateSection />
-          {/* Not fully complete */}
+
           <DreamFieldSection />
           <FictionFunction />
-          {/* Final Section */}
+
           <CTASection />
         </div>
       </main>

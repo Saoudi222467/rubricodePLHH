@@ -6,6 +6,19 @@ const FictionFunction = () => {
   const ref = useRef(null);
   const isInView = useInView(ref, { amount: 0.5 });
 
+  const linkVariants = {
+    hidden: { opacity: 0, y: -5 },
+    visible: (delay: number) => ({
+      opacity: 1,
+      y: 0,
+      transition: {
+        delay,
+        duration: 0.4,
+        ease: "easeOut",
+      },
+    }),
+  };
+
   return (
     <>
       <section
@@ -22,7 +35,7 @@ const FictionFunction = () => {
               transition={{ duration: 0.6, ease: "easeInOut" }}
               className="fixed top-0 left-0 w-full h-[100vh] flex flex-col justify-center items-center text-center px-4 text-2xl sm:text-4xl font-bold gap-6 z-50"
             >
-              {/* Text */}
+              {/* Headings */}
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -38,16 +51,64 @@ const FictionFunction = () => {
                 </h2>
               </motion.div>
 
-              {/* Larger Image */}
-              <motion.img
-                src="/assets/images/landing/fiction.png"
-                alt="Fiction is Function"
-                className="w-[320px] sm:w-[500px] md:w-[650px] h-auto object-contain"
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.8 }}
-                transition={{ duration: 1, ease: "easeOut", delay: 0.3 }}
-              />
+              {/* Image wrapper with links */}
+              <div className="relative">
+                {/* Main Image */}
+                <motion.img
+                  src="/assets/images/landing/fiction.png"
+                  alt="Fiction is Function"
+                  className="w-[360px] sm:w-[600px] md:w-[800px] h-auto object-contain"
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.8 }}
+                  transition={{ duration: 1, ease: "easeOut", delay: 0.3 }}
+                />
+
+                {/* Clockwise Animated Links with Larger Font */}
+                <motion.a
+                  href="#community"
+                  className="absolute top-4 left-4 text-base sm:text-lg md:text-xl text-white hover:text-amber-400 transition"
+                  variants={linkVariants}
+                  initial="hidden"
+                  animate="visible"
+                  custom={0.8}
+                >
+                  Community
+                </motion.a>
+
+                <motion.a
+                  href="#tokenomics"
+                  className="absolute top-4 right-4 text-base sm:text-lg md:text-xl text-white hover:text-amber-400 transition"
+                  variants={linkVariants}
+                  initial="hidden"
+                  animate="visible"
+                  custom={1.1}
+                >
+                  Tokenomics
+                </motion.a>
+
+                <motion.a
+                  href="#dao"
+                  className="absolute bottom-4 right-4 text-base sm:text-lg md:text-xl text-white hover:text-amber-400 transition"
+                  variants={linkVariants}
+                  initial="hidden"
+                  animate="visible"
+                  custom={1.4}
+                >
+                  DAO
+                </motion.a>
+
+                <motion.a
+                  href="#governance"
+                  className="absolute bottom-4 left-4 text-base sm:text-lg md:text-xl text-white hover:text-amber-400 transition"
+                  variants={linkVariants}
+                  initial="hidden"
+                  animate="visible"
+                  custom={1.7}
+                >
+                  Governance
+                </motion.a>
+              </div>
             </motion.div>
           )}
         </AnimatePresence>
