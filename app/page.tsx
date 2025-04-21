@@ -10,11 +10,12 @@ import FoundationSection from "@/components/LandingSections/FoundationSection";
 import CoCreateSection from "@/components/LandingSections/CoCreateSection";
 import DreamFieldSection from "@/components/LandingSections/DreamFieldSection";
 import FictionFunction from "@/components/LandingSections/FictionFunction";
+import CTASection from "@/components/LandingSections/CTASection";
 
 export default function Home() {
   return (
     <>
-      <main className="relative bg-black text-white overflow-x-hidden overflow-y-auto ">
+      <main className="relative bg-black text-white overflow-x-hidden overflow-y-auto pointer-events-auto ">
         {/* Fixed Header and Ticker */}
         <div className="fixed top-0 left-0 right-0 z-50">
           {/* <Ticker /> */}
@@ -30,8 +31,11 @@ export default function Home() {
           <EarthSection />
           <FoundationSection />
           <CoCreateSection />
+          {/* Not fully complete */}
           <DreamFieldSection />
           <FictionFunction />
+          {/* Final Section */}
+          <CTASection />
         </div>
       </main>
     </>
