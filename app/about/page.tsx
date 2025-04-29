@@ -27,7 +27,8 @@ const AboutPage = () => {
         <div className="relative z-10 pt-[40px] w-full mx-auto ">
           <AboutEssence />
           <CoreChoices />
-          {/* <DAOSection /> */}
+          <div className="h-[100vh] w-full "></div>
+          <DAOSection />
           {/* <RealWorldAsset /> */}
           {/* <RegenerativeCircle /> */}
           {/* <WhoWeAre /> */}

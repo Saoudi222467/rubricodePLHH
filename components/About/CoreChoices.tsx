@@ -32,7 +32,7 @@ const CoreChoices: React.FC = () => {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.4, ease: "easeInOut" }}
           >
-            {/* Corner blobs, maximized size and blur for extreme spread */}
+            {/* Corner blobs, optimized for GPU acceleration */}
             {[
               "top-0 left-0",
               "top-0 right-0",
@@ -41,19 +41,21 @@ const CoreChoices: React.FC = () => {
             ].map((pos) => (
               <motion.div
                 key={pos}
-                className={`absolute ${pos} w-96 h-96 pointer-events-none`}
+                className={`absolute ${pos} w-64 h-64 pointer-events-none`}
                 initial="visible"
                 animate="visible"
                 exit="exit"
                 variants={blobVariants}
+                style={{ willChange: "transform, opacity" }}
               >
                 <div
                   className="w-full h-full rounded-full"
                   style={{
                     background:
                       "radial-gradient(circle, rgba(255,217,0,1), transparent)",
-                    filter: "blur(200px)", // Maximum blur for widest spread
+                    filter: "blur(150px)", // moderate blur for performance
                     mixBlendMode: "screen",
+                    transform: "translateZ(0)", // force GPU layer
                   }}
                 />
               </motion.div>
