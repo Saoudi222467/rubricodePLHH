@@ -24,15 +24,15 @@ const AboutPage = () => {
         <Header />
 
         {/* Content */}
-        <div className="relative z-10 pt-[40px] max-w-5xl mx-auto px-4">
+        <div className="relative z-10 pt-[40px] w-full mx-auto ">
           <AboutEssence />
           <CoreChoices />
-          <DAOSection />
-          <RealWorldAsset />
-          <RegenerativeCircle />
-          <WhoWeAre />
-          <ManBehindMovement />
-          <SpiritSection />
+          {/* <DAOSection /> */}
+          {/* <RealWorldAsset /> */}
+          {/* <RegenerativeCircle /> */}
+          {/* <WhoWeAre /> */}
+          {/* <ManBehindMovement /> */}
+          {/* <SpiritSection /> */}
         </div>
 
         {/* Optional Footer */}

@@ -24,7 +24,7 @@ export default function Home() {
         <Header />
 
         {/* Content Sections */}
-        <div className="relative z-10 pt-[40px] bg-black">
+        <div className="relative z-10 pt-[40px] bg-black w-full">
           <LandingHero />
           <MissionStatement />
           <HarmonySpectrum />
