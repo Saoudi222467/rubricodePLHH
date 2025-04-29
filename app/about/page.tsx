@@ -36,7 +36,6 @@ const AboutPage = () => {
           <SpiritSection />
         </div>
 
-        {/* Optional Footer */}
         {/* <Footer /> */}
       </main>
     </>
