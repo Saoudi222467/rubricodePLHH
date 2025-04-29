@@ -14,33 +14,86 @@ const DAOSection = () => {
           {isInView && (
             <motion.div
               key="dao-section-wrapper"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
+              initial={{ opacity: 0, backgroundSize: "100%" }}
+              animate={{ opacity: 1, backgroundSize: "110%" }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 0.6, ease: "easeInOut" }}
-              className="fixed top-0 left-0 w-full h-[100vh] flex items-center justify-center px-6 text-center bg-black text-white z-50"
+              transition={{
+                opacity: { duration: 0.6, ease: "easeInOut" },
+                backgroundSize: {
+                  duration: 30,
+                  ease: "linear",
+                  repeat: Infinity,
+                },
+              }}
+              style={{
+                backgroundImage: "url('/assets/images/landing/CoCreate.jpg')",
+                backgroundPosition: "center",
+                backgroundRepeat: "no-repeat",
+              }}
+              className="fixed inset-0 bg-black text-white z-50"
             >
-              <div className="max-w-4xl space-y-6">
+              <div className="relative w-full h-full">
+                {/* Center of triangle */}
                 <motion.h2
-                  initial={{ y: "-50%", opacity: 0 }}
-                  animate={{ y: "0%", opacity: 1 }}
-                  exit={{ y: "-50%", opacity: 0 }}
+                  initial={{ scale: 0.8, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  exit={{ scale: 0.8, opacity: 0 }}
                   transition={{ duration: 0.8, ease: "easeOut" }}
-                  className="text-3xl sm:text-4xl font-bold"
+                  className="
+                    absolute top-1/2 left-1/3
+                    transform -translate-x-1/2 -translate-y-1/2
+                    text-3xl sm:text-4xl font-bold
+                  "
                 >
-                  Our Structure: A DAO for All
+                  Our Structure: A <span className="text-[#F9CD13]">DAO</span>{" "}
+                  for All
                 </motion.h2>
 
-                <motion.ul
-                  initial={{ y: "50%", opacity: 0 }}
-                  animate={{ y: "0%", opacity: 1 }}
-                  exit={{ y: "50%", opacity: 0 }}
-                  transition={{ duration: 0.8, ease: "easeOut", delay: 0.1 }}
-                  className="list-disc list-inside space-y-2 text-left text-lg sm:text-xl"
-                >
-                  <li>Every voice matters.</li>
-                  <li>Freedom is coded in.</li>
-                  <li>We co-create, not rule.</li>
+                {/* Vertices of triangle */}
+                <motion.ul className="relative w-full h-full">
+                  {/* Top vertex */}
+                  <motion.li
+                    initial={{ y: -30, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    exit={{ y: -30, opacity: 0 }}
+                    transition={{ duration: 0.6, ease: "easeOut", delay: 0.3 }}
+                    className="
+                      absolute top-24 left-[45%]
+                      transform -translate-x-1/2
+                      text-lg sm:text-xl
+                    "
+                  >
+                    Every <span className="text-[#F9CD13]">voice</span> matters.
+                  </motion.li>
+
+                  {/* Bottom-left vertex */}
+                  <motion.li
+                    initial={{ x: -30, opacity: 0 }}
+                    animate={{ x: 0, opacity: 1 }}
+                    exit={{ x: -30, opacity: 0 }}
+                    transition={{ duration: 0.6, ease: "easeOut", delay: 0.4 }}
+                    className="
+                      absolute bottom-5 left-16
+                      text-lg sm:text-xl
+                    "
+                  >
+                    <span className="text-[#F9CD13]">Freedom</span> is coded in.
+                  </motion.li>
+
+                  {/* Bottom-right vertex */}
+                  <motion.li
+                    initial={{ x: 30, opacity: 0 }}
+                    animate={{ x: 0, opacity: 1 }}
+                    exit={{ x: 30, opacity: 0 }}
+                    transition={{ duration: 0.6, ease: "easeOut", delay: 0.5 }}
+                    className="
+                      absolute bottom-5 right-16
+                      text-lg sm:text-xl
+                    "
+                  >
+                    We <span className="text-[#F9CD13]">co-create</span>, not
+                    rule.
+                  </motion.li>
                 </motion.ul>
               </div>
             </motion.div>

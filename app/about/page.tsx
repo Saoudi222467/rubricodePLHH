@@ -29,11 +29,11 @@ const AboutPage = () => {
           <CoreChoices />
           <div className="h-[100vh] w-full "></div>
           <DAOSection />
-          {/* <RealWorldAsset /> */}
-          {/* <RegenerativeCircle /> */}
-          {/* <WhoWeAre /> */}
-          {/* <ManBehindMovement /> */}
-          {/* <SpiritSection /> */}
+          <RealWorldAsset />
+          <RegenerativeCircle />
+          <WhoWeAre />
+          <ManBehindMovement />
+          <SpiritSection />
         </div>
 
         {/* Optional Footer */}
