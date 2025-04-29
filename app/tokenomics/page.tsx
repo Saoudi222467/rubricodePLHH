@@ -1,5 +1,10 @@
-// pages/tokenomics.tsx
+"use client";
+
 import React from "react";
+import Header from "@/components/CryptoHeader";
+// import { Footer } from "@/components/sections/footer"; // Optional if you want footer
+// import Ticker from "@/components/sections/ticker"; // Optional if you want ticker
+
 import TotalSupply from "@/components/Tokenomics/TotalSupply";
 import PreSaleStaking from "@/components/Tokenomics/PreSaleStaking";
 import EcosystemDevelopment from "@/components/Tokenomics/EcosystemDevelopment";
@@ -11,19 +16,31 @@ import Holonomics from "@/components/Tokenomics/Holonomics";
 
 const TokenomicsPage = () => {
   return (
-    <main className="max-w-5xl mx-auto px-4">
-      <h1 className="text-4xl font-bold text-center py-10">
-        TOKENOMICS – THE SACRED STRUCTURE OF PEACE, LOVE & HARMONY
-      </h1>
-      <TotalSupply />
-      <PreSaleStaking />
-      <EcosystemDevelopment />
-      <LiquidityPool />
-      <CommunityProjects />
-      <TeamReserve />
-      <TheGift />
-      <Holonomics />
-    </main>
+    <>
+      <main className="relative bg-black text-white overflow-x-hidden overflow-y-auto pointer-events-auto">
+        {/* Fixed Header and Optional Ticker */}
+        <div className="fixed top-0 left-0 right-0 z-50">
+          {/* <Ticker /> */}
+        </div>
+
+        <Header />
+
+        {/* Content Sections */}
+        <div className="relative z-10 pt-[40px] bg-black">
+          <TotalSupply />
+          <PreSaleStaking />
+          <EcosystemDevelopment />
+          <LiquidityPool />
+          <CommunityProjects />
+          <TeamReserve />
+          <TheGift />
+          <Holonomics />
+        </div>
+
+        {/* Optional Footer */}
+        {/* <Footer /> */}
+      </main>
+    </>
   );
 };
 
