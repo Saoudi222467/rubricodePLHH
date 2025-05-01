@@ -23,9 +23,10 @@ const TokenomicsPage = () => {
 
         {/* Content Sections */}
         <div className="relative z-10 pt-[40px] bg-black">
-          <TotalSupply />
+          {/* <TotalSupply />
           <div className="h-screen w-full" />
           <TokenomicsDistribution />
+          <div className="h-screen w-full" /> */}
 
           <Holonomics />
         </div>
