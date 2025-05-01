@@ -159,7 +159,7 @@ export default function WhoWeAre() {
         </AnimatePresence>
 
         {/* Spacer */}
-        <div className="h-[100vh]" />
+        {/* <div className="h-[100vh]" /> */}
       </section>
     </>
   );

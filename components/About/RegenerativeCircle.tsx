@@ -116,7 +116,7 @@ export default function RegenerativeCircle() {
           )}
         </AnimatePresence>
       </section>
-      <div className="h-[100vh]" /> {/* Spacer */}
+      {/* <div className="h-[100vh]" /> Spacer */}
     </>
   );
 }
