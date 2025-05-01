@@ -26,7 +26,7 @@ const TokenomicsPage = () => {
           <TotalSupply />
           <div className="h-screen w-full" />
           <TokenomicsDistribution />
-          {/* <div className="h-screen w-full" /> */}
+          <div className="h-screen w-full" />
 
           <Holonomics />
         </div>

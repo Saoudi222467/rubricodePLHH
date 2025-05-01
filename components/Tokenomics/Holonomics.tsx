@@ -130,9 +130,8 @@ export default function Holonomics() {
           </motion.div>
         </motion.div>
       </section>
-
-      {/* Spacer so you can scroll past it */}
-      <div className="h-screen" />
+      {/* Spacer so you can scroll past it
+      <div className="h-screen" /> */}
     </>
   );
 }
