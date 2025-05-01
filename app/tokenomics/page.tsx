@@ -6,12 +6,7 @@ import Header from "@/components/CryptoHeader";
 // import Ticker from "@/components/sections/ticker"; // Optional if you want ticker
 
 import TotalSupply from "@/components/Tokenomics/TotalSupply";
-import PreSaleStaking from "@/components/Tokenomics/PreSaleStaking";
-import EcosystemDevelopment from "@/components/Tokenomics/EcosystemDevelopment";
-import LiquidityPool from "@/components/Tokenomics/LiquidityPool";
-import CommunityProjects from "@/components/Tokenomics/CommunityProjects";
-import TeamReserve from "@/components/Tokenomics/TeamReserve";
-import TheGift from "@/components/Tokenomics/TheGift";
+
 import Holonomics from "@/components/Tokenomics/Holonomics";
 import TokenomicsDistribution from "@/components/Tokenomics/TokenomicsDistribution";
 
@@ -31,12 +26,7 @@ const TokenomicsPage = () => {
           <TotalSupply />
           <div className="h-screen w-full" />
           <TokenomicsDistribution />
-          {/* <PreSaleStaking />
-          <EcosystemDevelopment />
-          <LiquidityPool />
-          <CommunityProjects />
-          <TeamReserve /> */}
-          {/* <TheGift /> */}
+
           <Holonomics />
         </div>
 
