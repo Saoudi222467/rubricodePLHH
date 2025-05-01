@@ -25,15 +25,15 @@ const AboutPage = () => {
 
         {/* Content */}
         <div className="relative z-10 pt-[40px] w-full mx-auto ">
-          {/* <AboutEssence /> */}
-          {/* <CoreChoices /> */}
+          <AboutEssence />
+          <CoreChoices />
           {/* <div className="h-[100vh] w-full "></div> */}
           <DAOSection />
           <RealWorldAsset />
           <RegenerativeCircle />
-          {/* <WhoWeAre /> */}
-          {/* <ManBehindMovement /> */}
-          {/* <SpiritSection /> */}
+          <WhoWeAre />
+          <ManBehindMovement />
+          <SpiritSection />
         </div>
 
         {/* <Footer /> */}
