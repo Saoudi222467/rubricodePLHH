@@ -1,100 +1,104 @@
 "use client";
 
 import React, { useRef } from "react";
-import { motion, useInView, AnimatePresence } from "framer-motion";
+import { motion, useInView, AnimatePresence, Variants } from "framer-motion";
 
 const DAOSection = () => {
-  const ref = useRef(null);
+  const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { amount: 0.5 });
+
+  // Common animation props for each row, typed as Variants
+  const rowVariants: Variants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: (custom: number) => ({
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.6, ease: "easeOut", delay: custom * 0.2 },
+    }),
+  };
 
   return (
     <>
-      <section ref={ref} className="w-full h-[100vh] relative overflow-hidden">
+      <section ref={ref} className="w-full h-[100vh] relative overflow-hidden ">
         <AnimatePresence>
           {isInView && (
             <motion.div
               key="dao-section-wrapper"
-              initial={{ opacity: 0, backgroundSize: "100%" }}
-              animate={{ opacity: 1, backgroundSize: "110%" }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              transition={{
-                opacity: { duration: 0.6, ease: "easeInOut" },
-                backgroundSize: {
+              transition={{ duration: 0.6, ease: "easeInOut" }}
+              className="fixed inset-0 bg-black text-white z-50 flex flex-col justify-between h-full overflow-hidden mt-10"
+            >
+              {/* Background image with continuous zoom */}
+              <motion.div
+                initial={{ scale: 1 }}
+                animate={{ scale: 1.1 }}
+                transition={{
                   duration: 30,
                   ease: "linear",
                   repeat: Infinity,
-                },
-              }}
-              style={{
-                backgroundImage: "url('/assets/images/landing/CoCreate.jpg')",
-                backgroundPosition: "center",
-                backgroundRepeat: "no-repeat",
-              }}
-              className="fixed inset-0 bg-black text-white z-50"
-            >
-              <div className="relative w-full h-full">
-                {/* Center of triangle */}
-                <motion.h2
-                  initial={{ scale: 0.8, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  exit={{ scale: 0.8, opacity: 0 }}
-                  transition={{ duration: 0.8, ease: "easeOut" }}
-                  className="
-                    absolute top-1/2 left-1/3
-                    transform -translate-x-1/2 -translate-y-1/2
-                    text-3xl sm:text-4xl font-bold
-                  "
+                }}
+                style={{
+                  backgroundImage: "url('/assets/images/landing/CoCreate.jpg')",
+                }}
+                className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+              />
+
+              {/* Overlay content (static layer above the background) */}
+              <div className="relative z-10 flex flex-col justify-between h-full">
+                {/* 1st row: Every voice matters */}
+                <motion.div
+                  variants={rowVariants}
+                  custom={0}
+                  initial="hidden"
+                  animate="visible"
+                  className="flex justify-center pt-20 text-lg sm:text-xl"
                 >
-                  Our Structure: A <span className="text-[#F9CD13]">DAO</span>{" "}
-                  for All
+                  Every&nbsp;
+                  <span className="text-[#F9CD13] font-extrabold">voice</span>
+                  &nbsp; matters.
+                </motion.div>
+
+                {/* 2nd row: Our Structure */}
+                <motion.h2
+                  variants={rowVariants}
+                  custom={1}
+                  initial="hidden"
+                  animate="visible"
+                  className="flex justify-center text-3xl sm:text-4xl font-bold"
+                >
+                  Our Structure: A&nbsp;
+                  <span className="text-[#F9CD13] font-extrabold">DAO</span>
+                  &nbsp;for All
                 </motion.h2>
 
-                {/* Vertices of triangle */}
-                <motion.ul className="relative w-full h-full">
-                  {/* Top vertex */}
-                  <motion.li
-                    initial={{ y: -30, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    exit={{ y: -30, opacity: 0 }}
-                    transition={{ duration: 0.6, ease: "easeOut", delay: 0.3 }}
-                    className="
-                      absolute top-24 left-[45%]
-                      transform -translate-x-1/2
-                      text-lg sm:text-xl
-                    "
-                  >
-                    Every <span className="text-[#F9CD13]">voice</span> matters.
-                  </motion.li>
-
-                  {/* Bottom-left vertex */}
-                  <motion.li
-                    initial={{ x: -30, opacity: 0 }}
-                    animate={{ x: 0, opacity: 1 }}
-                    exit={{ x: -30, opacity: 0 }}
-                    transition={{ duration: 0.6, ease: "easeOut", delay: 0.4 }}
-                    className="
-                      absolute bottom-5 left-16
-                      text-lg sm:text-xl
-                    "
-                  >
-                    <span className="text-[#F9CD13]">Freedom</span> is coded in.
-                  </motion.li>
-
-                  {/* Bottom-right vertex */}
-                  <motion.li
-                    initial={{ x: 30, opacity: 0 }}
-                    animate={{ x: 0, opacity: 1 }}
-                    exit={{ x: 30, opacity: 0 }}
-                    transition={{ duration: 0.6, ease: "easeOut", delay: 0.5 }}
-                    className="
-                      absolute bottom-5 right-16
-                      text-lg sm:text-xl
-                    "
-                  >
-                    We <span className="text-[#F9CD13]">co-create</span>, not
-                    rule.
-                  </motion.li>
-                </motion.ul>
+                {/* 3rd row: Freedom … co-create */}
+                <motion.div
+                  variants={rowVariants}
+                  custom={2}
+                  initial="hidden"
+                  animate="visible"
+                  className="
+                    flex flex-col items-center space-y-4
+                    sm:flex-row sm:justify-between sm:items-center
+                    px-16 pb-20 text-lg sm:text-xl
+                  "
+                >
+                  <span>
+                    <span className="text-[#F9CD13] font-extrabold">
+                      Freedom
+                    </span>{" "}
+                    is coded in.
+                  </span>
+                  <span>
+                    We&nbsp;
+                    <span className="text-[#F9CD13] font-extrabold">
+                      co-create
+                    </span>
+                    , not rule.
+                  </span>
+                </motion.div>
               </div>
             </motion.div>
           )}
