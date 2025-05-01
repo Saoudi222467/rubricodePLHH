@@ -13,6 +13,7 @@ import CommunityProjects from "@/components/Tokenomics/CommunityProjects";
 import TeamReserve from "@/components/Tokenomics/TeamReserve";
 import TheGift from "@/components/Tokenomics/TheGift";
 import Holonomics from "@/components/Tokenomics/Holonomics";
+import TokenomicsDistribution from "@/components/Tokenomics/TokenomicsDistribution";
 
 const TokenomicsPage = () => {
   return (
@@ -28,12 +29,14 @@ const TokenomicsPage = () => {
         {/* Content Sections */}
         <div className="relative z-10 pt-[40px] bg-black">
           <TotalSupply />
-          <PreSaleStaking />
+          <div className="h-screen w-full" />
+          <TokenomicsDistribution />
+          {/* <PreSaleStaking />
           <EcosystemDevelopment />
           <LiquidityPool />
           <CommunityProjects />
-          <TeamReserve />
-          <TheGift />
+          <TeamReserve /> */}
+          {/* <TheGift /> */}
           <Holonomics />
         </div>
 
