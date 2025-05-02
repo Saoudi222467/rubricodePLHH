@@ -22,7 +22,13 @@ const InfinityLoop = () => {
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
         >
-          <path d={path} stroke="#FFE066" strokeWidth="1" fill="none" opacity="0.2" />
+          <path
+            d={path}
+            stroke="#FFE066"
+            strokeWidth="1"
+            fill="none"
+            opacity="0.2"
+          />
           <path
             d={path}
             stroke="#FFE060"
@@ -63,8 +69,18 @@ const InfinityLoop = () => {
           </path>
 
           <defs>
-            <filter id="glowFilter" x="-50%" y="-50%" width="200%" height="200%">
-              <feGaussianBlur in="SourceGraphic" stdDeviation="6" result="blur" />
+            <filter
+              id="glowFilter"
+              x="-50%"
+              y="-50%"
+              width="200%"
+              height="200%"
+            >
+              <feGaussianBlur
+                in="SourceGraphic"
+                stdDeviation="6"
+                result="blur"
+              />
               <feMerge>
                 <feMergeNode in="blur" />
                 <feMergeNode in="SourceGraphic" />
