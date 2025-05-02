@@ -10,10 +10,7 @@ const EarthSection = () => {
     <>
       {/* <div className="h-[100vh]" /> */}
 
-      <section
-        ref={ref}
-        className="relative w-full h-[100vh] bg-black overflow-hidden"
-      >
+      <section ref={ref} className="relative w-full h-[100vh]  overflow-hidden">
         {/* Fixed Inner Content Wrapper */}
         <motion.div
           className="fixed top-0 left-0 w-full h-[100vh] z-50"
