@@ -23,26 +23,65 @@ export default function ClosingQuote() {
     <section ref={ref} className="w-full h-screen relative overflow-hidden">
       <AnimatePresence>
         {isInView && (
-          <motion.div
-            className="fixed inset-0 z-50 flex flex-col items-center justify-center px-6 text-center"
-            variants={containerVariants}
-            initial="hidden"
-            animate="show"
-            exit="exit"
-          >
-            <motion.blockquote
-              variants={quoteVariants}
-              className="italic text-xl text-gray-300 max-w-2xl drop-shadow-lg"
+          <>
+            {/* Gradient background overlay */}
+            <motion.div
+              className="
+                fixed inset-0 -z-10
+                bg-gradient-to-br
+                  from-[#4E2A1E]/50
+                  via-[#3A1F0B]/30
+                  to-[#D4AF37]/40
+              "
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.8, ease: "easeInOut" }}
+            />
+
+            {/* Quote container */}
+            <motion.div
+              className="
+                fixed inset-0 z-50
+                flex items-center justify-center
+                px-6 text-center
+                bg-black bg-opacity-30 backdrop-blur-sm
+              "
+              variants={containerVariants}
+              initial="hidden"
+              animate="show"
+              exit="exit"
             >
-              “We don’t lead with power. We lead with presence. Together, we
-              carry the infinite.”
-            </motion.blockquote>
-          </motion.div>
+              <motion.blockquote
+                variants={quoteVariants}
+                className="
+                  relative
+                  max-w-2xl
+                  pl-6
+                  border-l-4 border-[#FFE066]
+                  italic text-2xl sm:text-3xl
+                  text-white/90
+                  drop-shadow-lg
+                "
+              >
+                “We don’t lead with power. We lead with presence. Together, we
+                carry the{" "}
+                <span
+                  className="
+                    bg-clip-text text-transparent
+                    bg-gradient-to-r from-[#FFE066]
+                                    via-[#FFE060]
+                                    to-[#7B245A]
+                  "
+                >
+                  infinite
+                </span>
+                .”
+              </motion.blockquote>
+            </motion.div>
+          </>
         )}
       </AnimatePresence>
-
-      {/* Optional scroll spacer */}
-      {/* <div className="h-[100vh]" /> */}
     </section>
   );
 }
