@@ -93,28 +93,34 @@ export default function CircleContributors() {
               animate="show"
               exit="exit"
             >
-              {/* Header */}
-              <motion.h4
+              {/* Big Gradient Heading */}
+              <motion.h2
                 variants={headerVariants}
                 className="
-                  text-2xl sm:text-3xl font-semibold
+                  text-4xl sm:text-5xl md:text-6xl font-extrabold uppercase
                   bg-clip-text text-transparent
                   bg-gradient-to-r from-[#FFE066] via-[#FFE060] to-[#7B245A]
                   drop-shadow-lg
                 "
               >
                 Circle Contributors
-              </motion.h4>
+              </motion.h2>
 
-              {/* Description */}
-              <motion.p
+              {/* Styled Blockquote */}
+              <motion.blockquote
                 variants={textVariants}
-                className="mt-4 max-w-xl italic text-lg text-white/80"
+                className="
+                  mt-6 max-w-2xl
+                  pl-6 border-l-4 border-[#FFE066]
+                  italic text-xl sm:text-2xl
+                  text-white/80
+                  drop-shadow-lg
+                "
               >
                 “The builders behind the scenes.” Designers, developers,
                 writers, strategists, creators – the ones who laid the stones,
                 wrote the code, shaped the vision.
-              </motion.p>
+              </motion.blockquote>
 
               {/* Cards Grid */}
               <motion.div
