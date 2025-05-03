@@ -2,6 +2,7 @@
 
 import React from "react";
 import Header from "@/components/CryptoHeader";
+import Ticker from "@/components/sections/ticker";
 import AboutEssence from "@/components/About/AboutEssence";
 import CoreChoices from "@/components/About/CoreChoices";
 import DAOSection from "@/components/About/DAOSection";
@@ -15,14 +16,11 @@ import SpiritSection from "@/components/About/SpiritSection";
 const AboutPage = () => {
   return (
     <>
+      <div className="sticky top-0 z-30 flex flex-col">
+        <Ticker />
+      </div>
+      <Header />
       <main className="relative bg-black text-white overflow-x-hidden overflow-y-auto pointer-events-auto">
-        {/* Fixed Header */}
-        <div className="fixed top-0 left-0 right-0 z-50">
-          {/* You can insert a ticker if needed */}
-        </div>
-
-        <Header />
-
         {/* Content */}
         <div className="relative z-10 pt-[40px] w-full mx-auto ">
           <AboutEssence />

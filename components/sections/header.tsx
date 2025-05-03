@@ -1,21 +1,21 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState, useEffect } from "react"
-import { motion, AnimatePresence } from "framer-motion"
-import { Container } from "@/components/ui/container"
-import Image from "next/image"
-import Link from "next/link"
-import { Menu, X, ChevronDown } from "lucide-react"
-import { Wallet } from "lucide-react" // or your custom wallet icon if available
-import { WalletDialog } from "@/components/sections/wallet-dialog"
-import { useWallet } from "@/lib/wallet-providers"
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Container } from "@/components/ui/container";
+import Image from "next/image";
+import Link from "next/link";
+import { Menu, X, ChevronDown } from "lucide-react";
+import { Wallet } from "lucide-react"; // or your custom wallet icon if available
+import { WalletDialog } from "@/components/sections/wallet-dialog";
+import { useWallet } from "@/lib/wallet-providers";
 
 // Import Suiet Wallet Kit's ConnectButton and its stylesheet
-import { ConnectButton } from "@suiet/wallet-kit"
-import "@suiet/wallet-kit/style.css"
-import "@/styles/globals.css"
+import { ConnectButton } from "@suiet/wallet-kit";
+import "@suiet/wallet-kit/style.css";
+import "@/styles/globals.css";
 
 const navItems = [
   { name: "Home", href: "/" },
@@ -23,6 +23,7 @@ const navItems = [
   { name: "Tokenomics", href: "/#tokenomics" },
   { name: "Roadmap", href: "/#roadmap" },
   { name: "Community", href: "/#community" },
+  { name: "Guardians of Infinity", href: "/#guardians-of-infinity" },
   {
     name: "Utility",
     href: "",
@@ -33,41 +34,41 @@ const navItems = [
       { name: "Governance", href: "/governance#proposals" },
     ],
   },
-]
+];
 
 export function Header() {
-  const [isScrolled, setIsScrolled] = useState(false)
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-  const [isWalletDialogOpen, setIsWalletDialogOpen] = useState(false)
-  const [openDropdown, setOpenDropdown] = useState<string | null>(null)
-  const wallet = useWallet()
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isWalletDialogOpen, setIsWalletDialogOpen] = useState(false);
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const wallet = useWallet();
   const [walletState, setWalletState] = useState({
     connected: wallet.connected,
     walletAddress: wallet.walletAddress,
-  })
+  });
 
   // Assume wallet context is available
-  const walletContextAvailable = true
+  const walletContextAvailable = true;
 
   // Update local state when wallet context changes
   useEffect(() => {
     setWalletState({
       connected: wallet.connected,
       walletAddress: wallet.walletAddress,
-    })
-  }, [wallet?.connected, wallet?.walletAddress, wallet])
+    });
+  }, [wallet?.connected, wallet?.walletAddress, wallet]);
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 10)
-    }
-    window.addEventListener("scroll", handleScroll)
-    return () => window.removeEventListener("scroll", handleScroll)
-  }, [])
+      setIsScrolled(window.scrollY > 10);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const toggleDropdown = (name: string | null) => {
-    setOpenDropdown(openDropdown === name ? null : name)
-  }
+    setOpenDropdown(openDropdown === name ? null : name);
+  };
 
   // Use Suiet Wallet Kit's ConnectButton with custom styling.
   // This button renders the default connection functionality but with your custom classes.
@@ -100,8 +101,8 @@ export function Header() {
           <span className="sm:hidden">Connect</span>
         )}
       </ConnectButton>
-    )
-  }
+    );
+  };
 
   return (
     <>
@@ -115,7 +116,10 @@ export function Header() {
         <Container>
           <div className="flex h-14 sm:h-16 items-center justify-between">
             {/* Logo */}
-            <Link href="/" className="flex items-center space-x-1 sm:space-x-2 shrink-0">
+            <Link
+              href="/"
+              className="flex items-center space-x-1 sm:space-x-2 shrink-0"
+            >
               <Image
                 src="/logo-main.png"
                 alt="PLHH Coin"
@@ -182,10 +186,15 @@ export function Header() {
             {/* Right side with wallet button and mobile menu */}
             <div className="flex items-center shrink-0">
               {/* Wallet Button - desktop */}
-              <div className="hidden min-[851px]:block">{renderWalletButton()}</div>
+              <div className="hidden min-[851px]:block">
+                {renderWalletButton()}
+              </div>
 
               {/* Mobile Menu Button */}
-              <button className="min-[851px]:hidden" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
+              <button
+                className="min-[851px]:hidden"
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              >
                 {isMobileMenuOpen ? (
                   <X className="h-5 w-5 sm:h-6 sm:w-6 text-dark-text" />
                 ) : (
@@ -216,7 +225,9 @@ export function Header() {
                         >
                           {item.name}
                           <ChevronDown
-                            className={`h-4 w-4 transition-transform ${openDropdown === item.name ? "rotate-180" : ""}`}
+                            className={`h-4 w-4 transition-transform ${
+                              openDropdown === item.name ? "rotate-180" : ""
+                            }`}
                           />
                         </button>
                         <AnimatePresence>
@@ -262,8 +273,10 @@ export function Header() {
       </header>
 
       {/* Wallet Connection Dialog */}
-      <WalletDialog isOpen={isWalletDialogOpen} onClose={() => setIsWalletDialogOpen(false)} />
+      <WalletDialog
+        isOpen={isWalletDialogOpen}
+        onClose={() => setIsWalletDialogOpen(false)}
+      />
     </>
-  )
+  );
 }
-

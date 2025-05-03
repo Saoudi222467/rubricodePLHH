@@ -3,7 +3,7 @@
 import React from "react";
 import Header from "@/components/CryptoHeader";
 // import { Footer } from "@/components/sections/footer"; // Optional if you want footer
-// import Ticker from "@/components/sections/ticker"; // Optional if you want ticker
+import Ticker from "@/components/sections/ticker"; // Optional if you want ticker
 
 // Import sections
 import SectionIntro from "@/components/GuardiansOfInfinity/SectionIntro";
@@ -17,14 +17,11 @@ import ClosingQuote from "@/components/GuardiansOfInfinity/ClosingQuote";
 export default function GuardiansPage() {
   return (
     <>
+      <div className="sticky top-0 z-30 flex flex-col">
+        <Ticker />
+      </div>
+      <Header />
       <main className="relative bg-black text-white overflow-x-hidden overflow-y-auto pointer-events-auto">
-        {/* Fixed Header and Optional Ticker */}
-        <div className="fixed top-0 left-0 right-0 z-50">
-          {/* <Ticker /> */}
-        </div>
-
-        <Header />
-
         {/* Content Sections */}
         <div className="relative z-10 pt-[40px] bg-black">
           <SectionIntro />

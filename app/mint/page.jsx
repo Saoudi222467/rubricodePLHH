@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import CryptoHeader from "@/components/CryptoHeader";
+import Header from "@/components/CryptoHeader";
 import Ticker from "@/components/sections/ticker";
 import MintLanding from "@/components/MintingSections/MintLanding";
 import InfinityPhasesSection from "@/components/MintingSections/InfinityPhasesSection";
@@ -22,33 +22,33 @@ export default function Home() {
   }, []);
 
   return (
-    <main
-      className={`bg-black text-white overflow-x-hidden ${
-        !isMobile
-          ? "overflow-y-auto"
-          : "snap-y snap-mandatory overflow-y-scroll h-screen scroll-smooth"
-      }`}
-    >
-      {/* Fixed Header and Ticker */}
-      <div className="fixed top-0 left-0 right-0 z-50">
+    <>
+      <div className="sticky top-0 z-30 flex flex-col">
         <Ticker />
-        <CryptoHeader />
       </div>
-
-      {/* Content Sections */}
-      <div
-        className={`bg-black ${
-          isMobile
-            ? "pt-[160px] space-y-16 overflow-x-hidden"
-            : "relative z-10 pt-[40px]"
+      <Header />
+      <main
+        className={`bg-black text-white overflow-x-hidden ${
+          !isMobile
+            ? "overflow-y-auto"
+            : "snap-y snap-mandatory overflow-y-scroll h-screen scroll-smooth"
         }`}
       >
-        <MintLanding isMobile={isMobile} />
-        <InfinityPhasesSection isMobile={isMobile} />
-        <MotionSection isMobile={isMobile} />
-        <PhasePrices isMobile={isMobile} />
-        <MintingSection isMobile={isMobile} />
-      </div>
-    </main>
+        {/* Content Sections */}
+        <div
+          className={`bg-black ${
+            isMobile
+              ? "pt-[160px] space-y-16 overflow-x-hidden"
+              : "relative z-10 pt-[40px]"
+          }`}
+        >
+          <MintLanding isMobile={isMobile} />
+          <InfinityPhasesSection isMobile={isMobile} />
+          <MotionSection isMobile={isMobile} />
+          <PhasePrices isMobile={isMobile} />
+          <MintingSection isMobile={isMobile} />
+        </div>
+      </main>
+    </>
   );
 }
