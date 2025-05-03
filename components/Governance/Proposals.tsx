@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useRef, useState } from "react";
-import { motion, AnimatePresence, useInView } from "framer-motion";
+import { motion, AnimatePresence, useInView, Variants } from "framer-motion";
+import InfinityLoop from "@/components/InfinityLoop";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import Link from "next/link";
@@ -62,209 +63,251 @@ export function GovernanceProposals() {
   const [selectedProposal, setSelectedProposal] = useState<Proposal>(
     activeProposals[0]
   );
+  const sentinelRef = useRef<HTMLDivElement>(null);
+  const isInView = useInView(sentinelRef, { amount: 0.5, once: false });
 
-  const ref = useRef(null);
-  const isInView = useInView(ref, { amount: 0.5 });
+  // Container variant for staggering
+  const containerVariants: Variants = {
+    hidden: {},
+    show: { transition: { staggerChildren: 0.3, when: "beforeChildren" } },
+  };
+
+  // Slide + fade
+  const itemVariants: Variants = {
+    hidden: (dir: number) => ({ opacity: 0, y: dir * 30 }),
+    show: {
+      opacity: 1,
+      y: 0,
+      transition: { type: "tween", ease: "easeOut", duration: 0.7 },
+    },
+  };
 
   return (
     <>
-      <section ref={ref} className="w-full h-[100vh] relative overflow-hidden">
-        <AnimatePresence>
-          {isInView && (
+      {/* full-screen trigger */}
+      <div ref={sentinelRef} className="w-full h-screen" />
+
+      <AnimatePresence>
+        {isInView && (
+          <motion.section
+            key="governance-proposals"
+            className="fixed inset-0 z-50 flex flex-col items-center justify-center overflow-hidden bg-black text-white"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.6, ease: "easeInOut" }}
+          >
+            {/* InfinityLoop bg */}
             <motion.div
-              key="governance-proposals-wrapper"
+              className="fixed inset-0 -z-20 pointer-events-none"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 0.6, ease: "easeInOut" }}
-              className="fixed top-0 left-0 w-full h-[100vh] flex flex-col items-center justify-center px-6 bg-black text-white z-50"
+              transition={{ duration: 0.8 }}
             >
-              <div className="max-w-6xl w-full grid grid-cols-1 lg:grid-cols-3 gap-8">
-                {/* Proposal List */}
+              <InfinityLoop />
+            </motion.div>
+
+            {/* Gold-brown gradient overlay */}
+            <motion.div
+              className="fixed inset-0 -z-10 bg-gradient-to-br from-[#4E2A1E]/50 via-[#3A1F0B]/30 to-[#D4AF37]/40"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.8 }}
+            />
+
+            {/* Content */}
+            <motion.div
+              className="relative z-30 max-w-6xl px-6 space-y-10"
+              variants={containerVariants}
+              initial="hidden"
+              animate="show"
+              exit="hidden"
+            >
+              {/* Narrative */}
+              <motion.div
+                custom={1}
+                variants={itemVariants}
+                className="text-center space-y-4 text-lg"
+              >
+                <p>
+                  Creating from scratch. Not knowing if it would work. Only
+                  knowing that we had to try.
+                </p>
+                <p>
+                  Because if we didn’t speak, if we didn’t act, if we didn’t
+                  give our vision a voice – nothing would move.
+                </p>
+              </motion.div>
+
+              {/* Proposals grid */}
+              <motion.div
+                className="grid w-full grid-cols-1 lg:grid-cols-3 gap-8"
+                custom={-1}
+                variants={itemVariants}
+              >
+                {/* List */}
                 <motion.div
-                  initial={{ x: "-50%", opacity: 0 }}
-                  animate={{ x: "0%", opacity: 1 }}
-                  exit={{ x: "-50%", opacity: 0 }}
-                  transition={{ duration: 0.8, ease: "easeOut" }}
-                  className="bg-white/10 text-white rounded-lg p-6 lg:col-span-2 backdrop-blur-sm"
-                  style={{ boxShadow: "0 0 0 2px #a67c00" }}
+                  className="lg:col-span-2 space-y-4 bg-white/10 backdrop-blur-sm rounded-lg p-6"
+                  style={{ boxShadow: "0 0 0 2px #D4AF37" }}
                 >
-                  <h3 className="text-xl font-bold mb-4 text-forest-green flex items-center gap-2">
+                  <h3 className="flex items-center gap-2 text-xl font-bold mb-4 text-[#FFE066]">
                     <Clock className="h-5 w-5" />
                     Active Proposals
                   </h3>
-
-                  <div className="space-y-4">
-                    {activeProposals.map((proposal) => (
-                      <motion.div
-                        key={proposal.id}
-                        whileHover={{ scale: 1.01 }}
-                        className={`cursor-pointer rounded-lg p-4 transition-all ${
-                          selectedProposal.id === proposal.id
-                            ? "bg-warm-gold/5"
-                            : "bg-white/5 hover:bg-white/10"
-                        }`}
-                        style={{
-                          boxShadow:
-                            selectedProposal.id === proposal.id
-                              ? "0 0 0 2px #a67c00"
-                              : "0 0 0 1px rgba(166, 124, 0, 0.3)",
-                        }}
-                        onClick={() => setSelectedProposal(proposal)}
-                      >
-                        <div className="flex justify-between items-start mb-2">
-                          <div>
-                            <h4 className="font-semibold">{proposal.title}</h4>
-                            <span className="text-xs text-forest-green bg-forest-green/10 px-2 py-0.5 rounded-full">
-                              {proposal.category}
-                            </span>
-                          </div>
-                          <div className="flex items-center gap-1 text-sm">
-                            <Clock className="h-3 w-3" />
-                            <span>{proposal.timeRemaining}</span>
-                          </div>
-                        </div>
-
-                        <div className="mb-2">
-                          <div className="flex justify-between text-sm mb-1">
-                            <span className="text-sage-green">
-                              For: {(proposal.votesFor / 1_000_000).toFixed(1)}M
-                            </span>
-                            <span className="text-brick-red">
-                              Against:{" "}
-                              {(proposal.votesAgainst / 1_000_000).toFixed(1)}M
-                            </span>
-                          </div>
-                          <div className="h-2 bg-dark-text/20 rounded-full overflow-hidden">
-                            <div
-                              className="h-full bg-gradient-to-r from-sage-green to-sage-green/80"
-                              style={{
-                                width: `${
-                                  (proposal.votesFor / proposal.totalVotes) *
-                                  100
-                                }%`,
-                              }}
-                            />
-                          </div>
-                        </div>
-
-                        <p className="text-sm text-white/80 line-clamp-2">
-                          {proposal.description}
-                        </p>
-                      </motion.div>
-                    ))}
-                  </div>
-                </motion.div>
-
-                {/* Proposal Detail Card */}
-                <motion.div
-                  initial={{ x: "50%", opacity: 0 }}
-                  animate={{ x: "0%", opacity: 1 }}
-                  exit={{ x: "50%", opacity: 0 }}
-                  transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
-                  className="bg-white/10 text-white rounded-lg p-6 backdrop-blur-sm h-full"
-                  style={{ boxShadow: "0 0 0 2px #a67c00" }}
-                >
-                  <h3 className="text-xl font-bold text-forest-green mb-4">
-                    Proposal Details
-                  </h3>
-                  <div className="space-y-4">
-                    <h4 className="text-lg font-semibold">
-                      {selectedProposal.title}
-                    </h4>
-
-                    <div className="space-y-1 text-sm">
-                      <p>
-                        Status:{" "}
-                        <span className="font-medium">
-                          {selectedProposal.status}
-                        </span>
-                      </p>
-                      <p>Category: {selectedProposal.category}</p>
-                      <p>Time Remaining: {selectedProposal.timeRemaining}</p>
-                      <p>
-                        Total Votes:{" "}
-                        {(selectedProposal.totalVotes / 1_000_000).toFixed(1)}M
-                      </p>
-                    </div>
-
-                    <div>
-                      <h5 className="font-semibold mb-1">Description</h5>
-                      <p className="text-sm text-white/90">
-                        {selectedProposal.description}
-                      </p>
-                    </div>
-
-                    <div className="mt-4 space-y-2">
-                      <div>
-                        <div className="flex justify-between text-sm mb-1">
-                          <span>For</span>
-                          <span>
-                            {(
-                              (selectedProposal.votesFor /
-                                selectedProposal.totalVotes) *
-                              100
-                            ).toFixed(1)}
-                            %
+                  {activeProposals.map((p) => (
+                    <motion.div
+                      key={p.id}
+                      whileHover={{ scale: 1.01 }}
+                      className={`cursor-pointer rounded-lg p-4 transition-all ${
+                        selectedProposal.id === p.id
+                          ? "bg-[#FFE066]/10"
+                          : "bg-white/5 hover:bg-white/10"
+                      }`}
+                      style={{
+                        boxShadow:
+                          selectedProposal.id === p.id
+                            ? "0 0 0 2px #D4AF37"
+                            : "0 0 0 1px rgba(212,175,55,0.3)",
+                      }}
+                      onClick={() => setSelectedProposal(p)}
+                    >
+                      <div className="flex justify-between mb-2">
+                        <div>
+                          <h4 className="font-semibold">{p.title}</h4>
+                          <span className="text-sm text-black bg-[#FFE066]/20 px-2 py-0.5 rounded-full">
+                            {p.category}
                           </span>
                         </div>
-                        <Progress
-                          value={
+                        <div className="flex items-center gap-1 text-sm">
+                          <Clock className="h-3 w-3" />
+                          <span>{p.timeRemaining}</span>
+                        </div>
+                      </div>
+                      <div className="mb-2">
+                        <div className="flex justify-between text-sm mb-1">
+                          <span>
+                            For: {(p.votesFor / 1_000_000).toFixed(1)}M
+                          </span>
+                          <span>
+                            Against: {(p.votesAgainst / 1_000_000).toFixed(1)}M
+                          </span>
+                        </div>
+                        <div className="h-2 bg-white/20 rounded-full overflow-hidden">
+                          <div
+                            className="h-full bg-gradient-to-r from-[#8FD19E] to-[#6BBF85]"
+                            style={{
+                              width: `${(p.votesFor / p.totalVotes) * 100}%`,
+                            }}
+                          />
+                        </div>
+                      </div>
+                      <p className="text-sm line-clamp-2 text-white/80">
+                        {p.description}
+                      </p>
+                    </motion.div>
+                  ))}
+                </motion.div>
+
+                {/* Detail */}
+                <motion.div
+                  className="bg-white/10 backdrop-blur-sm rounded-lg p-6"
+                  style={{ boxShadow: "0 0 0 2px #D4AF37" }}
+                  custom={1}
+                  variants={itemVariants}
+                >
+                  <h3 className="text-xl font-bold mb-4 text-[#FFE066]">
+                    Proposal Details
+                  </h3>
+                  <h4 className="text-lg font-semibold mb-2">
+                    {selectedProposal.title}
+                  </h4>
+                  <div className="space-y-1 text-sm mb-4">
+                    <p>
+                      Status:{" "}
+                      <span className="font-medium">
+                        {selectedProposal.status}
+                      </span>
+                    </p>
+                    <p>Category: {selectedProposal.category}</p>
+                    <p>Time: {selectedProposal.timeRemaining}</p>
+                    <p>
+                      Total Votes:{" "}
+                      {(selectedProposal.totalVotes / 1_000_000).toFixed(1)}M
+                    </p>
+                  </div>
+                  <p className="text-sm text-white/90 mb-4">
+                    {selectedProposal.description}
+                  </p>
+                  <div className="space-y-4">
+                    <div>
+                      <div className="flex justify-between text-sm mb-1">
+                        <span>For</span>
+                        <span>
+                          {(
                             (selectedProposal.votesFor /
                               selectedProposal.totalVotes) *
                             100
-                          }
-                          className="h-2 bg-dark-text/20"
-                        >
-                          <div className="h-full bg-gradient-to-r from-sage-green to-sage-green/80 rounded-full" />
-                        </Progress>
+                          ).toFixed(1)}
+                          %
+                        </span>
                       </div>
+                      <Progress
+                        value={
+                          (selectedProposal.votesFor /
+                            selectedProposal.totalVotes) *
+                          100
+                        }
+                        className="h-2 bg-white/20"
+                      >
+                        <div className="h-full bg-gradient-to-r from-[#8FD19E] to-[#6BBF85] rounded-full" />
+                      </Progress>
+                    </div>
 
-                      <div>
-                        <div className="flex justify-between text-sm mb-1">
-                          <span>Against</span>
-                          <span>
-                            {(
-                              (selectedProposal.votesAgainst /
-                                selectedProposal.totalVotes) *
-                              100
-                            ).toFixed(1)}
-                            %
-                          </span>
-                        </div>
-                        <Progress
-                          value={
+                    <div>
+                      <div className="flex justify-between text-sm mb-1">
+                        <span>Against</span>
+                        <span>
+                          {(
                             (selectedProposal.votesAgainst /
                               selectedProposal.totalVotes) *
                             100
-                          }
-                          className="h-2 bg-dark-text/20"
-                        >
-                          <div className="h-full bg-gradient-to-r from-brick-red to-brick-red/80 rounded-full" />
-                        </Progress>
+                          ).toFixed(1)}
+                          %
+                        </span>
                       </div>
-                    </div>
-
-                    <Link
-                      href={`/proposals/${selectedProposal.id}/vote`}
-                      className="block mt-6"
-                    >
-                      <Button
-                        className="w-full bg-gradient-to-r from-forest-green to-aqua-blue text-mint-white hover:from-forest-green hover:to-aqua-blue/90"
-                        style={{ boxShadow: "0 0 0 2px #a67c00" }}
+                      <Progress
+                        value={
+                          (selectedProposal.votesAgainst /
+                            selectedProposal.totalVotes) *
+                          100
+                        }
+                        className="h-2 bg-white/20"
                       >
-                        Cast Your Vote
-                      </Button>
-                    </Link>
+                        <div className="h-full bg-gradient-to-r from-[#F7786B] to-[#DD5C4B] rounded-full" />
+                      </Progress>
+                    </div>
                   </div>
-                </motion.div>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </section>
 
-      {/* Spacer to allow scrolling */}
+                  <Link
+                    href={`/proposals/${selectedProposal.id}/vote`}
+                    className="block mt-6"
+                  >
+                    <Button
+                      className="w-full bg-gradient-to-r from-[#8FD19E] to-[#6BBF85] text-black hover:from-[#8FD19E] hover:to-[#6BBF85]/90"
+                      style={{ boxShadow: "0 0 0 2px #D4AF37" }}
+                    >
+                      Cast Your Vote
+                    </Button>
+                  </Link>
+                </motion.div>
+              </motion.div>
+            </motion.div>
+          </motion.section>
+        )}
+      </AnimatePresence>
+      {/* spacer */}
       <div className="h-[100vh]" />
     </>
   );
