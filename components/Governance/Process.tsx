@@ -5,46 +5,42 @@ import { motion, AnimatePresence, useInView, Variants } from "framer-motion";
 import InfinityLoop from "@/components/InfinityLoop";
 import { FileText, Users, Check, AlertCircle } from "lucide-react";
 
-// ✅ Step definitions
 const governanceSteps = [
   {
     icon: FileText,
     title: "1. Submit a Proposal",
     description:
-      "Anyone holding at least 10,000 PLHH Coins can submit a proposal to the DAO – whether it's about funding a project, adjusting parameters, or introducing new features. Your voice, your vision, your proposal.",
+      "Anyone holding at least 10,000 PLHH can submit a proposal — your vision, your voice.",
   },
   {
     icon: Users,
-    title: "2. Community Discussion (7 Days)",
+    title: "2. Community Discussion",
     description:
-      "Each proposal enters a 7-day open discussion period. The community can share feedback, ask questions, and suggest improvements. Refinement happens in the circle – together.",
+      "7-day open discussion: refine ideas together in the circle of trust.",
   },
   {
     icon: Check,
     title: "3. Token-Weighted Voting",
     description:
-      "After the discussion, the proposal moves to a formal on-chain vote. Votes are weighted by the number of PLHH Coins held in your wallet. More coins = more voting power – but every voice counts.",
+      "On-chain vote weighted by holdings — every vote counts, every holder matters.",
   },
   {
     icon: AlertCircle,
     title: "4. Execution Threshold",
     description:
-      "For a proposal to pass and be executed, it must meet two conditions: 66% approval from voters and 10% quorum (of total circulating PLHH). If the community aligns – the vision becomes reality.",
+      "66% approval + 10% quorum required to turn proposals into reality.",
   },
 ];
 
 export function GovernanceProcess() {
-  // sentinel to watch when this section scrolls into/out of view
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { amount: 0.5, once: false });
 
-  // container stagger
   const containerVariants: Variants = {
     hidden: {},
-    show: { transition: { staggerChildren: 0.3, when: "beforeChildren" } },
+    show: { transition: { staggerChildren: 0.25, when: "beforeChildren" } },
   };
 
-  // title pop-in
   const titleVariants: Variants = {
     hidden: { opacity: 0, scale: 0.8 },
     show: {
@@ -55,9 +51,8 @@ export function GovernanceProcess() {
     exit: { opacity: 0, scale: 0.8, transition: { duration: 0.4 } },
   };
 
-  // text slide/fade
   const textVariants: Variants = {
-    hidden: (dir: number) => ({ opacity: 0, y: dir * 50 }),
+    hidden: (dir: number) => ({ opacity: 0, y: 30 * dir }),
     show: {
       opacity: 1,
       y: 0,
@@ -65,25 +60,27 @@ export function GovernanceProcess() {
     },
     exit: (dir: number) => ({
       opacity: 0,
-      y: dir * -50,
+      y: -30 * dir,
       transition: { duration: 0.3 },
     }),
   };
 
   return (
     <>
+      {/* trigger */}
       <div ref={ref} className="w-full h-screen" />
+
       <AnimatePresence>
         {isInView && (
           <motion.section
             key="governance-process"
-            className="fixed inset-0 z-50 flex flex-col items-center justify-center overflow-hidden bg-black"
+            className="fixed inset-0 z-50 flex flex-col items-center justify-center overflow-hidden bg-black text-white"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.6, ease: "easeInOut" }}
           >
-            {/* Background loop */}
+            {/* animated loop */}
             <motion.div
               className="fixed inset-0 -z-20 pointer-events-none"
               initial={{ opacity: 0 }}
@@ -94,7 +91,7 @@ export function GovernanceProcess() {
               <InfinityLoop />
             </motion.div>
 
-            {/* Gradient overlay */}
+            {/* gold gradient overlay */}
             <motion.div
               className="fixed inset-0 -z-10 bg-gradient-to-br from-[#4E2A1E]/50 via-[#3A1F0B]/30 to-[#D4AF37]/40"
               initial={{ opacity: 0 }}
@@ -103,7 +100,7 @@ export function GovernanceProcess() {
               transition={{ duration: 0.8 }}
             />
 
-            {/* Content */}
+            {/* content */}
             <motion.div
               className="relative z-30 max-w-6xl px-6 text-center space-y-8"
               variants={containerVariants}
@@ -113,39 +110,35 @@ export function GovernanceProcess() {
             >
               <motion.h3
                 variants={titleVariants}
-                className="text-4xl md:text-5xl font-bold text-white drop-shadow-[0_4px_8px_rgba(212,175,55,0.5)]"
+                className="
+                  text-4xl md:text-5xl font-bold
+                  text-[#FFE066] drop-shadow-[0_4px_8px_rgba(212,175,55,0.5)]
+                "
                 whileHover={{ scale: 1.05 }}
               >
                 How PLHH Governance Works
               </motion.h3>
 
               <motion.div
-                className="space-y-4 text-lg text-white/90"
                 variants={textVariants}
                 custom={1}
+                className="space-y-4 text-lg text-white/80"
               >
                 <p>
-                  This is the essence of Governance. Not just structure. Not
-                  just voting. But the courage to believe in something, and the
-                  humility to let the community decide.
+                  Governance is more than voting—it’s the courage to share your
+                  vision and trust the community’s voice.
                 </p>
                 <p>
-                  That's why we chose DAO Governance. Because it's not about one
-                  mind. It's about many hearts.
+                  Every proposal you make, discuss, and vote on shapes our
+                  shared future.
                 </p>
               </motion.div>
 
-              <motion.div
-                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
-                initial={{ opacity: 0, y: 50 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 50 }}
-                transition={{ duration: 0.8, ease: "easeOut", delay: 0.3 }}
-              >
-                {governanceSteps.map((step, i) => (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                {governanceSteps.map((step, idx) => (
                   <motion.div
-                    key={i}
-                    className="bg-black/50 backdrop-blur-sm rounded-2xl p-8 text-center"
+                    key={idx}
+                    className="bg-black/60 backdrop-blur-sm rounded-2xl p-8 text-center"
                     style={{ boxShadow: "0 0 20px rgba(212,175,55,0.4)" }}
                     initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -153,7 +146,7 @@ export function GovernanceProcess() {
                     transition={{
                       duration: 0.6,
                       ease: "easeOut",
-                      delay: 0.4 + i * 0.1,
+                      delay: 0.3 + idx * 0.1,
                     }}
                   >
                     <div className="w-16 h-16 mx-auto mb-4 flex items-center justify-center rounded-full bg-gradient-to-r from-[#D4AF37]/40 to-[#FFE066]/20">
@@ -165,10 +158,10 @@ export function GovernanceProcess() {
                     <p className="text-white/80 text-sm">{step.description}</p>
                   </motion.div>
                 ))}
-              </motion.div>
+              </div>
             </motion.div>
 
-            {/* Scroll Hint */}
+            {/* scroll hint */}
             <motion.div
               className="fixed bottom-8 z-40 w-full flex justify-center"
               initial={{ opacity: 0 }}
