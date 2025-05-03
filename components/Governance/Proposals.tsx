@@ -25,10 +25,10 @@ const activeProposals: Proposal[] = [
     id: 1,
     title: "Increase Staking Rewards by 2%",
     description:
-      "Proposal to increase the annual staking rewards from 8% to 10% to incentivize long-term holding.",
-    votesFor: 2800000,
-    votesAgainst: 1200000,
-    totalVotes: 4000000,
+      "Increase annual staking rewards from 8% to 10% to reward long-term holders.",
+    votesFor: 2_800_000,
+    votesAgainst: 1_200_000,
+    totalVotes: 4_000_000,
     status: "active",
     timeRemaining: "2 days",
     category: "Treasury",
@@ -37,10 +37,10 @@ const activeProposals: Proposal[] = [
     id: 2,
     title: "Add New Metaverse Region",
     description:
-      "Expand the PLHH metaverse with a new mountain region featuring exclusive land plots and experiences.",
-    votesFor: 3500000,
-    votesAgainst: 500000,
-    totalVotes: 4000000,
+      "Expand the PLHH Metaverse with a new mountain region and exclusive land plots.",
+    votesFor: 3_500_000,
+    votesAgainst: 500_000,
+    totalVotes: 4_000_000,
     status: "active",
     timeRemaining: "5 days",
     category: "Metaverse",
@@ -49,10 +49,10 @@ const activeProposals: Proposal[] = [
     id: 3,
     title: "Community Fund Allocation",
     description:
-      "Allocate 100,000 PLHH from the community fund to support environmental conservation projects.",
-    votesFor: 2900000,
-    votesAgainst: 1100000,
-    totalVotes: 4000000,
+      "Allocate 100,000 PLHH to support environmental conservation projects.",
+    votesFor: 2_900_000,
+    votesAgainst: 1_100_000,
+    totalVotes: 4_000_000,
     status: "passed",
     timeRemaining: "Completed",
     category: "Community",
@@ -60,26 +60,29 @@ const activeProposals: Proposal[] = [
 ];
 
 export function GovernanceProposals() {
-  const [selectedProposal, setSelectedProposal] = useState<Proposal>(
-    activeProposals[0]
-  );
+  const [selected, setSelected] = useState<Proposal>(activeProposals[0]);
   const sentinelRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(sentinelRef, { amount: 0.5, once: false });
 
-  // Container variant for staggering
   const containerVariants: Variants = {
     hidden: {},
-    show: { transition: { staggerChildren: 0.3, when: "beforeChildren" } },
+    show: {
+      transition: { staggerChildren: 0.25, when: "beforeChildren" },
+    },
   };
 
-  // Slide + fade
   const itemVariants: Variants = {
     hidden: (dir: number) => ({ opacity: 0, y: dir * 30 }),
     show: {
       opacity: 1,
       y: 0,
-      transition: { type: "tween", ease: "easeOut", duration: 0.7 },
+      transition: { type: "tween", ease: "easeOut", duration: 0.6 },
     },
+    exit: (_: number) => ({
+      opacity: 0,
+      y: -30,
+      transition: { duration: 0.3 },
+    }),
   };
 
   return (
@@ -97,7 +100,7 @@ export function GovernanceProposals() {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.6, ease: "easeInOut" }}
           >
-            {/* InfinityLoop bg */}
+            {/* Infinity-loop background */}
             <motion.div
               className="fixed inset-0 -z-20 pointer-events-none"
               initial={{ opacity: 0 }}
@@ -117,151 +120,145 @@ export function GovernanceProposals() {
               transition={{ duration: 0.8 }}
             />
 
-            {/* Content */}
+            {/* Content & Proposals */}
             <motion.div
-              className="relative z-30 max-w-6xl px-6 space-y-10"
+              className="relative z-30 max-w-6xl px-6 space-y-12"
               variants={containerVariants}
               initial="hidden"
               animate="show"
               exit="hidden"
             >
-              {/* Narrative */}
+              {/* Section Heading */}
+              <motion.h3
+                variants={itemVariants}
+                className="
+                  text-4xl md:text-5xl font-extrabold text-center
+                  bg-gradient-to-r from-[#D4AF37] via-[#FFE066] to-[#D4AF37]
+                  bg-clip-text text-transparent
+                "
+              >
+                Active Governance Proposals
+              </motion.h3>
+
+              {/* Proposals Grid */}
               <motion.div
+                className="grid grid-cols-1 lg:grid-cols-3 gap-8"
                 custom={1}
                 variants={itemVariants}
-                className="text-center space-y-4 text-lg"
               >
-                <p>
-                  Creating from scratch. Not knowing if it would work. Only
-                  knowing that we had to try.
-                </p>
-                <p>
-                  Because if we didn’t speak, if we didn’t act, if we didn’t
-                  give our vision a voice – nothing would move.
-                </p>
-              </motion.div>
-
-              {/* Proposals grid */}
-              <motion.div
-                className="grid w-full grid-cols-1 lg:grid-cols-3 gap-8"
-                custom={-1}
-                variants={itemVariants}
-              >
-                {/* List */}
-                <motion.div
-                  className="lg:col-span-2 space-y-4 bg-white/10 backdrop-blur-sm rounded-lg p-6"
-                  style={{ boxShadow: "0 0 0 2px #D4AF37" }}
-                >
-                  <h3 className="flex items-center gap-2 text-xl font-bold mb-4 text-[#FFE066]">
-                    <Clock className="h-5 w-5" />
-                    Active Proposals
-                  </h3>
+                {/* Left: Proposal List */}
+                <div className="lg:col-span-2 space-y-4">
                   {activeProposals.map((p) => (
                     <motion.div
                       key={p.id}
-                      whileHover={{ scale: 1.01 }}
-                      className={`cursor-pointer rounded-lg p-4 transition-all ${
-                        selectedProposal.id === p.id
-                          ? "bg-[#FFE066]/10"
-                          : "bg-white/5 hover:bg-white/10"
-                      }`}
+                      variants={itemVariants}
+                      whileHover={{ scale: 1.02 }}
+                      className={`
+                        cursor-pointer rounded-lg p-5 transition-all
+                        ${
+                          selected.id === p.id
+                            ? "bg-[#FFE066]/10"
+                            : "bg-white/10 hover:bg-white/20"
+                        }
+                      `}
                       style={{
                         boxShadow:
-                          selectedProposal.id === p.id
+                          selected.id === p.id
                             ? "0 0 0 2px #D4AF37"
                             : "0 0 0 1px rgba(212,175,55,0.3)",
                       }}
-                      onClick={() => setSelectedProposal(p)}
+                      onClick={() => setSelected(p)}
                     >
-                      <div className="flex justify-between mb-2">
+                      <div className="flex justify-between mb-3">
                         <div>
-                          <h4 className="font-semibold">{p.title}</h4>
-                          <span className="text-sm text-black bg-[#FFE066]/20 px-2 py-0.5 rounded-full">
+                          <h4 className="text-lg font-semibold">{p.title}</h4>
+                          <span className="text-sm bg-[#F59E0B]/20 px-2 py-0.5 rounded-full text-[#f37669] flex justify-center items-center w-20">
                             {p.category}
                           </span>
                         </div>
-                        <div className="flex items-center gap-1 text-sm">
-                          <Clock className="h-3 w-3" />
-                          <span>{p.timeRemaining}</span>
+                        <div className="flex items-center gap-2 text-sm text-[#FFE066]">
+                          <Clock className="h-4 w-4" />
+                          {p.timeRemaining}
                         </div>
                       </div>
                       <div className="mb-2">
                         <div className="flex justify-between text-sm mb-1">
-                          <span>
-                            For: {(p.votesFor / 1_000_000).toFixed(1)}M
+                          <span className="text-[#F59E0B]">
+                            For {(p.votesFor / 1e6).toFixed(1)}M
                           </span>
-                          <span>
-                            Against: {(p.votesAgainst / 1_000_000).toFixed(1)}M
+                          <span className="text-[#F7786B]">
+                            Against {(p.votesAgainst / 1e6).toFixed(1)}M
                           </span>
                         </div>
                         <div className="h-2 bg-white/20 rounded-full overflow-hidden">
                           <div
-                            className="h-full bg-gradient-to-r from-[#8FD19E] to-[#6BBF85]"
+                            className="h-full bg-gradient-to-r from-[#F59E0B] to-[#D97706]"
                             style={{
                               width: `${(p.votesFor / p.totalVotes) * 100}%`,
                             }}
                           />
                         </div>
                       </div>
-                      <p className="text-sm line-clamp-2 text-white/80">
+                      <p className="text-sm text-white/80 line-clamp-2">
                         {p.description}
                       </p>
                     </motion.div>
                   ))}
-                </motion.div>
+                </div>
 
-                {/* Detail */}
-                <motion.div
-                  className="bg-white/10 backdrop-blur-sm rounded-lg p-6"
+                {/* Right: Detail Card */}
+                <div
+                  className="bg-white/10 backdrop-blur-sm rounded-lg p-6 space-y-4"
                   style={{ boxShadow: "0 0 0 2px #D4AF37" }}
-                  custom={1}
-                  variants={itemVariants}
                 >
-                  <h3 className="text-xl font-bold mb-4 text-[#FFE066]">
-                    Proposal Details
-                  </h3>
-                  <h4 className="text-lg font-semibold mb-2">
-                    {selectedProposal.title}
-                  </h4>
-                  <div className="space-y-1 text-sm mb-4">
+                  <motion.h4
+                    variants={itemVariants}
+                    className="text-2xl font-semibold text-[#FFE066]"
+                  >
+                    {selected.title}
+                  </motion.h4>
+
+                  <motion.div
+                    variants={itemVariants}
+                    className="text-sm space-y-1"
+                  >
                     <p>
                       Status:{" "}
-                      <span className="font-medium">
-                        {selectedProposal.status}
+                      <span className="font-medium text-white">
+                        {selected.status}
                       </span>
                     </p>
-                    <p>Category: {selectedProposal.category}</p>
-                    <p>Time: {selectedProposal.timeRemaining}</p>
+                    <p>Category: {selected.category}</p>
+                    <p>Time Left: {selected.timeRemaining}</p>
                     <p>
-                      Total Votes:{" "}
-                      {(selectedProposal.totalVotes / 1_000_000).toFixed(1)}M
+                      Total Votes: {(selected.totalVotes / 1e6).toFixed(1)}M
                     </p>
-                  </div>
-                  <p className="text-sm text-white/90 mb-4">
-                    {selectedProposal.description}
-                  </p>
-                  <div className="space-y-4">
+                  </motion.div>
+
+                  <motion.p
+                    variants={itemVariants}
+                    className="text-white/90 text-sm"
+                  >
+                    {selected.description}
+                  </motion.p>
+
+                  <motion.div variants={itemVariants} className="space-y-4">
                     <div>
                       <div className="flex justify-between text-sm mb-1">
                         <span>For</span>
                         <span>
                           {(
-                            (selectedProposal.votesFor /
-                              selectedProposal.totalVotes) *
+                            (selected.votesFor / selected.totalVotes) *
                             100
                           ).toFixed(1)}
                           %
                         </span>
                       </div>
                       <Progress
-                        value={
-                          (selectedProposal.votesFor /
-                            selectedProposal.totalVotes) *
-                          100
-                        }
+                        value={(selected.votesFor / selected.totalVotes) * 100}
                         className="h-2 bg-white/20"
                       >
-                        <div className="h-full bg-gradient-to-r from-[#8FD19E] to-[#6BBF85] rounded-full" />
+                        <div className="h-full bg-gradient-to-r from-[#F59E0B] to-[#D97706] rounded-full" />
                       </Progress>
                     </div>
 
@@ -270,8 +267,7 @@ export function GovernanceProposals() {
                         <span>Against</span>
                         <span>
                           {(
-                            (selectedProposal.votesAgainst /
-                              selectedProposal.totalVotes) *
+                            (selected.votesAgainst / selected.totalVotes) *
                             100
                           ).toFixed(1)}
                           %
@@ -279,35 +275,37 @@ export function GovernanceProposals() {
                       </div>
                       <Progress
                         value={
-                          (selectedProposal.votesAgainst /
-                            selectedProposal.totalVotes) *
-                          100
+                          (selected.votesAgainst / selected.totalVotes) * 100
                         }
                         className="h-2 bg-white/20"
                       >
                         <div className="h-full bg-gradient-to-r from-[#F7786B] to-[#DD5C4B] rounded-full" />
                       </Progress>
                     </div>
-                  </div>
+                  </motion.div>
 
-                  <Link
-                    href={`/proposals/${selectedProposal.id}/vote`}
-                    className="block mt-6"
-                  >
-                    <Button
-                      className="w-full bg-gradient-to-r from-[#8FD19E] to-[#6BBF85] text-black hover:from-[#8FD19E] hover:to-[#6BBF85]/90"
-                      style={{ boxShadow: "0 0 0 2px #D4AF37" }}
+                  <motion.div variants={itemVariants}>
+                    <Link
+                      href={`/proposals/${selected.id}/vote`}
+                      className="block"
                     >
-                      Cast Your Vote
-                    </Button>
-                  </Link>
-                </motion.div>
+                      <Button
+                        size="lg"
+                        className="w-full bg-gradient-to-r from-[#F59E0B] to-[#D97706] text-white hover:from-[#F59E0B] hover:to-[#D97706]/90"
+                        style={{ boxShadow: "0 0 0 2px #D4AF37" }}
+                      >
+                        Cast Your Vote
+                      </Button>
+                    </Link>
+                  </motion.div>
+                </div>
               </motion.div>
             </motion.div>
           </motion.section>
         )}
       </AnimatePresence>
-      {/* spacer */}
+
+      {/* spacer to allow scrolling */}
       <div className="h-[100vh]" />
     </>
   );
