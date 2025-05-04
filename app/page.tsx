@@ -13,6 +13,8 @@ import CTASection from "@/components/LandingSections/CTASection";
 import WhatWeDo from "@/components/LandingSections/WhatWeDo";
 import YourRole from "@/components/LandingSections/YourRole";
 import WhatYouCanExpect from "@/components/LandingSections/WhatYouCanExpect";
+import ClosingThought from "@/components/LandingSections/ClosingThought";
+import QnASection from "@/components/LandingSections/QnASection";
 
 export default function Home() {
   return (
@@ -38,6 +40,8 @@ export default function Home() {
           <FictionFunction />
           <WhatYouCanExpect />
           <CTASection />
+          <ClosingThought />
+          <QnASection />
         </div>
       </main>
     </>
