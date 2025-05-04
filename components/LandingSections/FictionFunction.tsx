@@ -23,7 +23,7 @@ const FictionFunction = () => {
     <>
       <section
         ref={ref}
-        className="w-full h-[100vh] relative overflow-hidden bg-black text-white"
+        className="w-full h-[100vh] relative overflow-hidden bg-black text-white "
       >
         <AnimatePresence>
           {isInView && (
@@ -33,7 +33,7 @@ const FictionFunction = () => {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.6, ease: "easeInOut" }}
-              className="fixed top-0 left-0 w-full h-[100vh] flex flex-col justify-center items-center text-center px-4 text-2xl sm:text-4xl font-bold gap-6 z-50"
+              className="fixed top-10 left-0 w-full h-[100vh] flex flex-col justify-center items-center text-center px-4 text-2xl sm:text-4xl font-bold gap-6 z-50"
             >
               {/* Headings */}
               <motion.div
@@ -66,18 +66,18 @@ const FictionFunction = () => {
 
                 {/* Clockwise Animated Links with Larger Font */}
                 <motion.a
-                  href="#community"
+                  href="/guardians-of-infinity"
                   className="absolute top-4 left-4 text-base sm:text-lg md:text-xl text-white hover:text-amber-400 transition"
                   variants={linkVariants}
                   initial="hidden"
                   animate="visible"
                   custom={0.8}
                 >
-                  Community
+                  Guardians of infinity
                 </motion.a>
 
                 <motion.a
-                  href="#tokenomics"
+                  href="/tokenomics"
                   className="absolute top-4 right-4 text-base sm:text-lg md:text-xl text-white hover:text-amber-400 transition"
                   variants={linkVariants}
                   initial="hidden"
@@ -88,7 +88,7 @@ const FictionFunction = () => {
                 </motion.a>
 
                 <motion.a
-                  href="#dao"
+                  href="/dao"
                   className="absolute bottom-4 right-4 text-base sm:text-lg md:text-xl text-white hover:text-amber-400 transition"
                   variants={linkVariants}
                   initial="hidden"
@@ -99,7 +99,7 @@ const FictionFunction = () => {
                 </motion.a>
 
                 <motion.a
-                  href="#governance"
+                  href="/governance"
                   className="absolute bottom-4 left-4 text-base sm:text-lg md:text-xl text-white hover:text-amber-400 transition"
                   variants={linkVariants}
                   initial="hidden"
