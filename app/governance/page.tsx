@@ -34,7 +34,7 @@ export default function GovernancePage() {
           {/* full-width CTA */}
           <div className="relative z-10 w-full">
             <GovernanceHero />
-            <GovernanceProposals />
+            {/* <GovernanceProposals /> */}
             <GovernanceProcess />
             <GovernanceCTA />
           </div>
