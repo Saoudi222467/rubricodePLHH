@@ -9,10 +9,7 @@ export default function LandingHero() {
 
   return (
     <>
-      <section
-        ref={ref}
-        className="w-full h-[100vh] bg-black relative overflow-hidden"
-      >
+      <section ref={ref} className="w-full h-[100vh]  relative overflow-hidden">
         {/* Intro Text – fixed centered with enhanced typography */}
         <motion.div
           className="fixed inset-0 z-10 flex items-center justify-center p-4"

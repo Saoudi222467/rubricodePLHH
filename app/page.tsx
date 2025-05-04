@@ -10,6 +10,9 @@ import CoCreateSection from "@/components/LandingSections/CoCreateSection";
 import DreamFieldSection from "@/components/LandingSections/DreamFieldSection";
 import FictionFunction from "@/components/LandingSections/FictionFunction";
 import CTASection from "@/components/LandingSections/CTASection";
+import WhatWeDo from "@/components/LandingSections/WhatWeDo";
+import YourRole from "@/components/LandingSections/YourRole";
+import WhatYouCanExpect from "@/components/LandingSections/WhatYouCanExpect";
 
 export default function Home() {
   return (
@@ -24,6 +27,8 @@ export default function Home() {
         {/* Page Content */}
         <div className="relative z-10 bg-black w-full">
           <LandingHero />
+          <WhatWeDo />
+          <YourRole />
           <MissionStatement />
           <HarmonySpectrum />
           <EarthSection />
@@ -31,6 +36,7 @@ export default function Home() {
           <CoCreateSection />
           <DreamFieldSection />
           <FictionFunction />
+          <WhatYouCanExpect />
           <CTASection />
         </div>
       </main>
