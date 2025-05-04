@@ -91,10 +91,6 @@ export default function CryptoHeader() {
         isScrolled
           ? "bg-gradient-to-r from-amber-950/95 via-yellow-900/95 to-amber-950/95 shadow-[0_10px_30px_-10px_rgba(0,0,0,0.5)] backdrop-blur-md"
           : "bg-gradient-to-r from-amber-950 via-yellow-900 to-amber-950"
-      } ${
-        animateHeader
-          ? "translate-y-0 opacity-100"
-          : "-translate-y-10 opacity-0"
       }`}
     >
       {/* Top accent bar */}
@@ -151,7 +147,7 @@ export default function CryptoHeader() {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent
                   align="end"
-                  className="w-56 bg-gradient-to-b from-amber-900 to-amber-950 border border-yellow-600/30 text-amber-100 shadow-[0_10px_25px_-5px_rgba(0,0,0,0.3),0_0_15px_rgba(255,215,0,0.3)] rounded-md overflow-hidden"
+                  className="z-[200] w-56 bg-gradient-to-b from-amber-900 to-amber-950 border border-yellow-600/30 text-amber-100 shadow-[0_10px_25px_-5px_rgba(0,0,0,0.3),0_0_15px_rgba(255,215,0,0.3)] rounded-md overflow-hidden "
                 >
                   {[
                     { name: "Mint", href: "/mint" },
