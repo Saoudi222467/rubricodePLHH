@@ -26,9 +26,9 @@ const activeProposals: Proposal[] = [
     title: "Increase Staking Rewards by 2%",
     description:
       "Increase annual staking rewards from 8% to 10% to reward long-term holders.",
-    votesFor: 2_800_000,
-    votesAgainst: 1_200_000,
-    totalVotes: 4_000_000,
+    votesFor: 2800000,
+    votesAgainst: 1200000,
+    totalVotes: 4000000,
     status: "active",
     timeRemaining: "2 days",
     category: "Treasury",
@@ -38,9 +38,9 @@ const activeProposals: Proposal[] = [
     title: "Add New Metaverse Region",
     description:
       "Expand the PLHH Metaverse with a new mountain region and exclusive land plots.",
-    votesFor: 3_500_000,
-    votesAgainst: 500_000,
-    totalVotes: 4_000_000,
+    votesFor: 3500000,
+    votesAgainst: 500000,
+    totalVotes: 4000000,
     status: "active",
     timeRemaining: "5 days",
     category: "Metaverse",
@@ -50,9 +50,9 @@ const activeProposals: Proposal[] = [
     title: "Community Fund Allocation",
     description:
       "Allocate 100,000 PLHH to support environmental conservation projects.",
-    votesFor: 2_900_000,
-    votesAgainst: 1_100_000,
-    totalVotes: 4_000_000,
+    votesFor: 2900000,
+    votesAgainst: 1100000,
+    totalVotes: 4000000,
     status: "passed",
     timeRemaining: "Completed",
     category: "Community",
@@ -66,9 +66,7 @@ export function GovernanceProposals() {
 
   const containerVariants: Variants = {
     hidden: {},
-    show: {
-      transition: { staggerChildren: 0.25, when: "beforeChildren" },
-    },
+    show: { transition: { staggerChildren: 0.25, when: "beforeChildren" } },
   };
 
   const itemVariants: Variants = {
@@ -122,23 +120,30 @@ export function GovernanceProposals() {
 
             {/* Content & Proposals */}
             <motion.div
-              className="relative z-30 max-w-6xl px-6 space-y-12"
+              className="relative z-30 max-w-6xl px-6 space-y-6"
               variants={containerVariants}
               initial="hidden"
               animate="show"
               exit="hidden"
             >
-              {/* Section Heading */}
               <motion.h3
                 variants={itemVariants}
-                className="
-                  text-4xl md:text-5xl font-extrabold text-center
-                  bg-gradient-to-r from-[#D4AF37] via-[#FFE066] to-[#D4AF37]
-                  bg-clip-text text-transparent
-                "
+                className="text-4xl md:text-5xl font-extrabold text-center bg-gradient-to-r from-[#D4AF37] via-[#FFE066] to-[#D4AF37] bg-clip-text text-transparent"
               >
-                Active Governance Proposals
+                GOVERNANCE PROPOSALS – YOUR VOICE, YOUR VISION
               </motion.h3>
+
+              {/* Narrative Intro */}
+              <motion.p
+                variants={itemVariants}
+                className="text-center text-lg font-medium text-white/90 px-4"
+              >
+                That’s why we chose DAO Governance. Because it’s not about one
+                mind—it’s about many hearts. Everyone who has a thought, a
+                vision, a fire, a question, an idea deserves to be heard. And
+                not just heard—but seen, voted on, and if the community
+                agrees—brought to life.
+              </motion.p>
 
               {/* Proposals Grid */}
               <motion.div
@@ -153,14 +158,11 @@ export function GovernanceProposals() {
                       key={p.id}
                       variants={itemVariants}
                       whileHover={{ scale: 1.02 }}
-                      className={`
-                        cursor-pointer rounded-lg p-5 transition-all
-                        ${
-                          selected.id === p.id
-                            ? "bg-[#FFE066]/10"
-                            : "bg-white/10 hover:bg-white/20"
-                        }
-                      `}
+                      className={`cursor-pointer rounded-lg p-5 transition-all ${
+                        selected.id === p.id
+                          ? "bg-[#FFE066]/10"
+                          : "bg-white/10 hover:bg-white/20"
+                      }`}
                       style={{
                         boxShadow:
                           selected.id === p.id

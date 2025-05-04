@@ -16,19 +16,19 @@ const governanceSteps = [
     icon: Users,
     title: "2. Community Discussion",
     description:
-      "7-day open discussion: refine ideas together in the circle of trust.",
+      "Refine your idea in a 7-day open discussion — together in the circle of trust.",
   },
   {
     icon: Check,
     title: "3. Token-Weighted Voting",
     description:
-      "On-chain vote weighted by holdings — every vote counts, every holder matters.",
+      "On-chain voting weighted by holdings — every vote counts, every holder matters.",
   },
   {
     icon: AlertCircle,
     title: "4. Execution Threshold",
     description:
-      "66% approval + 10% quorum required to turn proposals into reality.",
+      "66% approval plus 10% quorum required — turning proposals into reality.",
   },
 ];
 
@@ -52,15 +52,15 @@ export function GovernanceProcess() {
   };
 
   const textVariants: Variants = {
-    hidden: (dir: number) => ({ opacity: 0, y: 30 * dir }),
+    hidden: (_: number) => ({ opacity: 0, y: 30 }),
     show: {
       opacity: 1,
       y: 0,
       transition: { type: "tween", ease: "easeOut", duration: 0.7 },
     },
-    exit: (dir: number) => ({
+    exit: (_: number) => ({
       opacity: 0,
-      y: -30 * dir,
+      y: -30,
       transition: { duration: 0.3 },
     }),
   };
@@ -112,11 +112,13 @@ export function GovernanceProcess() {
                 variants={titleVariants}
                 className="
                   text-4xl md:text-5xl font-bold
-                  text-[#FFE066] drop-shadow-[0_4px_8px_rgba(212,175,55,0.5)]
+                  bg-gradient-to-r from-[#D4AF37] via-[#FFE066] to-[#D4AF37]
+                  bg-clip-text text-transparent
+                  drop-shadow-[0_4px_8px_rgba(212,175,55,0.5)]
                 "
                 whileHover={{ scale: 1.05 }}
               >
-                How PLHH Governance Works
+                GOVERNANCE PROCESS – COURAGE TO BELIEVE, HUMILITY TO LISTEN
               </motion.h3>
 
               <motion.div
@@ -125,12 +127,14 @@ export function GovernanceProcess() {
                 className="space-y-4 text-lg text-white/80"
               >
                 <p>
-                  Governance is more than voting—it’s the courage to share your
-                  vision and trust the community’s voice.
+                  This is the essence of Governance. Not just structure. Not
+                  just voting. But the courage to believe in something, and the
+                  humility to let the community decide.
                 </p>
                 <p>
-                  Every proposal you make, discuss, and vote on shapes our
-                  shared future.
+                  You can propose, publish, and share your truth. You don’t need
+                  approval or permission—only courage. When the community feels
+                  your vision, we rise together.
                 </p>
               </motion.div>
 

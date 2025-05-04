@@ -8,17 +8,14 @@ import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 
 export function GovernanceCTA() {
-  // sentinel to watch when this section scrolls into/out of view
   const sentinelRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(sentinelRef, { amount: 0.5, once: false });
 
-  // stagger for content items
   const containerVariants: Variants = {
     hidden: {},
     show: { transition: { staggerChildren: 0.2, when: "beforeChildren" } },
   };
 
-  // headline pop-in
   const titleVariants: Variants = {
     hidden: { opacity: 0, scale: 0.8 },
     show: {
@@ -28,7 +25,6 @@ export function GovernanceCTA() {
     },
   };
 
-  // slide + fade for paragraphs & buttons
   const itemVariants: Variants = {
     hidden: (dir: number) => ({ opacity: 0, y: dir * 30 }),
     show: {
@@ -40,7 +36,6 @@ export function GovernanceCTA() {
 
   return (
     <>
-      {/* full-screen “trigger” div */}
       <div ref={sentinelRef} className="w-full h-screen" />
 
       <AnimatePresence>
@@ -53,7 +48,6 @@ export function GovernanceCTA() {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.6, ease: "easeInOut" }}
           >
-            {/* 1) Infinity-loop behind everything */}
             <motion.div
               className="fixed inset-0 -z-20 pointer-events-none"
               initial={{ opacity: 0 }}
@@ -64,7 +58,6 @@ export function GovernanceCTA() {
               <InfinityLoop />
             </motion.div>
 
-            {/* 2) Gold-brown gradient overlay */}
             <motion.div
               className="fixed inset-0 -z-10 bg-gradient-to-br from-[#4E2A1E]/50 via-[#3A1F0B]/30 to-[#D4AF37]/40"
               initial={{ opacity: 0 }}
@@ -73,7 +66,6 @@ export function GovernanceCTA() {
               transition={{ duration: 0.8 }}
             />
 
-            {/* 3) Content & CTA */}
             <motion.div
               className="relative z-30 max-w-2xl px-6 text-center space-y-6"
               variants={containerVariants}
@@ -86,8 +78,9 @@ export function GovernanceCTA() {
                 className="text-5xl md:text-6xl font-extrabold text-white drop-shadow-[0_4px_8px_rgba(212,175,55,0.5)]"
                 whileHover={{ scale: 1.05 }}
               >
-                Ready to{" "}
-                <span className="text-[#FFE066]">Shape the Future?</span>
+                THIS IS DAO GOVERNANCE AT
+                <br />
+                <span className="text-[#FFE066]">PEACE, LOVE & HARMONY.</span>
               </motion.h2>
 
               <motion.p
@@ -95,20 +88,20 @@ export function GovernanceCTA() {
                 variants={itemVariants}
                 className="text-lg text-white"
               >
-                Everyone who has a thought. A vision. A fire. A question. An
-                idea.
-                <br />
-                Deserves to be heard.
+                It's not control. It's contribution. It's not about being right.
+                It's about being real.
               </motion.p>
 
-              <motion.p
+              <motion.div
                 custom={-1}
                 variants={itemVariants}
-                className="text-lg text-white"
+                className="text-lg text-white space-y-2"
               >
-                Ready to give your voice a platform? Join us, connect your
-                wallet, and start shaping tomorrow.
-              </motion.p>
+                <p>You want to build something beautiful? Speak.</p>
+                <p>You want to shift the system? Propose.</p>
+                <p>You want to make impact? Let the community feel you.</p>
+                <p>And if they say yes — then we rise together.</p>
+              </motion.div>
 
               <motion.div
                 custom={1}
@@ -147,7 +140,6 @@ export function GovernanceCTA() {
               </motion.div>
             </motion.div>
 
-            {/* 4) Pulsing scroll hint */}
             <motion.div
               className="fixed bottom-10 z-40 w-full flex justify-center"
               initial={{ opacity: 0 }}

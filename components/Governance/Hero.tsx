@@ -27,11 +27,13 @@ export function GovernanceHero() {
     }),
   };
 
+  // Updated lines to reflect new governance narrative
   const lines = [
-    "One person. One vision. One voice.",
-    "Community-driven governance at work.",
-    "Your vote shapes our ecosystem.",
-    "Together, we build the future.",
+    "This all started with one person. One vision. One voice.",
+    "A man sitting in silence, investing not just money – but belief.",
+    "Creating from scratch. Not knowing if it would work. Only knowing that he had to try.",
+    "Because if he didn't speak, if he didn't act, if he didn't give his vision a voice – nothing would move.",
+    "This is the essence of Governance.",
   ];
 
   return (
@@ -87,7 +89,7 @@ export function GovernanceHero() {
                 "
                 whileHover={{ scale: 1.02 }}
               >
-                GOVERNANCE – A VOICE THAT MOVES THE WORLD
+                🗳 GOVERNANCE – A VOICE THAT BECOMES A MOVEMENT
               </motion.h2>
 
               {lines.map((text, idx) => (
