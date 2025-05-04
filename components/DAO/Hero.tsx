@@ -1,6 +1,8 @@
+// components/DAO/Hero.tsx
 "use client";
 
-import { motion, Variants } from "framer-motion";
+import React, { useRef } from "react";
+import { AnimatePresence, motion, Variants, useInView } from "framer-motion";
 
 const sectionVariants: Variants = {
   hidden: { opacity: 0, y: 20 },
@@ -12,17 +14,32 @@ const sectionVariants: Variants = {
 };
 
 export function DaoHero() {
+  const sentinelRef = useRef<HTMLDivElement>(null);
+  // when the sentinel (full-screen div) is at least 50% in view…
+  const isInView = useInView(sentinelRef, { amount: 0.5 });
+
   return (
-    <motion.section
-      className="text-center"
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true }}
-      custom={1}
-      variants={sectionVariants}
-    >
-      <h1 className="text-5xl font-bold mb-2">DAO – The Soul of Our System</h1>
-      <p className="text-xl text-gray-600">No one rules. Everyone decides.</p>
-    </motion.section>
+    <>
+      {/* occupies one viewport height to trigger `isInView` */}
+      <div ref={sentinelRef} className="w-full h-screen" />
+
+      <AnimatePresence>
+        {isInView && (
+          <motion.section
+            key="dao-hero"
+            className="fixed inset-0 h-screen flex items-center justify-center bg-black text-white z-20"
+            variants={sectionVariants}
+            initial="hidden"
+            animate="visible"
+            exit="hidden"
+            custom={1}
+          >
+            <h1 className="text-5xl font-bold">
+              🗳 DAO – THE SOUL OF OUR SYSTEM
+            </h1>
+          </motion.section>
+        )}
+      </AnimatePresence>
+    </>
   );
 }

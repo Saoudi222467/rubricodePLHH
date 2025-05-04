@@ -1,3 +1,4 @@
+// components/DAO/Proposals.tsx
 "use client";
 
 import React, { useRef, useState } from "react";
@@ -133,14 +134,14 @@ export function DaoProposals() {
                 variants={proposalsItemVariants}
                 className="text-4xl md:text-5xl font-extrabold text-center bg-gradient-to-r from-[#D4AF37] via-[#FFE066] to-[#D4AF37] bg-clip-text text-transparent"
               >
-                GOVERNANCE PROPOSALS – YOUR VOICE, YOUR VISION
+                DAO PROPOSALS – YOUR VOICE, YOUR VISION
               </motion.h3>
 
               <motion.p
                 variants={proposalsItemVariants}
                 className="text-center text-lg font-medium text-white/90 px-4"
               >
-                That’s why we chose DAO Governance. Because it’s not about one
+                That’s why we built this as a DAO – because it’s not about one
                 mind—it’s about many hearts. Everyone who has a thought, a
                 vision, a fire, a question, an idea deserves to be heard. And
                 not just heard—but seen, voted on, and if the community
@@ -240,7 +241,7 @@ export function DaoProposals() {
 
                   <motion.p
                     variants={proposalsItemVariants}
-                    className="text-white/90 text-Sm"
+                    className="text-white/90 text-sm"
                   >
                     {selected.description}
                   </motion.p>
