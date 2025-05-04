@@ -19,34 +19,66 @@ export function DaoDefinition() {
 
   return (
     <>
-      {/* full-screen spacer to trigger in-view */}
+      {/* spacer to trigger in-view */}
       <div ref={sentinelRef} className="w-full h-screen" />
 
       <AnimatePresence>
         {isInView && (
-          <motion.section
-            key="dao-definition"
-            className="fixed inset-0 h-screen flex flex-col items-center justify-center bg-black text-white z-20 px-6"
-            variants={sectionVariants}
-            initial="hidden"
-            animate="visible"
-            exit="hidden"
-            custom={3}
+          <motion.div
+            key="dao-definition-wrapper"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.6, ease: "easeInOut" }}
+            className="fixed inset-0 w-full h-screen z-50"
           >
-            <h2 className="text-3xl font-semibold mb-4">What Is a DAO?</h2>
-            <p className="mb-4 text-center max-w-2xl">
-              DAO means: no one rules. DAO means: everyone decides.
-            </p>
-            <p className="mb-4 text-center max-w-2xl">
-              Every person, in every country, in every time zone – has the same
-              voice. The same vote. The same power.
-            </p>
-            <p className="text-center max-w-2xl">
-              No project can move forward unless the community says yes. Not by
-              a founder. Not by a council. Not by a whale. Only by us – the
-              collective.
-            </p>
-          </motion.section>
+            {/* Gradient Overlay */}
+            <motion.div
+              className="absolute inset-0 bg-gradient-to-br from-[#4E2A1E]/50 via-[#3A1F0B]/30 to-[#D4AF37]/40 z-10"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.8 }}
+            />
+
+            {/* Content */}
+            <motion.section
+              className="relative z-20 h-screen flex flex-col items-center justify-center px-6 text-white text-center space-y-8 max-w-3xl mx-auto"
+              variants={sectionVariants}
+              initial="hidden"
+              animate="visible"
+              exit="hidden"
+              custom={3}
+            >
+              <h2 className="text-4xl sm:text-5xl md:text-6xl font-extrabold mb-6">
+                What Is a DAO?
+              </h2>
+
+              <p className="text-2xl sm:text-3xl leading-relaxed">
+                <span className="text-amber-400 font-semibold">DAO means:</span>{" "}
+                <span className="font-semibold">no one rules.</span>{" "}
+                <span className="text-amber-400 font-semibold">DAO means:</span>{" "}
+                <span className="font-semibold">everyone decides.</span>
+              </p>
+
+              <p className="text-xl sm:text-2xl leading-relaxed">
+                Every person, in every country, in every time zone – has the
+                same <span className="text-amber-400 font-semibold">voice</span>
+                . The same{" "}
+                <span className="text-amber-400 font-semibold">vote</span>. The
+                same <span className="text-amber-400 font-semibold">power</span>
+                .
+              </p>
+
+              <p className="text-lg sm:text-xl md:text-2xl leading-relaxed">
+                No project can move forward unless the community says{" "}
+                <span className="text-amber-400 font-semibold">yes</span>. Not
+                by a founder. Not by a council. Not by a whale. Only by us – the{" "}
+                <span className="text-amber-400 font-semibold">collective</span>
+                .
+              </p>
+            </motion.section>
+          </motion.div>
         )}
       </AnimatePresence>
     </>

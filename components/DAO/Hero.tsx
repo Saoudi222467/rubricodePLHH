@@ -24,7 +24,7 @@ export function DaoHero() {
             >
               {/* Background Image with Zoom-In Animation */}
               <motion.img
-                src="/assets/images/landing/DAOHero.jpg"
+                src="/assets/images/landing/CoCreate.jpg"
                 alt="DAO Hero Background"
                 className="absolute inset-0 w-full h-full object-cover z-0"
                 animate={{ scale: [1, 1.2] }}

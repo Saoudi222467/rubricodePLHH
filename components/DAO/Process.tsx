@@ -19,35 +19,71 @@ export function DaoProcess() {
 
   return (
     <>
-      {/* full-screen spacer to trigger in-view */}
+      {/* trigger point */}
       <div ref={sentinelRef} className="w-full h-screen" />
 
       <AnimatePresence>
         {isInView && (
-          <motion.section
-            key="dao-process"
-            className="fixed inset-0 h-screen flex flex-col items-center justify-center bg-black text-white z-20 px-6"
-            variants={sectionVariants}
-            initial="hidden"
-            animate="visible"
-            exit="hidden"
-            custom={4}
+          <motion.div
+            key="dao-process-wrapper"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.6, ease: "easeInOut" }}
+            className="fixed inset-0 w-full h-screen z-50"
           >
-            <h2 className="text-3xl font-semibold mb-4">How It Works</h2>
-            <p className="mb-4 text-center max-w-2xl">
-              You explore a project inside the Metaverse. You walk through it.
-              You feel it. And then you vote:
-            </p>
-            <ul className="list-disc list-inside mb-4 space-y-2 max-w-2xl text-center">
-              <li>– Should this become real?</li>
-              <li>– Should this receive funding?</li>
-              <li>– Do we believe in this?</li>
-            </ul>
-            <p className="text-center max-w-2xl">
-              If the community says yes – we build. If the community says no –
-              we evolve.
-            </p>
-          </motion.section>
+            {/* Gradient Overlay */}
+            <motion.div
+              className="absolute inset-0 bg-gradient-to-br from-[#4E2A1E]/50 via-[#3A1F0B]/30 to-[#D4AF37]/40 z-10"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.8 }}
+            />
+
+            {/* Content */}
+            <motion.section
+              className="relative z-20 h-screen flex flex-col items-center justify-center px-6 text-white text-center space-y-8 max-w-3xl mx-auto"
+              variants={sectionVariants}
+              initial="hidden"
+              animate="visible"
+              exit="hidden"
+              custom={4}
+            >
+              <h2 className="text-4xl sm:text-5xl md:text-6xl font-extrabold mb-4">
+                How It Works
+              </h2>
+
+              <p className="text-xl sm:text-2xl leading-relaxed">
+                You explore a project inside the Metaverse. You walk through it.
+                You feel it. And then you vote:
+              </p>
+
+              <ul className="list-disc list-inside text-xl sm:text-2xl leading-relaxed space-y-4">
+                <li>
+                  <span className="font-semibold">
+                    Should this become real?
+                  </span>
+                </li>
+                <li>
+                  <span className="font-semibold">
+                    Should this receive funding?
+                  </span>
+                </li>
+                <li>
+                  <span className="font-semibold">Do we believe in this?</span>
+                </li>
+              </ul>
+
+              <p className="text-lg sm:text-xl md:text-2xl leading-relaxed">
+                If the community says{" "}
+                <span className="text-amber-400 font-semibold">yes</span> – we
+                build. If the community says{" "}
+                <span className="text-amber-400 font-semibold">no</span> – we
+                evolve.
+              </p>
+            </motion.section>
+          </motion.div>
         )}
       </AnimatePresence>
     </>

@@ -17,7 +17,7 @@ import { Container } from "@/components/ui/container";
 export default function DaoPage() {
   return (
     <>
-      <div className="sticky top-0 z-30 flex flex-col">
+      <div className="sticky top-0 z-50 flex flex-col">
         <Ticker />
       </div>
       <Header />

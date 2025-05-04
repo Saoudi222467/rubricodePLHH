@@ -19,36 +19,69 @@ export function DaoParticipation() {
 
   return (
     <>
-      {/* full-screen spacer to trigger in-view */}
+      {/* spacer to trigger when this section comes into view */}
       <div ref={sentinelRef} className="w-full h-screen" />
 
       <AnimatePresence>
         {isInView && (
-          <motion.section
-            key="dao-participation"
-            className="fixed inset-0 h-screen flex flex-col items-center justify-center bg-black text-white z-20 px-6"
-            variants={sectionVariants}
-            initial="hidden"
-            animate="visible"
-            exit="hidden"
-            custom={6}
+          <motion.div
+            key="dao-participation-wrapper"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.6, ease: "easeInOut" }}
+            className="fixed inset-0 w-full h-screen z-50"
           >
-            <h2 className="text-3xl font-semibold mb-4">
-              Participation & Ownership
-            </h2>
-            <p className="mb-4 text-center max-w-2xl">
-              Our Metaverse is the space. The DAO is the engine. And the token
-              is the voice.
-            </p>
-            <p className="mb-4 text-center max-w-2xl">
-              This is participation without borders. Ownership without
-              permission. Democracy without dilution.
-            </p>
-            <p className="text-center max-w-2xl">
-              You don’t just invest money. You invest your vote. You invest your
-              energy. You invest your presence.
-            </p>
-          </motion.section>
+            {/* Gradient Overlay */}
+            <motion.div
+              className="absolute inset-0 bg-gradient-to-br from-[#4E2A1E]/50 via-[#3A1F0B]/30 to-[#D4AF37]/40 z-10"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.8 }}
+            />
+
+            {/* Content */}
+            <motion.section
+              className="relative z-20 h-screen flex flex-col items-center justify-center px-6 text-white text-center space-y-8 max-w-3xl mx-auto"
+              variants={sectionVariants}
+              initial="hidden"
+              animate="visible"
+              exit="hidden"
+              custom={6}
+            >
+              <h2 className="text-4xl sm:text-5xl md:text-6xl font-extrabold mb-4">
+                Participation & Ownership
+              </h2>
+
+              <p className="text-xl sm:text-2xl leading-relaxed">
+                Our Metaverse is the{" "}
+                <span className="text-amber-400 font-semibold">space</span>. The
+                DAO is the{" "}
+                <span className="text-amber-400 font-semibold">engine</span>.
+                And the token is the{" "}
+                <span className="text-amber-400 font-semibold">voice</span>.
+              </p>
+
+              <p className="text-xl sm:text-2xl leading-relaxed">
+                This is participation without{" "}
+                <span className="text-amber-400 font-semibold">borders</span>.
+                Ownership without{" "}
+                <span className="text-amber-400 font-semibold">permission</span>
+                . Democracy without{" "}
+                <span className="text-amber-400 font-semibold">dilution</span>.
+              </p>
+
+              <p className="text-lg sm:text-xl md:text-2xl leading-relaxed">
+                You don’t just invest money. You invest your{" "}
+                <span className="text-amber-400 font-semibold">vote</span>. You
+                invest your{" "}
+                <span className="text-amber-400 font-semibold">energy</span>.
+                You invest your{" "}
+                <span className="text-amber-400 font-semibold">presence</span>.
+              </p>
+            </motion.section>
+          </motion.div>
         )}
       </AnimatePresence>
     </>
