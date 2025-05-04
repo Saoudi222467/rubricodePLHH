@@ -29,7 +29,7 @@ const CTASection = () => {
   return (
     <section
       ref={ref}
-      className="relative w-full h-[200vh] overflow-hidden bg-black text-white"
+      className="relative w-full h-[200vh] overflow-hidden  text-white"
     >
       <AnimatePresence>
         {inView && (
