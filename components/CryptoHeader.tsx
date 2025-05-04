@@ -156,9 +156,10 @@ export default function CryptoHeader() {
                   {[
                     { name: "Mint", href: "/mint" },
                     { name: "Staking", href: "/staking" },
-                    { name: "NFT Marketplace", href: "/nft-marketplace" },
+                    { name: "DAO", href: "/dao" },
+                    // { name: "NFT Marketplace", href: "/nft-marketplace" },
                     { name: "Governance", href: "/governance" },
-                    { name: "Analytics", href: "/analytics" },
+                    // { name: "Analytics", href: "/analytics" },
                   ].map((item) => (
                     <DropdownMenuItem key={item.name}>
                       <Link
