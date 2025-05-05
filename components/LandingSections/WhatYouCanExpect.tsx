@@ -4,7 +4,7 @@ import { motion, useInView } from "framer-motion";
 
 export default function WhatYouCanExpect() {
   const ref = useRef(null);
-  const inView = useInView(ref, { amount: 0.5 });
+  const inView = useInView(ref, { amount: 0.8 });
 
   return (
     <section ref={ref} className="w-full h-[100vh]  relative">

@@ -4,17 +4,17 @@ import { motion, useInView, AnimatePresence } from "framer-motion";
 
 const CTASection = () => {
   const ref = useRef(null);
-  const inView = useInView(ref, { margin: "-30% 0px -30% 0px" });
+  const inView = useInView(ref, { margin: "-30% 0px -30% 0px"});
 
   const containerVariants = {
     visible: {
       transition: {
-        staggerChildren: 0.7,
-        delayChildren: 0.5,
+        staggerChildren: 0.8,
+        delayChildren: 0.6,
       },
     },
     hidden: {},
-    exit: { opacity: 0, transition: { duration: 0.6 } },
+    exit: { opacity: 0, transition: { duration: 0.4 } },
   };
 
   const childVariants = {
@@ -38,7 +38,7 @@ const CTASection = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.6, ease: "easeInOut" }}
+            transition={{ duration: 0.8, ease: "easeInOut" }}
             className="fixed top-0 left-0 w-full h-[100vh] flex items-center justify-center z-10 pointer-events-none"
           >
             {/* Background Blob */}
