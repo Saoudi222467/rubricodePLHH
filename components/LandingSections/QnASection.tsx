@@ -124,7 +124,7 @@ export default function QnASectionWithHeading() {
       <AnimatePresence>
         {wrapper1InView && (
           <motion.section
-            className="fixed inset-0 w-full h-screen overflow-hidden"
+            className="fixed inset-0 w-full h-screen overflow-hidden pt-20"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -141,7 +141,7 @@ export default function QnASectionWithHeading() {
       <AnimatePresence>
         {wrapper2InView && (
           <motion.section
-            className="fixed inset-0 w-full h-screen overflow-hidden"
+            className="fixed inset-0 w-full h-screen overflow-hidden pt-20"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
