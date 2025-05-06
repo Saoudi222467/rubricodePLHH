@@ -1,3 +1,4 @@
+// app/components/CryptoHeader.tsx
 "use client";
 
 import { useState, useEffect } from "react";
@@ -10,53 +11,50 @@ import {
   ExternalLink,
   ChevronRight,
 } from "lucide-react";
-import { ConnectButton } from "@suiet/wallet-kit";
+import {
+  ConnectButton,
+  useAccountBalance,
+  addressEllipsis,
+} from "@suiet/wallet-kit";
 import "@suiet/wallet-kit/style.css";
 import {
   DropdownMenu,
+  DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useWallet } from "@/lib/wallet-providers";
 
 export default function CryptoHeader() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [animateHeader, setAnimateHeader] = useState(false);
-  const wallet = useWallet();
-  const [walletState, setWalletState] = useState({
-    connected: wallet.connected,
-    walletAddress: wallet.walletAddress,
-  });
 
-  useEffect(() => {
-    setWalletState({
-      connected: wallet.connected,
-      walletAddress: wallet.walletAddress,
-    });
-  }, [wallet?.connected, wallet?.walletAddress]);
+  const wallet = useWallet();
+  const { balance: mistBalance, loading } = useAccountBalance();
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 10);
     window.addEventListener("scroll", handleScroll);
-    setAnimateHeader(true);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   const renderWalletButton = () => {
-    if (!walletState.connected) {
+    if (!wallet.connected) {
       return (
         <ConnectButton
-          className="hidden md:flex bg-gradient-to-r from-yellow-600 via-amber-500 to-yellow-600 hover:from-yellow-500 hover:via-amber-400 hover:to-yellow-500 text-amber-950 font-bold border-none rounded-md px-6 py-6 h-11 shadow-[0_0_20px_rgba(255,215,0,0.3),inset_0_1px_1px_rgba(255,255,255,0.4)] hover:shadow-[0_0_30px_rgba(255,215,0,0.5),inset_0_1px_2px_rgba(255,255,255,0.6)] transition-all duration-300"
-          style={
-            {
-              "--wkit-button-width": "auto",
-              "--wkit-border-radius": "8px",
-              height: "44px",
-              minWidth: "120px",
-            } as React.CSSProperties
-          }
+          className="hidden md:flex
+                     bg-gradient-to-r from-yellow-600 via-amber-500 to-yellow-600
+                     hover:from-yellow-500 hover:via-amber-400 hover:to-yellow-500
+                     text-amber-950 font-bold rounded-md px-6 py-2 h-11
+                     shadow-[0_0_20px_rgba(255,215,0,0.3),inset_0_1px_1px_rgba(255,255,255,0.4)]
+                     hover:shadow-[0_0_30px_rgba(255,215,0,0.5),inset_0_1px_2px_rgba(255,255,255,0.6)]
+                     transition-all duration-300"
+          style={{
+            "--wkit-button-width": "auto",
+            "--wkit-border-radius": "8px",
+            height: "44px",
+            minWidth: "120px",
+          } as React.CSSProperties}
         >
           <Wallet className="mr-1 h-4 w-4" />
           <span>Connect Wallet</span>
@@ -64,24 +62,57 @@ export default function CryptoHeader() {
       );
     }
 
+    // convert from MIST (string) → number of SUI
+    const suiBalance = mistBalance ? Number(mistBalance) / 1_000_000_000 : 0;
+
     return (
-      <div className="hidden md:flex flex-col items-center">
-        <div className="wkit-connected-container bg-gradient-to-r from-yellow-600 via-amber-500 to-yellow-600 hover:from-yellow-500 hover:via-amber-400 hover:to-yellow-500 text-amber-950 font-bold border-none rounded-md px-6 py-6 h-11 hover:shadow-[0_0_30px_rgba(255,215,0,0.5),inset_0_1px_2px_rgba(255,255,255,0.6)] transition-all duration-300 text-xs sm:text-sm border border-white shadow-sm whitespace-nowrap">
-          <button className="wkit-connected-button flex items-center">
-            <Wallet className="mr-2 h-4 w-4" />
-          </button>
-        </div>
+      <div className="hidden md:flex">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button
+              className="flex items-center
+                         bg-amber-800/20 hover:bg-amber-800/30
+                         text-amber-100 px-4 py-2 rounded-md
+                         font-medium space-x-2 transition-all"
+            >
+              {loading ? (
+                <span>Loading…</span>
+              ) : (
+                <span>{suiBalance.toFixed(3)} SUI</span>
+              )}
+              <span>{addressEllipsis(wallet.account.address)}</span>
+              <ChevronDown className="h-4 w-4" />
+            </button>
+          </DropdownMenuTrigger>
+
+          <DropdownMenuContent
+            align="end"
+            className="w-48
+                       bg-gradient-to-b from-amber-900 to-amber-950
+                       border border-yellow-600/30
+                       text-amber-100
+                       shadow-[0_10px_25px_-5px_rgba(0,0,0,0.3),0_0_15px_rgba(255,215,0,0.3)]
+                       rounded-md overflow-hidden"
+          >
+            <DropdownMenuItem>
+              <button
+                onClick={() => wallet.disconnect()}
+                className="w-full text-left px-4 py-2"
+              >
+                Disconnect Wallet
+              </button>
+            </DropdownMenuItem>
+            {/* add more menu items here */}
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     );
   };
 
-  // Navigation items
   const navItems = [
     { name: "Home", href: "/" },
     { name: "About", href: "/about" },
     { name: "Tokenomics", href: "/tokenomics" },
-    // { name: "Roadmap", href: "/roadmap" },
-    // { name: "Community", href: "/community" },
     { name: "Guardians of Infinity", href: "/guardians-of-infinity" },
   ];
 
@@ -98,7 +129,7 @@ export default function CryptoHeader() {
         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-yellow-100/80 to-transparent -translate-x-full animate-[shimmer_3s_infinite]" />
       </div>
 
-      {/* Main header: NO horizontal padding */}
+      {/* Main header */}
       <div className="container mx-auto flex h-20 items-center justify-between">
         {/* Logo */}
         <div className="flex items-center gap-4 group">
@@ -136,6 +167,7 @@ export default function CryptoHeader() {
                 <div className="absolute bottom-0 left-1/2 w-0 h-[2px] bg-gradient-to-r from-yellow-300/0 via-yellow-300 to-yellow-300/0 group-hover:w-4/5 group-hover:left-[10%] transition-all duration-300" />
               </li>
             ))}
+
             {/* Utility Dropdown */}
             <li className="relative group">
               <DropdownMenu>
@@ -147,15 +179,13 @@ export default function CryptoHeader() {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent
                   align="end"
-                  className="z-[200] w-56 bg-gradient-to-b from-amber-900 to-amber-950 border border-yellow-600/30 text-amber-100 shadow-[0_10px_25px_-5px_rgba(0,0,0,0.3),0_0_15px_rgba(255,215,0,0.3)] rounded-md overflow-hidden "
+                  className="z-[200] w-56 bg-gradient-to-b from-amber-900 to-amber-950 border border-yellow-600/30 text-amber-100 shadow-[0_10px_25px_-5px_rgba(0,0,0,0.3),0_0_15px_rgba(255,215,0,0.3)] rounded-md overflow-hidden"
                 >
                   {[
                     { name: "Mint", href: "/mint" },
                     { name: "Staking", href: "/staking" },
                     { name: "DAO", href: "/dao" },
-                    // { name: "NFT Marketplace", href: "/nft-marketplace" },
                     { name: "Governance", href: "/governance" },
-                    // { name: "Analytics", href: "/analytics" },
                   ].map((item) => (
                     <DropdownMenuItem key={item.name}>
                       <Link
@@ -184,7 +214,9 @@ export default function CryptoHeader() {
             <ExternalLink className="mr-1 h-4 w-4" />
             Whitepaper
           </Link>
+
           {renderWalletButton()}
+
           <button
             className="xl:hidden text-amber-100 hover:text-yellow-300 bg-amber-800/20 hover:bg-amber-800/30 p-2 rounded-md transition-colors"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -194,7 +226,7 @@ export default function CryptoHeader() {
         </div>
       </div>
 
-      {/* Mobile Dropdown — no horizontal padding */}
+      {/* Mobile Menu */}
       {isMobileMenuOpen && (
         <div className="xl:hidden bg-gradient-to-b from-amber-900 to-amber-950 border-t border-yellow-700/30 shadow-[0_10px_30px_-5px_rgba(0,0,0,0.5)]">
           <div className="container mx-auto py-5">
