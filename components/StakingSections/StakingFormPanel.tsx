@@ -159,9 +159,17 @@ const StakingInterface: React.FC = () => {
 
       const coinWithEnough = coins.find(c => Number(c.balance) >= amountAtomic);
       if (coinWithEnough) {
-        // Only split off the exact amount needed for staking
-        const split = tx.splitCoins(tx.object(coinWithEnough.coinObjectId), [tx.pure(amountAtomic)]);
-        coinForStaking = split;
+        if (Number(coinWithEnough.balance) === amountAtomic) {
+          // Use the coin directly if it has exactly the amount
+          coinForStaking = tx.object(coinWithEnough.coinObjectId);
+          // DO NOT transfer it back to yourself!
+        } else {
+          // Split off the exact amount needed for staking
+          const split = tx.splitCoins(tx.object(coinWithEnough.coinObjectId), [tx.pure(amountAtomic)]);
+          coinForStaking = split[0];
+          // Transfer the remainder (original coin) back to the user
+          tx.transferObjects([tx.object(coinWithEnough.coinObjectId)], tx.pure(wallet.address!));
+        }
         console.log('Using single coin for staking:', coinWithEnough.coinObjectId);
       } else {
         // Merge all coins, then split only the amount needed
@@ -171,18 +179,20 @@ const StakingInterface: React.FC = () => {
           tx.mergeCoins(merged, [coinObjs[i]]);
         }
         const split = tx.splitCoins(merged, [tx.pure(amountAtomic)]);
-        coinForStaking = split;
+        coinForStaking = split[0];
+        // Transfer the leftover merged coin back to the user
+        tx.transferObjects([merged], tx.pure(wallet.address!));
         console.log('Merged coins for staking:', coins.map(c => c.coinObjectId));
       }
 
-      // Always use only the first (and only) split coin for staking
+      // Always use only the split/selected coin for staking
       tx.moveCall({
         target: `${PACKAGE_ID}::plhh::stake`,
         arguments: [
           tx.object(STAKE_POOL_ID), // shared pool object
           tx.pure(amountAtomic),    // amount
           tx.pure(stakingDuration), // duration
-          coinForStaking[0],        // &mut Coin<PLHH>
+          coinForStaking,           // &mut Coin<PLHH>
         ],
       });
 
