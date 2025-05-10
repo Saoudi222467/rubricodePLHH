@@ -80,7 +80,7 @@ export default function CryptoHeader() {
               ) : (
                 <span>{suiBalance.toFixed(3)} SUI</span>
               )}
-              <span>{addressEllipsis(wallet.account.address)}</span>
+              <span>{addressEllipsis(wallet.address)}</span>
               <ChevronDown className="h-4 w-4" />
             </button>
           </DropdownMenuTrigger>

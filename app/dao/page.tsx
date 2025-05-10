@@ -13,6 +13,7 @@ import { DaoRationale } from "@/components/DAO/Rationale";
 import { DaoParticipation } from "@/components/DAO/Participation";
 import { DaoCTA } from "@/components/DAO/CTA";
 import { Container } from "@/components/ui/container";
+import { DaoComponent } from "../../components/DAO/DaoFunct";
 
 export default function DaoPage() {
   return (
@@ -40,6 +41,7 @@ export default function DaoPage() {
           <DaoRationale />
           <DaoParticipation />
           <DaoCTA />
+          <DaoComponent />
         </section>
       </main>
     </>

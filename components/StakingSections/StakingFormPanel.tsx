@@ -1,5 +1,3 @@
-"use client";
-
 import React, { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence, useInView } from "framer-motion";
 import { Slider } from "@/components/ui/slider";
@@ -13,6 +11,7 @@ import "react-toastify/dist/ReactToastify.css";
 
 const PACKAGE_ID = process.env.NEXT_PUBLIC_PACKAGE_ID!;
 const STAKE_POOL_ID = process.env.NEXT_PUBLIC_STAKE_POOL_ID!;
+const PLHH_TYPE = `${PACKAGE_ID}::plhh::PLHH`;
 
 interface WalletType {
   connected: boolean;
@@ -35,9 +34,7 @@ const StakingInterface: React.FC = () => {
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [activeStakes, setActiveStakes] = useState<{ amount: string; duration: number }[]>([]);
   const [plhhBalance, setPlhhBalance] = useState("0");
-  const [isLoadingStakes, setIsLoadingStakes] = useState(false);
 
   // APY = 11% * years, capped at 77%
   const apyPercent = Math.min(stakingDuration, 7) * 11;
@@ -62,7 +59,6 @@ const StakingInterface: React.FC = () => {
 
   const loadUserData = async () => {
     if (!wallet.connected || !wallet.address) return;
-    setIsLoadingStakes(true);
 
     try {
       const provider = wallet.getClient
@@ -70,23 +66,47 @@ const StakingInterface: React.FC = () => {
         : new SuiClient({ url: getFullnodeUrl("mainnet") });
 
       // Get PLHH balance
-      const coinType = `${PACKAGE_ID}::plhh::PLHH`;
+      const coinType = PLHH_TYPE;
       const coinsResponse = await provider.getCoins({ owner: wallet.address, coinType });
-      let total = 0n;
+      let total = BigInt(0);
       for (const c of coinsResponse.data || []) total += BigInt(c.balance);
       setPlhhBalance((Number(total) / 1e9).toFixed(4));
 
-      // Optional: retrieve on-chain stakes via devInspect + BCS decode
-      // const tx = new TransactionBlock();
-      // const [raw] = tx.moveCall({ target: `${PACKAGE_ID}::plhh::get_stakes`, arguments: [tx.object(STAKE_POOL_ID), tx.pure(wallet.address)] });
-      // const result = await provider.devInspectTransactionBlock({ transactionBlock: tx, sender: wallet.address });
-      // Decode with @mysten/bcs if needed
-
+      // Try to get stakes - this is optional and might need adjustment based on your contract structure
+      try {
+        const tx = new TransactionBlock();
+        tx.moveCall({
+          target: `${PACKAGE_ID}::plhh::get_stakes`,
+          arguments: [
+            tx.object(STAKE_POOL_ID),
+            tx.pure(wallet.address)
+          ]
+        });
+        
+        const result = await provider.devInspectTransactionBlock({
+          transactionBlock: tx,
+          sender: wallet.address
+        });
+        
+        // Look for emitted events that might contain stake information
+        console.log("Stakes inspect result:", result);
+        
+        // For simplicity, we'll just check if there are any returned values
+        if (result.events && result.events.length > 0) {
+          const stakeEvents = result.events.filter(
+            e => e.type.includes("InfoEvent")
+          );
+          
+          if (stakeEvents.length > 0) {
+            // You can parse returned events here to display active stakes
+          }
+        }
+      } catch (e) {
+        console.warn("Could not retrieve stakes:", e);
+      }
     } catch (e) {
-      console.error(e);
+      console.error("Error loading user data:", e);
       toast.error("Failed to load your staking data");
-    } finally {
-      setIsLoadingStakes(false);
     }
   };
 
@@ -119,51 +139,82 @@ const StakingInterface: React.FC = () => {
         : new SuiClient({ url: getFullnodeUrl("mainnet") });
 
       // Convert to atomic units
-      const amountAtomic = BigInt(Math.floor(stakingAmount * 1e9));
+      const amountAtomic = Math.round(stakingAmount * 1e9);
 
-      // Fetch PLHH coins
-      const coinType = `${PACKAGE_ID}::plhh::PLHH`;
-      const { data: coins } = await provider.getCoins({ owner: wallet.address, coinType });
-      if (!coins.length) throw new Error("No PLHH tokens in your wallet");
+      // Fetch all PLHH coins
+      const coinsResponse = await provider.getCoins({
+        owner: wallet.address,
+        coinType: PLHH_TYPE,
+      });
+      const coins = coinsResponse.data || [];
+      if (!coins.length) {
+        throw new Error("No PLHH tokens in your wallet");
+      }
 
-      const coin = coins.find(c => BigInt(c.balance) >= amountAtomic);
-      if (!coin) throw new Error("Merge your PLHH coins or reduce the amount");
-
-      // Build transaction
+      // Find a coin with enough balance
+      let coinForStaking;
       const tx = new TransactionBlock();
-      tx.setSender(wallet.address);
-      tx.setGasBudget(1_000_000);
+      tx.setSender(wallet.address!);
+      tx.setGasBudget(50_000_000);
 
-      const coinArg = tx.object(coin.coinObjectId);
-      const [toStake] = tx.splitCoins(coinArg, [tx.pure(amountAtomic)]);
+      const coinWithEnough = coins.find(c => Number(c.balance) >= amountAtomic);
+      if (coinWithEnough) {
+        // Only split off the exact amount needed for staking
+        const split = tx.splitCoins(tx.object(coinWithEnough.coinObjectId), [tx.pure(amountAtomic)]);
+        coinForStaking = split;
+        console.log('Using single coin for staking:', coinWithEnough.coinObjectId);
+      } else {
+        // Merge all coins, then split only the amount needed
+        const coinObjs = coins.map((c) => tx.object(c.coinObjectId));
+        const merged = tx.object(coins[0].coinObjectId);
+        for (let i = 1; i < coinObjs.length; i++) {
+          tx.mergeCoins(merged, [coinObjs[i]]);
+        }
+        const split = tx.splitCoins(merged, [tx.pure(amountAtomic)]);
+        coinForStaking = split;
+        console.log('Merged coins for staking:', coins.map(c => c.coinObjectId));
+      }
 
+      // Always use only the first (and only) split coin for staking
       tx.moveCall({
         target: `${PACKAGE_ID}::plhh::stake`,
         arguments: [
-          tx.object(STAKE_POOL_ID),
-          tx.pure(amountAtomic),
-          tx.pure(stakingDuration),
-          toStake,
+          tx.object(STAKE_POOL_ID), // shared pool object
+          tx.pure(amountAtomic),    // amount
+          tx.pure(stakingDuration), // duration
+          coinForStaking[0],        // &mut Coin<PLHH>
         ],
+      });
+
+      // Log transaction details for debugging
+      console.log("Transaction details:", {
+        packageId: PACKAGE_ID,
+        stakePoolId: STAKE_POOL_ID,
+        stakeAmount: stakingAmount,
+        stakingDuration,
+        plhhType: PLHH_TYPE,
+        coinForStaking,
+        allCoins: coins.map(c => c.coinObjectId),
       });
 
       const result = await wallet.signAndExecuteTransactionBlock({
         transactionBlock: tx,
-        options: { showEffects: true, showEvents: true },
       });
 
-      if (result.effects?.status.status === "success") {
+      console.log("Staking result:", result);
+      if (result.effects?.status?.status === "success") {
         toast.success("Staking successful!");
-        setActiveStakes([
-          ...activeStakes,
-          { amount: stakingAmount.toFixed(2), duration: stakingDuration },
-        ]);
+        loadUserData && loadUserData();
       } else {
-        throw new Error(result.effects?.status.error || "Unknown error");
+        // Log the full result for debugging
+        console.error("Full staking result:", result);
+        const errorMsg = result.effects?.status?.error || JSON.stringify(result);
+        toast.error("Staking failed: " + errorMsg);
       }
     } catch (e: any) {
-      console.error(e);
-      toast.error(`Staking failed: ${e.message || e}`);
+      console.error("Staking error:", e);
+      const errMsg = e instanceof Error ? e.message : "Transaction failed";
+      toast.error(`Staking failed: ${errMsg}`);
     } finally {
       setIsProcessing(false);
       setShowConfirmation(false);
@@ -223,19 +274,6 @@ const StakingInterface: React.FC = () => {
         <Button onClick={handleApproveContract} disabled={!wallet.connected} className="w-full bg-gradient-to-r from-amber-600 to-yellow-500 text-amber-950 font-bold py-6 h-12">
           {wallet.connected ? 'Stake Now' : 'Connect Wallet to Stake'}
         </Button>
-      </div>
-
-      {/* Right: Active Stakes */}
-      <div className="backdrop-blur-sm p-6 rounded-lg border border-[#A67C00]" style={{ backgroundImage: "linear-gradient(to bottom, #000000, #a67d0064)" }}>
-        <h2 className="text-xl md:text-2xl font-bold text-amber-400 mb-4">Active Stakes</h2>
-        {isLoadingStakes ? (
-          <div className="flex justify-center items-center py-10"><Loader2 className="h-8 w-8 animate-spin text-amber-400" /></div>
-        ) : activeStakes.length ? (
-          <div className="space-y-4">{activeStakes.map((s,i)=>(<div key={i} className="p-3 bg-amber-900/20 rounded-md"><div className="flex justify-between mb-1"><span className="text-amber-200">Amount</span><span className="text-white font-medium">{s.amount} PLHH</span></div><div className="flex justify-between mb-1"><span className="text-amber-200">Duration</span><span className="text-white font-medium">{s.duration} Years</span></div><div className="flex justify-between"><span className="text-amber-200">Status</span><span className="text-green-400">Active</span></div></div>))}</div>
-        ) : (
-          <div className="text-center py-10"><p className="text-amber-200/70 mb-2">No active stakes found</p><p className="text-sm text-amber-200/50">Start staking to earn rewards on your PLHH tokens</p></div>
-        )}
-        {wallet.connected && <Button onClick={loadUserData} variant="outline" className="mt-4 w-full border-amber-500/50 text-amber-400 hover:bg-amber-500/10">Refresh Stakes</Button>}
       </div>
     </div>
   );

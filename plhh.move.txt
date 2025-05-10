@@ -1,0 +1,814 @@
+module 0x0::plhh {
+    use sui::coin::{Self, Coin, TreasuryCap};
+    use sui::transfer;
+    use sui::tx_context::{Self, TxContext};
+    use sui::object::{Self, UID};
+    use sui::balance::{Self, Balance};
+    use sui::event;
+    use std::option::{Self, Option};
+    use sui::table::{Self, Table};
+    use sui::clock::{Self, Clock};
+    use pyth::price_feed::{Self as price_feed, PriceFeed};
+    use pyth::state::{Self as pyth_state, State as PythState};
+    use pyth::pyth;
+    use pyth::price_identifier;
+    use sui::sui::SUI;
+    use pyth::price_info;
+    use pyth::i64;
+    use std::vector;
+    use pyth::price;
+    use pyth::price_info::PriceInfoObject;
+    use std::string;
+    use sui::url;
+
+    // ====== Errors ======
+    const EInvalidPhase: u64 = 0;
+    const EPhaseNotStarted: u64 = 1;
+    const EPhaseEnded: u64 = 2;
+    const E_INVALID_ID: u64 = 44;
+   
+    const EInvalidBurnAmount: u64 = 4;
+    const EInvalidProposal: u64 = 5;
+    const EInvalidVote: u64 = 6;
+    const EVotingEnded: u64 = 7;
+    const ENotAdmin: u64 = 8;
+    
+    const EInvalidStakingDuration: u64 = 20;
+    const EInsufficientPayment: u64 = 21;
+    const ENoStakeFound: u64 = 22;
+    const EInvalidUnstakeAmount: u64 = 23;
+    const EStakeLockPeriodNotMet: u64 = 24;
+    const EInsufficientRewardPool: u64 = 25;
+
+
+
+    // ====== Constants ======
+    // const TOTAL_SUPPLY: u64 = 1_000_000_000_000_000_000; // Removing unused constant
+    const PHASE_DURATION: u64 = 17; // 17 days 
+    // Epochs per year 
+    const EPOCHS_PER_YEAR: u64 = 365;
+    // Market cap thresholds for burn mechanisms (in USD cents for precision)
+    const BURN_THRESHOLD_1: u64 = 800_000_000; // 8M USD
+    const BURN_THRESHOLD_2: u64 = 2_800_000_000; // 28M USD
+    const BURN_THRESHOLD_3: u64 = 8_800_000_000; // 88M USD
+    const BURN_THRESHOLD_4: u64 = 88_800_000_000; // 888M USD
+    
+    // Burn percentages (basis points for precision)
+    const BURN_PERCENT_1: u64 = 200; // 2%
+    const BURN_PERCENT_2: u64 = 300; // 3%
+    const BURN_PERCENT_3: u64 = 500; // 5%
+    const BURN_AMOUNT_4: u64 = 10_000_000_000_000_000; // 10M tokens with 9 decimals
+
+    // ====== Structs ======
+    /// The PLHH token type
+    public struct PLHH has drop {}
+
+    /// Admin capability for privileged operations
+    public struct AdminCap has key, store {
+        id: UID,
+    }
+
+    public struct InfoEvent has copy, drop {
+       
+        message: vector<u8>,
+        value: u64,
+    }
+
+    /// Configuration for the presale phases
+    public struct PreSaleConfig has key {
+        id: UID,
+        treasury_cap: TreasuryCap<PLHH>,
+        current_phase: u8,
+        phase_start_time: u64,
+        total_sold: u64,
+        market_cap_usd_cents: u64,
+        presale_funds: Balance<sui::sui::SUI>,
+        admin: address,
+        phase_prices: vector<u64>, // in USD cents
+        phase_token_allocations: vector<u64>,
+        phase_tokens_sold: vector<u64>
+    }
+
+    /// The staking pool for PLHH tokens.
+    public struct StakeInfo has store, drop{
+        amount: u64,
+        start_epoch: u64,
+        duration: u8,
+        last_claim_epoch: u64,
+    }
+    
+    // Main Staking Pool
+    public struct StakePool has key {
+        id: UID,
+        total_staked: u64,
+        reward_pool: Balance<PLHH>,
+        stakes: Table<address, vector<StakeInfo>>,
+        staker_list: vector<address>,
+        last_distribution_epoch: u64,
+    }
+
+    // ====== Events ======
+    /// Event emitted when tokens are purchased
+   // Update your event struct definition
+    public struct TokensPurchased has copy, drop {
+        buyer: address,
+        amount: u64,
+        phase: u8,
+        price: u64,
+        sui_price: u64, // New field for SUI price
+    }
+
+    /// Event emitted when phase advances
+    public struct PhaseAdvanced has copy, drop {
+        new_phase: u8,
+        start_time: u64,
+    }
+
+    /// Event emitted when tokens are burned
+    public struct TokensBurned has copy, drop {
+        amount: u64,
+        threshold_reached: u64,
+    }
+
+    /// Event emitted when proposal is created
+   
+
+    // ====== Functions ======
+    /// Initialize the module
+    fun init(witness: PLHH, ctx: &mut TxContext) {
+        // Create the PLHH coin with initial supply
+        let (treasury_cap, metadata) = coin::create_currency(
+            witness, 
+            9, // Decimals
+            b"PLHH", // Symbol
+            b"Peace, Love & Harmony Coin", // Name
+            b"A Real-World Asset-backed cryptocurrency built on the SUI Blockchain", // Description
+            option::some(url::new_unsafe_from_bytes(b"https://ipfs.io/ipfs/bafybeih7gy5m5dlxtbhhuulhyt7u6vhk5e7rjvjjmdmui5lr4aofdtnzmq")), // Icon URL       // Icon URL
+            ctx
+        );
+
+        // Transfer metadata to sender
+        transfer::public_transfer(metadata, tx_context::sender(ctx));
+
+        // Create admin capability
+        let admin_cap = AdminCap {
+            id: object::new(ctx),
+        };
+        transfer::transfer(admin_cap, tx_context::sender(ctx));
+
+        // Create phase prices vector (in USD cents)
+        let phase_prices = vector[
+            8, // Phase 1: $0.08
+            12, // Phase 2: $0.12
+            16, // Phase 3: $0.16
+            20, // Phase 4: $0.20
+            24, // Phase 5: $0.24
+            28, // Phase 6: $0.28
+            32, // Phase 7: $0.32
+            36, // Phase 8: $0.36
+            40  // Launch price: $0.40
+        ];
+
+
+        let phase_token_allocations = vector[
+            11_111_111_000_000_000, // Phase 1: 11.1 million tokens * 10^9
+            22_222_222_000_000_000, // Phase 2: 22.2 million tokens * 10^9
+            25_000_000_000_000_000, // Phase 3: 25 million tokens * 10^9
+            33_333_333_000_000_000, // Phase 4: 33.33 million tokens * 10^9
+            35_555_555_000_000_000, // Phase 5: 35.55 million tokens * 10^9
+            44_444_444_000_000_000, // Phase 6: 44.444 million tokens * 10^9
+            45_678_901_000_000_000, // Phase 7: 45.678 million tokens * 10^9
+            46_654_434_000_000_000, // Phase 8: 46/654 million tokens * 10^9
+            1_000_000_000_000_000_000  // Launch Phase: Total Supply * 10^9
+        ];
+
+        let phase_tokens_sold = vector[
+            0, 0, 0, 0, 0, 0, 0, 0, 0
+        ];
+
+        // Create presale config
+        let presale_config = PreSaleConfig {
+            id: object::new(ctx),
+            treasury_cap,
+            current_phase: 1,
+            phase_start_time: tx_context::epoch(ctx), // This will be fixed in the reset_phase_time function
+            total_sold: 0,
+            market_cap_usd_cents: 0,
+            presale_funds: balance::zero(),
+            admin: tx_context::sender(ctx),
+            phase_prices,
+            phase_token_allocations,
+            phase_tokens_sold,
+        };
+        transfer::share_object(presale_config);
+
+       
+    }
+
+    // ====== Public Functions ======
+
+    /// Purchase tokens in the current presale phase
+
+
+
+public entry fun purchase_tokens(
+    config: &mut PreSaleConfig,
+    clock: &Clock,
+    payment: &mut Coin<SUI>,
+    amount_tokens: u64,
+    price_info_object: &PriceInfoObject,
+    ctx: &mut TxContext
+) {
+    let current_epoch = tx_context::epoch(ctx);
+
+    if (current_epoch >= config.phase_start_time + PHASE_DURATION) {
+        if (config.current_phase < 9) {  // Changed to 9 to include launch phase
+            config.current_phase = config.current_phase + 1;
+            config.phase_start_time = current_epoch;
+            
+            // Emit event to record the phase change
+            event::emit(PhaseAdvanced {
+                new_phase: config.current_phase,
+                start_time: config.phase_start_time,
+            });
+        };
+    };
+
+    // Ensure valid phase
+    assert!(config.current_phase <= 9, EInvalidPhase);
+    assert!(current_epoch >= config.phase_start_time, EPhaseNotStarted);
+
+    // Fetch price for the current phase
+    let price_usd_cents = *std::vector::borrow(&config.phase_prices, (config.current_phase - 1) as u64);
+    let max_age = 600;
+    let price_struct = pyth::get_price_no_older_than(price_info_object, clock, max_age);
+
+    let price_info = price_info::get_price_info_from_price_info_object(price_info_object);
+    let price_id = price_identifier::get_bytes(&price_info::get_price_identifier(&price_info));
+    assert!(price_id == x"23d7315113f5b1d3ba7a83604c44b94d79f4fd69af77f804fc7f920a6dc65744", E_INVALID_ID);
+
+ 
+
+
+    //Ensuring allocation
+    let current_phase_index = (config.current_phase - 1) as u64;
+    let phase_allocation = *std::vector::borrow(&config.phase_token_allocations, current_phase_index);
+    let mut phase_tokens_sold = *std::vector::borrow(&config.phase_tokens_sold, current_phase_index);
+
+    assert!(phase_tokens_sold + amount_tokens <= phase_allocation, EInvalidPhase);
+
+    // Update phase-specific tokens sold
+    phase_tokens_sold = phase_tokens_sold + amount_tokens;
+
+
+    let phase_tokens_sold_ref = vector::borrow_mut(&mut config.phase_tokens_sold, current_phase_index);
+    *phase_tokens_sold_ref = phase_tokens_sold;
+
+
+    
+    let expo = price::get_expo(&price_struct);
+    let price_value = price::get_price(&price_struct);
+    let price_value_u64 = i64::get_magnitude_if_positive(&price_value);
+    let is_expo_negative = i64::get_is_negative(&expo);
+    let pos_exp = if (is_expo_negative) {
+        i64::get_magnitude_if_negative(&expo)
+    } else {
+        i64::get_magnitude_if_positive(&expo)
+    };
+
+    let raw_sui_usd_price: u64;
+    if (is_expo_negative) {
+        raw_sui_usd_price = price_value_u64 * pow10(pos_exp as u8);
+    } else {
+        raw_sui_usd_price = price_value_u64 / pow10(pos_exp as u8);
+    };
+    
+    let sui_usd_price = raw_sui_usd_price / 10000000;
+    
+    let usd_price_per_token = (price_usd_cents as u128) * 100000000 / 100;
+    let sui_per_token = (usd_price_per_token * 1000000000) / (sui_usd_price as u128);
+    let payment_required = ((sui_per_token * (amount_tokens as u128) / 1000000000) * 10) as u64;
+    
+    assert!(coin::value(payment) >= payment_required, EInsufficientPayment);
+    let payment_balance = coin::balance_mut(payment);
+    let paid = balance::split(payment_balance, payment_required);
+    balance::join(&mut config.presale_funds, paid);
+    
+    let minted_coins = coin::mint(&mut config.treasury_cap, amount_tokens, ctx);
+    transfer::public_transfer(minted_coins, tx_context::sender(ctx));
+    
+    config.total_sold = config.total_sold + amount_tokens;
+    config.market_cap_usd_cents = (config.total_sold * price_usd_cents) / 1000000000;
+    
+    event::emit(TokensPurchased {
+        buyer: tx_context::sender(ctx),
+        amount: amount_tokens,
+        phase: config.current_phase,
+        price: price_usd_cents,
+        sui_price: sui_usd_price,
+    });
+    
+    check_burn_thresholds(config, ctx);
+}
+
+fun pow10(exp: u8): u64 {
+    let mut i = 0;
+    let mut result = 1;
+    while (i < exp) {
+        result = result * 10;
+        i = i + 1;
+    };
+    result
+}
+
+public entry fun purchase_tokens_fiat(
+    config: &mut PreSaleConfig,
+    fiat_amount_cents: u64,             // how many fiat cents user paid off-chain
+    amount_tokens: u64,                 // how many tokens to mint
+    crossmint_tx_reference: vector<u8>, // crossmint transaction ID
+    recipient: address,                 // user address receiving tokens
+    admin_cap: &AdminCap,               // must prove admin authority
+    ctx: &mut TxContext
+) {
+    // ADMIN CHECK
+    assert!(tx_context::sender(ctx) == config.admin, ENotAdmin);
+
+    // (Optional) Price validation (like verifying user paid enough)
+    // Suppose you rely on your config.current_phase for reference price:
+    let phase_price_cents = *std::vector::borrow(&config.phase_prices, (config.current_phase - 1) as u64);
+    let required_cents = (phase_price_cents * amount_tokens) / 100;
+    assert!(fiat_amount_cents >= required_cents, EInsufficientPayment);
+
+    // MINT tokens
+    let minted_coins = coin::mint(&mut config.treasury_cap, amount_tokens, ctx);
+
+    // TRANSFER minted tokens to the user
+    transfer::public_transfer(minted_coins, recipient);
+
+    // UPDATE sale stats
+    config.total_sold = config.total_sold + amount_tokens;
+    // For example:
+    config.market_cap_usd_cents = (config.total_sold * phase_price_cents) / 1_000_000_000;
+
+    // EMIT event
+    event::emit(TokensPurchased {
+        buyer: recipient,
+        amount: amount_tokens,
+        phase: config.current_phase,
+        price: phase_price_cents,
+        sui_price: 0,
+    });
+
+    // LOG crossmint reference for auditing
+    event::emit(InfoEvent {
+        message: crossmint_tx_reference,
+        value: fiat_amount_cents,
+    });
+
+    // OPTIONAL: check for burn thresholds
+    check_burn_thresholds(config, ctx);
+}
+
+
+
+
+    /// Advance to the next presale phase (admin only)
+    public entry fun advance_phase(
+        config: &mut PreSaleConfig, 
+        _: &AdminCap,
+        ctx: &mut TxContext
+    ) {
+        assert!(tx_context::sender(ctx) == config.admin, ENotAdmin);
+        assert!(config.current_phase < 9, EInvalidPhase); 
+        config.current_phase = config.current_phase + 1;
+        config.phase_start_time = tx_context::epoch(ctx); 
+        // Emit event
+        event::emit(PhaseAdvanced {
+            new_phase: config.current_phase,
+            start_time: config.phase_start_time,
+        });
+    }
+
+    /// Reset the current phase's start time (admin only)
+    /// This function is added to fix timing issues in testnet
+    public entry fun reset_phase_time(
+        config: &mut PreSaleConfig,
+        _: &AdminCap,
+        ctx: &mut TxContext
+    ) {
+        // Verify admin
+        assert!(tx_context::sender(ctx) == config.admin, ENotAdmin);
+        // Reset the phase start time to current epoch
+        config.phase_start_time = tx_context::epoch(ctx);
+        // Emit event
+        event::emit(PhaseAdvanced {
+            new_phase: config.current_phase,
+            start_time: config.phase_start_time,
+        });
+    }
+   
+
+    // ========== Staking Mechanism ========== //
+  /// Initialize the staking pool. Call this once during deployment.
+/// Initialize the staking pool. Call this once during deployment.
+public entry fun init_staking_pool(config: &PreSaleConfig, _admin_cap: &AdminCap, ctx: &mut TxContext) {
+    // Verify admin
+    assert!(tx_context::sender(ctx) == config.admin, ENotAdmin);
+
+    let stake_pool = StakePool {
+        id: object::new(ctx),
+        total_staked: 0,
+        reward_pool: balance::zero(),
+        stakes: table::new(ctx),
+        staker_list: vector::empty<address>(),
+        last_distribution_epoch: tx_context::epoch(ctx),
+    };
+    transfer::share_object(stake_pool);
+}
+
+/// Stake PLHH tokens with adjustable duration (1-8 years).
+public entry fun stake(
+    stake_pool: &mut StakePool,
+    stake_amount: u64,
+    staking_duration: u8, // In years (1-8)
+    staker_tokens: &mut Coin<PLHH>,
+    ctx: &mut TxContext
+) {
+    // Validate staking parameters
+    assert!(staking_duration >= 1 && staking_duration <= 8, EInvalidStakingDuration);
+    let staker = tx_context::sender(ctx);
+    assert!(coin::value(staker_tokens) >= stake_amount, EInsufficientPayment);
+    
+    // Transfer tokens to staking pool
+    let staked_coins = coin::split(staker_tokens, stake_amount, ctx);
+    let staked_balance = coin::into_balance(staked_coins);
+    balance::join(&mut stake_pool.reward_pool, staked_balance);
+    
+    // Create stake info
+    let current_epoch = tx_context::epoch(ctx);
+    let stake_info = StakeInfo {
+        amount: stake_amount,
+        start_epoch: current_epoch,
+        duration: staking_duration,
+        last_claim_epoch: current_epoch,
+    };
+    
+    // Add to stakes table
+    if (!table::contains(&stake_pool.stakes, staker)) {
+        let mut stakes_vec = vector::empty<StakeInfo>();
+        vector::push_back(&mut stakes_vec, stake_info);
+        table::add(&mut stake_pool.stakes, staker, stakes_vec);
+        vector::push_back(&mut stake_pool.staker_list, staker);
+    } else {
+        let stakes_vec = table::borrow_mut(&mut stake_pool.stakes, staker);
+        vector::push_back(stakes_vec, stake_info);
+    };
+    
+    stake_pool.total_staked = stake_pool.total_staked + stake_amount;
+}
+
+/// Calculate APY rate based on staking duration (11% per year)
+fun calculate_apy_rate_for_elapsed(stake: &StakeInfo, current_epoch: u64): u64 {
+    let total_elapsed = current_epoch - stake.start_epoch;   // how many epochs total
+    // fraction_of_year = (total_elapsed / EPOCHS_PER_YEAR), but do it in fixed‐point
+    // “1100” is 11% in “parts per 10,000”
+    //
+    // This yields a *cumulative* APY from the start to now, in parts per 10,000
+    // e.g. 0.5 years => 0.5 * 11% = 5.5% => 550 in parts per 10,000
+    let partial_apy = ((total_elapsed as u128) * 1100) / (EPOCHS_PER_YEAR as u128);
+
+    (partial_apy as u64)
+}
+
+
+/// Calculate rewards for a specific stake
+fun calculate_rewards(stake: &StakeInfo, current_epoch: u64): u64 {
+    let elapsed_epochs = current_epoch - stake.last_claim_epoch;
+    if (elapsed_epochs == 0) {
+        return 0
+    };
+    // Calculate APY rate based on duration (in parts per 10,000)
+    let apy_now = calculate_apy_rate_for_elapsed(stake, current_epoch);
+    let apy_at_last_claim = calculate_apy_rate_for_elapsed(stake, stake.last_claim_epoch);
+    let incremental_apy = apy_now - apy_at_last_claim;
+    // Calculate rewards: amount * rate * (elapsed_epochs / EPOCHS_PER_YEAR) / 10000
+    let rewards = (stake.amount as u128) * (incremental_apy as u128) / 10000;
+    (rewards as u64)
+}
+
+/// Claim rewards without unstaking
+/// Define an event structure for logging information.
+
+public entry fun claim_rewards(
+    stake_pool: &mut StakePool,
+    config: &mut PreSaleConfig,
+    ctx: &mut TxContext
+) {
+    let staker = tx_context::sender(ctx);
+    assert!(table::contains(&stake_pool.stakes, staker), ENoStakeFound);
+    let stakes_vec = table::borrow_mut(&mut stake_pool.stakes, staker);
+    let current_epoch = tx_context::epoch(ctx);
+    let mut total_rewards = 0u64;
+    let len = vector::length(stakes_vec);
+    event::emit(InfoEvent {
+        message: b"Total stakes being processed",
+        value: len,
+    });
+
+    let mut i = 0;
+    while (i < len) {
+        let stake = vector::borrow_mut(stakes_vec, i);
+        let rewards = calculate_rewards(stake, current_epoch);
+        total_rewards = total_rewards + rewards;
+        stake.last_claim_epoch = current_epoch;
+
+        event::emit(InfoEvent {
+            message: b"Processing stake index",
+            value: i,
+        });
+
+        event::emit(InfoEvent {
+            message: b"Rewards for this stake",
+            value: rewards,
+        });
+
+        i = i + 1;
+    };
+
+    if (total_rewards > 0) {
+        // Transfer rewards to the staker
+        let minted_rewards = coin::mint(&mut config.treasury_cap, total_rewards, ctx);
+        transfer::public_transfer(minted_rewards, staker);
+        // Optionally, emit an event to record the minting
+        event::emit(InfoEvent {
+            message: b"Total rewards minted and claimed",
+            value: total_rewards,
+        });
+    } else {
+        event::emit(InfoEvent {
+            message: b"No rewards available to claim",
+            value: 0,
+        });
+    }
+}
+
+
+/// Unstake PLHH tokens after the lock-up period, with accrued rewards.
+public entry fun unstake(
+    stake_pool: &mut StakePool,
+    stake_index: u64,
+    ctx: &mut TxContext
+) {
+    let staker = tx_context::sender(ctx);
+    assert!(table::contains(&stake_pool.stakes, staker), ENoStakeFound);
+    
+    let stakes_vec = table::borrow_mut(&mut stake_pool.stakes, staker);
+    assert!(stake_index < vector::length(stakes_vec), EInvalidUnstakeAmount);
+    
+    let current_epoch = tx_context::epoch(ctx);
+    let stake_ref = vector::borrow(stakes_vec, stake_index);
+    // Allow early unstake by removing the full-term check.
+    let required_epochs = (stake_ref.duration as u64) * EPOCHS_PER_YEAR;
+    let elapsed = current_epoch - stake_ref.start_epoch;
+
+    let removed_stake = vector::remove(stakes_vec, stake_index);
+    // Determine penalty percent if unstaking early.
+    // If full term is reached, no penalty is applied.
+    let penalty_percent = if (elapsed >= required_epochs) {
+         0
+    } else if (elapsed < 30) {
+         40
+    } else if (elapsed < 90) {
+         30
+    } else if (elapsed < 180) {
+         25
+    } else if (elapsed < 365) {
+         20
+    } else {
+         0
+    };
+
+    let rewards = calculate_rewards(&removed_stake, current_epoch);
+    let penalty_amount = (rewards * penalty_percent) / 100;
+    let effective_rewards = rewards - penalty_amount;
+    let total_amount = removed_stake.amount + effective_rewards;
+
+    
+    // Remove the stake from the vector and obtain its value
+  
+    
+    // Update total staked amount
+    stake_pool.total_staked = stake_pool.total_staked - removed_stake.amount;
+    // Transfer principal + rewards to the staker
+    let unstaked_balance = balance::split(&mut stake_pool.reward_pool, total_amount);
+    let unstaked_coins = coin::from_balance(unstaked_balance, ctx);
+    transfer::public_transfer(unstaked_coins, staker);
+    // Clean up if this was the last stake
+    if (vector::is_empty(stakes_vec)) {
+        table::remove(&mut stake_pool.stakes, staker);
+        // Also remove from staker list - need to find index first
+        let mut i = 0;
+        let len = vector::length(&stake_pool.staker_list);
+        let mut found = false;
+        
+        while (i < len && !found) {
+            if (*vector::borrow(&stake_pool.staker_list, i) == staker) {
+                vector::remove(&mut stake_pool.staker_list, i);
+                found = true;
+            } else {
+                i = i + 1;
+            };
+        };
+    };
+}
+
+
+
+/// View function to get estimated rewards for a staker
+public fun get_estimated_rewards(
+    stake_pool: &StakePool,
+    staker: address,
+    ctx: &TxContext
+): u64 {
+    if (!table::contains(&stake_pool.stakes, staker)) {
+        return 0
+    };
+    
+    let stakes_vec = table::borrow(&stake_pool.stakes, staker);
+    let current_epoch = tx_context::epoch(ctx);
+    let mut total_rewards = 0u64;
+    
+    let mut i = 0;
+    let len = vector::length(stakes_vec);
+    
+    while (i < len) {
+        let stake = vector::borrow(stakes_vec, i);
+        let rewards = calculate_rewards(stake, current_epoch);
+        total_rewards = total_rewards + rewards;
+        i = i + 1;
+    };
+   
+
+    event::emit(InfoEvent {
+        message: b"Total stakes found for staker",
+        value: total_rewards,
+    });
+    total_rewards
+}
+
+/// View function to get all stakes for a staker
+/// Define an event structure for logging information.
+
+
+public entry fun get_stakes(
+    stake_pool: &StakePool,
+    staker: address,
+    ctx: &mut TxContext
+): vector<u64> {
+    if (!table::contains(&stake_pool.stakes, staker)) {
+        event::emit(InfoEvent {
+            message: b"Staker has no active stakes",
+            value: 0,
+        });
+        return vector::empty<u64>();
+    };
+
+    let stakes_vec = table::borrow(&stake_pool.stakes, staker);
+    let mut result = vector::empty<u64>();
+    let len = vector::length(stakes_vec);
+
+    event::emit(InfoEvent {
+        message: b"Total stakes found for staker",
+        value: len,
+    });
+
+    let mut i = 0;
+    while (i < len) {
+        let stake = vector::borrow(stakes_vec, i);
+
+        event::emit(InfoEvent {
+            message: b"Processing stake index",
+            value: i,
+        });
+
+        event::emit(InfoEvent {
+            message: b"Stake amount",
+            value: stake.amount,
+        });
+
+        vector::push_back(&mut result, stake.amount);
+        i = i + 1;
+    };
+
+    event::emit(InfoEvent {
+        message: b"Completed retrieving stakes",
+        value: len,
+    });
+
+    result
+}
+
+/// Add rewards to the staking pool (for token emissions or other reward sources)
+    public entry fun add_rewards(
+        stake_pool: &mut StakePool,
+        reward_tokens: &mut Coin<PLHH>,
+        amount: u64,
+        ctx: &mut TxContext
+    ) {
+        assert!(coin::value(reward_tokens) >= amount, EInsufficientPayment);
+        
+        let reward_coins = coin::split(reward_tokens, amount, ctx);
+        let reward_balance = coin::into_balance(reward_coins);
+        balance::join(&mut stake_pool.reward_pool, reward_balance);
+    }
+
+    // ====== Helper Functions ======
+    
+    /// Check if any burn thresholds have been reached
+    fun check_burn_thresholds(config: &mut PreSaleConfig, ctx: &mut TxContext) {
+        let market_cap = config.market_cap_usd_cents;
+        let mut burn_amount: u64 = 0;
+        let mut threshold_reached: u64 = 0;
+        
+        if (market_cap >= BURN_THRESHOLD_4) {
+            burn_amount = BURN_AMOUNT_4;
+            threshold_reached = BURN_THRESHOLD_4;
+        } else if (market_cap >= BURN_THRESHOLD_3) {
+            burn_amount = (config.total_sold * BURN_PERCENT_3) / 10000; // 5%
+            threshold_reached = BURN_THRESHOLD_3;
+        } else if (market_cap >= BURN_THRESHOLD_2) {
+            burn_amount = (config.total_sold * BURN_PERCENT_2) / 10000; // 3%
+            threshold_reached = BURN_THRESHOLD_2;
+        } else if (market_cap >= BURN_THRESHOLD_1) {
+            burn_amount = (config.total_sold * BURN_PERCENT_1) / 10000; // 2%
+            threshold_reached = BURN_THRESHOLD_1;
+        };
+        
+        if (burn_amount > 0) {
+            // Mint tokens to burn (since we can't burn directly with a u64)
+            let coins_to_burn = coin::mint(&mut config.treasury_cap, burn_amount, ctx);
+            
+            // Burn the minted coins
+            coin::burn(&mut config.treasury_cap, coins_to_burn);
+            
+            // Emit event
+            event::emit(TokensBurned {
+                amount: burn_amount,
+                threshold_reached,
+            });
+        };
+    }
+
+    // ====== Admin Functions ======
+    
+    /// Withdraw collected SUI funds (admin only)
+    public entry fun withdraw_funds(
+        config: &mut PreSaleConfig,
+        _: &AdminCap,
+        amount: u64, // no Option
+        ctx: &mut TxContext
+    ) {
+        assert!(tx_context::sender(ctx) == config.admin, ENotAdmin);
+    
+        let withdraw_amount = if (amount == 0) {
+            balance::value(&config.presale_funds)
+        } else {
+            amount
+        };
+    
+        assert!(withdraw_amount <= balance::value(&config.presale_funds), EInvalidBurnAmount);
+    
+        let funds = balance::split(&mut config.presale_funds, withdraw_amount);
+        let coin = coin::from_balance(funds, ctx);
+        transfer::public_transfer(coin, tx_context::sender(ctx));
+    }
+    
+
+    public entry fun show_available_funds_admin(config: &PreSaleConfig, _: &AdminCap, ctx: &mut TxContext) {
+        assert!(tx_context::sender(ctx) == config.admin, ENotAdmin);
+    
+        let available = balance::value(&config.presale_funds);
+       
+        let event = InfoEvent {
+            message: b"Available presale funds",
+            value: available,
+        };
+    
+        event::emit(event);
+    }
+    
+
+    /// Change admin address (only current admin)
+    public entry fun change_admin(
+        config: &mut PreSaleConfig,
+        _: &AdminCap,
+        new_admin: address,
+        ctx: &mut TxContext
+    ) {
+        // Verify current admin
+        assert!(tx_context::sender(ctx) == config.admin, ENotAdmin);
+        
+        // Update admin
+        config.admin = new_admin;
+    }
+}
