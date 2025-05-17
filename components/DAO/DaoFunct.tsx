@@ -839,7 +839,7 @@ export function DaoComponent() {
               exit="hidden"
               custom={8}
             >
-              <h2 className="text-4xl sm:text-5xl md:text-6xl font-extrabold">
+              <h2 className="text-4xl sm:text-5xl md:text-6xl font-extrabold bg-gradient-to-r from-[#D4AF37] via-[#FFE066] to-[#D4AF37] bg-clip-text text-transparent">
                 DAO Dashboard
               </h2>
 
@@ -870,25 +870,31 @@ export function DaoComponent() {
                 <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-6">
                   {/* Left column - Create proposals */}
                   <div className="space-y-4">
-                    <h3 className="font-bold text-xl text-left border-b border-gray-700 pb-2">Create Proposal</h3>
+                    <div>
+                      <h3 className="font-bold text-xl text-white pb-6 text-left ">Create Proposal</h3>
+                      <div className="border-b border-gray-700 w-full"></div>
+                    </div>
                     <div className="w-full space-y-3">
                       <input
                         type="text"
                         value={newTitle}
                         onChange={(e) => setNewTitle(e.target.value)}
                         placeholder="Title"
-                        className="w-full px-4 py-2 rounded bg-gray-700"
+                        className="w-full px-4 py-2 rounded bg-white/10 backdrop-blur-sm border border-[#D4AF37]/30 focus:border-[#D4AF37] focus:outline-none transition-all"
+                        style={{ boxShadow: "0 0 0 1px rgba(212,175,55,0.3)" }}
                       />
                       <textarea
                         value={newDesc}
                         onChange={(e) => setNewDesc(e.target.value)}
                         placeholder="Description"
-                        className="w-full px-4 py-2 rounded bg-gray-700"
+                        className="w-full px-4 py-2 rounded bg-white/10 backdrop-blur-sm border border-[#D4AF37]/30 focus:border-[#D4AF37] focus:outline-none transition-all"
+                        style={{ boxShadow: "0 0 0 1px rgba(212,175,55,0.3)" }}
                         rows={5}
                       />
                       <Button 
                         onClick={handleCreate} 
-                        className="bg-amber-400 text-gray-900 hover:bg-amber-500 w-full"
+                        className="bg-gradient-to-r from-[#F59E0B] to-[#D97706] text-white hover:opacity-90 w-full"
+                        style={{ boxShadow: "0 0 0 2px #D4AF37" }}
                         disabled={loading || !newTitle || !newDesc}
                       >
                         {loading ? <Loader2 className="animate-spin mr-2" size={16} /> : null}
@@ -899,14 +905,14 @@ export function DaoComponent() {
                   
                   {/* Right column - Proposals list */}
                   <div className="space-y-4">
-                    <div className="flex items-center justify-between border-b border-gray-700 pb-2">
-                      <h3 className="font-bold text-xl text-left">Proposals</h3>
+                    <div className="flex items-center justify-between">
+                      <h3 className="font-bold text-xl text-white pb-2">Proposals</h3>
                       <Button 
                         onClick={() => {
                           setLoading(true);
                           fetchProposalsFromEvents().finally(() => setLoading(false));
                         }}
-                        className="bg-amber-400 hover:bg-amber-600 text-white"
+                        className="bg-gradient-to-r from-yellow-600 via-amber-500 to-yellow-600   hover:from-yellow-500 hover:via-amber-400 hover:to-yellow-500   text-amber-950 font-bold rounded-md"
                         size="sm"
                         disabled={loading}
                       >
@@ -914,9 +920,10 @@ export function DaoComponent() {
                         <span>Refresh</span>
                       </Button>
                     </div>
+                    <div className="border-b border-gray-700 w-full"></div>
                     
                     {proposals.length === 0 && !loading && (
-                      <div className="w-full p-4 bg-gray-800 rounded text-left">
+                      <div className="w-full p-4 bg-white/10 backdrop-blur-sm rounded text-left" style={{ boxShadow: "0 0 0 1px rgba(212,175,55,0.3)" }}>
                         <p>Click "Refresh" to fetch the latest proposals from the blockchain.</p>
                         <p className="text-sm mt-2 text-gray-400">If you've just created a proposal, please wait a few seconds before refreshing.</p>
                       </div>
@@ -924,24 +931,28 @@ export function DaoComponent() {
                     
                     <div className="space-y-4 max-h-[50vh] overflow-y-auto pr-2">
                       {proposals.map((p) => (
-                        <div key={p.id} className="w-full p-4 bg-gray-800 rounded text-left">
-                          <h3 className="font-semibold">#{p.id}: {p.title}</h3>
-                          <p className="text-sm mb-2 text-gray-300">{p.description}</p>
+                        <div 
+                          key={p.id} 
+                          className="w-full p-4 bg-white/10 backdrop-blur-sm rounded text-left transition-all hover:bg-[#FFE066]/10"
+                          style={{ boxShadow: "0 0 0 1px rgba(212,175,55,0.3)" }}
+                        >
+                          <h3 className="font-semibold text-[#FFE066]">#{p.id}: {p.title}</h3>
+                          <p className="text-sm mb-2 text-white/80">{p.description}</p>
                           <div className="flex justify-between items-center text-xs text-gray-400 mb-3">
                             <div>
-                              <span className="text-green-400">👍 {p.votesFor}</span> · 
-                              <span className="text-red-400"> 👎 {p.votesAgainst}</span> · 
+                              <span className="text-[#F59E0B]">👍 {p.votesFor}</span> · 
+                              <span className="text-[#F7786B]"> 👎 {p.votesAgainst}</span> · 
                               <span> Voters: {p.totalVoters}</span>
                             </div>
                             <div>
                               {p.isActive ? (
-                                <span className="bg-green-900 text-green-200 px-2 py-1 rounded-full text-xs">Active</span>
+                                <span className="bg-[#F59E0B]/20 text-[#F59E0B] px-2 py-1 rounded-full text-xs">Active</span>
                               ) : p.isExecuted ? (
-                                <span className="bg-blue-900 text-blue-200 px-2 py-1 rounded-full text-xs">Executed</span>
+                                <span className="bg-[#3B82F6]/20 text-[#3B82F6] px-2 py-1 rounded-full text-xs">Executed</span>
                               ) : p.isCanceled ? (
-                                <span className="bg-red-900 text-red-200 px-2 py-1 rounded-full text-xs">Canceled</span>
+                                <span className="bg-[#F7786B]/20 text-[#F7786B] px-2 py-1 rounded-full text-xs">Canceled</span>
                               ) : (
-                                <span className="bg-gray-700 text-gray-300 px-2 py-1 rounded-full text-xs">Closed</span>
+                                <span className="bg-gray-700/50 text-gray-300 px-2 py-1 rounded-full text-xs">Closed</span>
                               )}
                             </div>
                           </div>
@@ -949,7 +960,8 @@ export function DaoComponent() {
                             <Button 
                               onClick={() => handleVote(p.id, true)} 
                               disabled={!p.isActive || loading}
-                              variant={p.isActive ? "default" : "ghost"}
+                              className={p.isActive ? "bg-gradient-to-r from-[#F59E0B] to-[#D97706] text-white hover:opacity-90" : "bg-white/10 text-white/60"}
+                              style={p.isActive ? { boxShadow: "0 0 0 1px #D4AF37" } : {}}
                               size="sm"
                             >
                               Vote For
@@ -957,7 +969,8 @@ export function DaoComponent() {
                             <Button 
                               onClick={() => handleVote(p.id, false)} 
                               disabled={!p.isActive || loading}
-                              variant={p.isActive ? "default" : "ghost"}
+                              className={p.isActive ? "bg-gradient-to-r from-[#F59E0B] to-[#D97706] text-white hover:opacity-90" : "bg-white/10 text-white/60"}
+                              style={p.isActive ? { boxShadow: "0 0 0 1px #D4AF37" } : {}}
                               size="sm"
                             >
                               Vote Against
@@ -966,7 +979,8 @@ export function DaoComponent() {
                               <Button 
                                 onClick={() => handleCancel(p.id)}
                                 disabled={loading}
-                                variant="destructive"
+                                className="bg-[#F7786B]/20 text-[#F7786B] hover:bg-[#F7786B]/30"
+                                style={{ boxShadow: "0 0 0 1px rgba(247,120,107,0.3)" }}
                                 size="sm"
                               >
                                 Cancel
@@ -976,7 +990,8 @@ export function DaoComponent() {
                               <Button 
                                 onClick={() => handleExecute(p.id)}
                                 disabled={loading}
-                                variant="secondary"
+                                className="bg-[#3B82F6]/20 text-[#3B82F6] hover:bg-[#3B82F6]/30"
+                                style={{ boxShadow: "0 0 0 1px rgba(59,130,246,0.3)" }}
                                 size="sm"
                               >
                                 Execute
