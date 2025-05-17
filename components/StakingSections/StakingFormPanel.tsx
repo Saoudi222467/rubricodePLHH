@@ -151,74 +151,98 @@ const StakingInterface: React.FC = () => {
         throw new Error("No PLHH tokens in your wallet");
       }
 
-      // Find a coin with enough balance
-      let coinForStaking;
+      // Sort coins by balance (largest first)
+      coins.sort((a, b) => Number(b.balance) - Number(a.balance));
+      
+      // Check total available balance
+      let totalAvailable = 0;
+      for (const coin of coins) {
+        totalAvailable += Number(coin.balance);
+      }
+      
+      if (totalAvailable < amountAtomic) {
+        throw new Error(`Insufficient balance: you have ${totalAvailable/1e9} PLHH, need ${amountAtomic/1e9} PLHH`);
+      }
+      
+      // Create transaction
       const tx = new TransactionBlock();
       tx.setSender(wallet.address!);
-      tx.setGasBudget(50_000_000);
-
-      const coinWithEnough = coins.find(c => Number(c.balance) >= amountAtomic);
-      if (coinWithEnough) {
-        if (Number(coinWithEnough.balance) === amountAtomic) {
-          // Use the coin directly if it has exactly the amount
-          coinForStaking = tx.object(coinWithEnough.coinObjectId);
-          // DO NOT transfer it back to yourself!
-        } else {
-          // Split off the exact amount needed for staking
-          const split = tx.splitCoins(tx.object(coinWithEnough.coinObjectId), [tx.pure(amountAtomic)]);
-          coinForStaking = split[0];
-          // Transfer the remainder (original coin) back to the user
-          tx.transferObjects([tx.object(coinWithEnough.coinObjectId)], tx.pure(wallet.address!));
-        }
-        console.log('Using single coin for staking:', coinWithEnough.coinObjectId);
+      tx.setGasBudget(100_000_000);
+      
+      // Check if largest coin has enough balance
+      let stakeableCoin;
+      
+      if (Number(coins[0].balance) >= amountAtomic) {
+        // Use largest coin directly
+        stakeableCoin = tx.object(coins[0].coinObjectId);
+        console.log(`Using coin ${coins[0].coinObjectId} with balance ${Number(coins[0].balance)/1e9} PLHH`);
       } else {
-        // Merge all coins, then split only the amount needed
-        const coinObjs = coins.map((c) => tx.object(c.coinObjectId));
-        const merged = tx.object(coins[0].coinObjectId);
-        for (let i = 1; i < coinObjs.length; i++) {
-          tx.mergeCoins(merged, [coinObjs[i]]);
+        // Create a new merged coin
+        console.log(`Need to merge coins. Largest coin has ${Number(coins[0].balance)/1e9} PLHH, need ${amountAtomic/1e9} PLHH`);
+        
+        // Create a new coin by merging the required amount
+        let mergedCoin = tx.object(coins[0].coinObjectId);
+        let currentTotal = Number(coins[0].balance);
+        
+        for (let i = 1; i < coins.length && currentTotal < amountAtomic; i++) {
+          console.log(`Merging coin ${coins[i].coinObjectId} with balance ${Number(coins[i].balance)/1e9} PLHH`);
+          tx.mergeCoins(mergedCoin, [tx.object(coins[i].coinObjectId)]);
+          currentTotal += Number(coins[i].balance);
         }
-        const split = tx.splitCoins(merged, [tx.pure(amountAtomic)]);
-        coinForStaking = split[0];
-        // Transfer the leftover merged coin back to the user
-        tx.transferObjects([merged], tx.pure(wallet.address!));
-        console.log('Merged coins for staking:', coins.map(c => c.coinObjectId));
+        
+        stakeableCoin = mergedCoin;
+        console.log(`Created merged coin with total balance ${currentTotal/1e9} PLHH`);
       }
-
-      // Always use only the split/selected coin for staking
+      
+      // DEBUG: First try getting token info before staking
+      console.log("Getting stake pool info...");
+      
+      // Now call the stake function
       tx.moveCall({
         target: `${PACKAGE_ID}::plhh::stake`,
         arguments: [
-          tx.object(STAKE_POOL_ID), // shared pool object
-          tx.pure(amountAtomic),    // amount
-          tx.pure(stakingDuration), // duration
-          coinForStaking,           // &mut Coin<PLHH>
+          tx.object(STAKE_POOL_ID),  // stake pool
+          tx.pure(amountAtomic),     // amount to stake
+          tx.pure(stakingDuration),  // duration in years
+          stakeableCoin,             // coin to use
         ],
       });
 
-      // Log transaction details for debugging
       console.log("Transaction details:", {
         packageId: PACKAGE_ID,
         stakePoolId: STAKE_POOL_ID,
-        stakeAmount: stakingAmount,
+        stakeAmount: amountAtomic / 1e9,
         stakingDuration,
-        plhhType: PLHH_TYPE,
-        coinForStaking,
-        allCoins: coins.map(c => c.coinObjectId),
       });
 
       const result = await wallet.signAndExecuteTransactionBlock({
         transactionBlock: tx,
+        options: {
+          showEffects: true,
+          showEvents: true,
+        }
       });
 
       console.log("Staking result:", result);
-      if (result.effects?.status?.status === "success") {
+      
+      if (result && result.effects && result.effects.status && result.effects.status.status === "success") {
         toast.success("Staking successful!");
-        loadUserData && loadUserData();
+        loadUserData();
       } else {
-        // Log the full result for debugging
+        // Get detailed error information
+        let errorMsg = "Unknown error";
+        
+        if (result?.effects?.status?.error) {
+          errorMsg = result.effects.status.error;
+        } else if (result?.effects) {
+          try {
+            errorMsg = JSON.stringify(result.effects);
+          } catch (e) {
+            errorMsg = "Error parsing transaction result";
+          }
+        }
+        
         console.error("Full staking result:", result);
-        const errorMsg = result.effects?.status?.error || JSON.stringify(result);
         toast.error("Staking failed: " + errorMsg);
       }
     } catch (e: any) {

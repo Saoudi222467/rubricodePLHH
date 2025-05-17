@@ -54,15 +54,18 @@ export function DaoComponent() {
   const DAO_STORAGE_ID = process.env.NEXT_PUBLIC_DAO_STORAGE_ID!;
   const PLHH_COIN_TYPE = process.env.NEXT_PUBLIC_PLHH_COIN_TYPE!;
   const ENV_CLOCK_ID = process.env.NEXT_PUBLIC_CLOCK_ID;
-
+  
   const [clockId, setClockId] = useState<string>(ENV_CLOCK_ID || "");
   const [proposals, setProposals] = useState<any[]>([]);
   const [newTitle, setNewTitle] = useState("");
   const [newDesc, setNewDesc] = useState("");
-  const [newActionType, setNewActionType] = useState(1);
+  const DEFAULT_ACTION_TYPE = 1;
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
+  // Debug log to check the token type
+  console.log("Using PLHH token type:", PLHH_COIN_TYPE);
 
   useEffect(() => {
     if (wallet.connected && !ENV_CLOCK_ID) {
@@ -77,41 +80,383 @@ export function DaoComponent() {
     }
   }, [wallet.connected, provider, ENV_CLOCK_ID]);
 
+  // Add a diagnostic function to check all available tokens
+  async function checkAvailableTokens() {
+    try {
+      // Only run if wallet is connected
+      if (!wallet.connected) return;
+      
+      console.log("Checking available tokens for user:", wallet.address);
+      
+      // Get all coins for the user
+      const allCoins = await provider.getAllCoins({
+        owner: wallet.address!
+      });
+      
+      // Log the coin types
+      console.log("Available coin types:", allCoins.data.map(coin => ({
+        type: coin.coinType,
+        balance: coin.balance,
+        objectId: coin.coinObjectId
+      })));
+      
+      // Check specifically for PLHH tokens from env variable
+      const plhhFromEnv = await provider.getCoins({
+        owner: wallet.address!,
+        coinType: PLHH_COIN_TYPE
+      });
+      console.log(`PLHH tokens from environment (${PLHH_COIN_TYPE}):`, plhhFromEnv.data);
+      
+      // Check for the PLHH tokens from the contract import
+      const plhhFromContract = await provider.getCoins({
+        owner: wallet.address!,
+        coinType: "0x4baa9e1a7f3cfd74a7d3e42ff54ab1b0e376df20b6d7ff090455c9043dda18fc::plhh::PLHH"
+      });
+      console.log("PLHH tokens from contract (0x4baa...::plhh::PLHH):", plhhFromContract.data);
+      
+      // Get the package details to see what token type the contract expects
+      const packageObj = await provider.getObject({
+        id: PACKAGE_ID,
+        options: { showContent: true }
+      });
+      console.log("DAO Package details:", packageObj.data);
+      
+      // Directly get the config object to inspect
+      const configObj = await provider.getObject({
+        id: DAO_CONFIG_ID,
+        options: { showContent: true, showOwner: true }
+      });
+      console.log("DAO Config details:", configObj.data);
+      
+      // Check the DAO storage object too
+      const storageObj = await provider.getObject({
+        id: DAO_STORAGE_ID,
+        options: { showContent: true, showOwner: true }
+      });
+      console.log("DAO Storage details:", storageObj.data);
+      
+      return {
+        allCoins: allCoins.data,
+        plhhFromEnv: plhhFromEnv.data,
+        plhhFromContract: plhhFromContract.data
+      };
+    } catch (e) {
+      console.error("Error checking tokens:", e);
+      return null;
+    }
+  }
+
   useEffect(() => {
-    if (wallet.connected && clockId) fetchProposals();
+    if (wallet.connected) {
+      // Run diagnostics when wallet connects
+      checkAvailableTokens();
+    }
+  }, [wallet.connected]);
+
+  async function fetchProposalsFromEvents() {
+    try {
+      setLoading(true);
+      setError(null);
+      console.log("Fetching proposals from events for package:", PACKAGE_ID);
+      
+      // Fetch ProposalCreated events
+      const events = await provider.queryEvents({
+        query: {
+          MoveEventType: `${PACKAGE_ID}::plhh_dao::ProposalCreated`
+        },
+        limit: 50 // Increase if needed
+      });
+      
+      console.log("ProposalCreated events:", events);
+      
+      if (!events || !events.data || events.data.length === 0) {
+        console.log("No proposal events found");
+        setProposals([]);
+        setLoading(false);
+        return;
+      }
+      
+      const proposalEvents = events.data.map(event => {
+        const eventData = (event as any).parsedJson;
+        return {
+          id: Number(eventData.proposal_id),
+          title: eventData.title,
+          description: eventData.description,
+          creator: eventData.creator,
+          createdAt: eventData.created_at,
+          votingEndTime: eventData.voting_end_time,
+          // Default values until we get vote data
+          votesFor: 0,
+          votesAgainst: 0,
+          totalVoters: 0,
+          isActive: true,
+          isExecuted: false,
+          isCanceled: false
+        };
+      });
+      
+      console.log("Parsed proposal events:", proposalEvents);
+      
+      // Now fetch vote events to update the proposal status
+      const voteEvents = await provider.queryEvents({
+        query: {
+          MoveEventType: `${PACKAGE_ID}::plhh_dao::VoteCast`
+        },
+        limit: 100
+      });
+      
+      console.log("VoteCast events:", voteEvents);
+      
+      // Update proposals with vote counts from events
+      if (voteEvents && voteEvents.data && voteEvents.data.length > 0) {
+        voteEvents.data.forEach(event => {
+          const voteData = (event as any).parsedJson;
+          const proposalId = Number(voteData.proposal_id);
+          const proposal = proposalEvents.find(p => p.id === proposalId);
+          
+          if (proposal) {
+            proposal.votesFor = Number(voteData.votes_for);
+            proposal.votesAgainst = Number(voteData.votes_against);
+            // Approximate total voters from the sum
+            proposal.totalVoters = proposal.votesFor + proposal.votesAgainst;
+          }
+        });
+      }
+      
+      // Fetch executed and canceled events to update status
+      const executedEvents = await provider.queryEvents({
+        query: {
+          MoveEventType: `${PACKAGE_ID}::plhh_dao::ProposalExecuted`
+        },
+        limit: 50
+      });
+      
+      const canceledEvents = await provider.queryEvents({
+        query: {
+          MoveEventType: `${PACKAGE_ID}::plhh_dao::ProposalCanceled`
+        },
+        limit: 50
+      });
+      
+      console.log("Executed events:", executedEvents);
+      console.log("Canceled events:", canceledEvents);
+      
+      // Update proposal status based on executed/canceled events
+      if (executedEvents && executedEvents.data) {
+        executedEvents.data.forEach(event => {
+          const execData = (event as any).parsedJson;
+          const proposalId = Number(execData.proposal_id);
+          const proposal = proposalEvents.find(p => p.id === proposalId);
+          
+          if (proposal) {
+            proposal.isActive = false;
+            proposal.isExecuted = true;
+          }
+        });
+      }
+      
+      if (canceledEvents && canceledEvents.data) {
+        canceledEvents.data.forEach(event => {
+          const cancelData = (event as any).parsedJson;
+          const proposalId = Number(cancelData.proposal_id);
+          const proposal = proposalEvents.find(p => p.id === proposalId);
+          
+          if (proposal) {
+            proposal.isActive = false;
+            proposal.isCanceled = true;
+          }
+        });
+      }
+      
+      // Check if voting period has ended for active proposals
+      const currentTime = Math.floor(Date.now() / 1000); // Current time in seconds
+      proposalEvents.forEach(proposal => {
+        if (proposal.isActive && currentTime > proposal.votingEndTime) {
+          proposal.isActive = false;
+        }
+      });
+      
+      // Sort by proposal ID, descending (newest first)
+      proposalEvents.sort((a, b) => b.id - a.id);
+      
+      console.log("Final processed proposals:", proposalEvents);
+      setProposals(proposalEvents);
+    } catch (e: any) {
+      console.error("Error fetching proposal events:", e);
+      setError("Failed to fetch proposals: " + (e.message || e));
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    if (wallet.connected && clockId) {
+      // Use the event-based fetching instead
+      fetchProposalsFromEvents();
+      // Also check DAO storage structure for debugging
+      checkDaoStorage();
+    }
   }, [wallet.connected, clockId]);
+
+  // Add a diagnostic function to check DAO storage structure
+  async function checkDaoStorage() {
+    try {
+      console.log("Checking DAO storage structure...");
+      console.log("DAO_STORAGE_ID:", DAO_STORAGE_ID);
+      
+      // Get the storage object itself
+      const storageObj = await provider.getObject({
+        id: DAO_STORAGE_ID,
+        options: { showContent: true, showOwner: true }
+      });
+      
+      console.log("DAO Storage object:", storageObj);
+      
+      // Check dynamic fields
+      const fields = await provider.getDynamicFields({ parentId: DAO_STORAGE_ID });
+      console.log("DAO Storage dynamic fields:", fields);
+      
+      if (fields.data.length > 0) {
+        // Check the first field
+        const firstField = await provider.getDynamicFieldObject({
+          parentId: DAO_STORAGE_ID,
+          name: fields.data[0].name
+        });
+        console.log("First dynamic field content:", firstField);
+      }
+      
+      return storageObj;
+    } catch (e) {
+      console.error("Error checking DAO storage:", e);
+      return null;
+    }
+  }
 
   async function fetchProposals() {
     try {
       setLoading(true);
       setError(null);
-      const fields = await provider.getDynamicFields({ parentId: DAO_STORAGE_ID });
-      const items = await Promise.all(
-        fields.data.map(async (f) => {
-          const obj = await provider.getDynamicFieldObject({
-            parentId: DAO_STORAGE_ID,
-            name: f.name,
-            //options: { showContent: true },
-          });
-          const v = (obj.data as any).content.fields.value.fields;
-          const decoder = new TextDecoder();
-          return {
-            id: Number((f.name as any).value),
-            title: decoder.decode(new Uint8Array(v.title.fields)),
-            description: decoder.decode(new Uint8Array(v.description.fields)),
-            votesFor: Number(v.status.fields.votes_for),
-            votesAgainst: Number(v.status.fields.votes_against),
-            totalVoters: Number(v.status.fields.total_voters),
-            isActive: v.status.fields.is_active,
-            isExecuted: v.status.fields.is_executed,
-            isCanceled: v.status.fields.is_canceled,
-          };
-        })
-      );
-      setProposals(items);
+      console.log("Fetching proposals from DAO_STORAGE_ID:", DAO_STORAGE_ID);
+      
+      // For Sui Tables, we need to look for the table field first, which has a special name
+      const tableFields = await provider.getDynamicFields({
+        parentId: DAO_STORAGE_ID,
+        // Table fields are usually stored with 'table' as part of their name
+      });
+      console.log("DAO Storage fields:", tableFields.data);
+      
+      // For each field in the storage, check if it has proposals
+      for (const field of tableFields.data) {
+        console.log("Checking field:", field);
+        
+        // Now get the actual table entries
+        const tableEntries = await provider.getDynamicFields({
+          parentId: field.objectId
+        });
+        console.log(`Found ${tableEntries.data.length} entries in table:`, tableEntries.data);
+        
+        if (tableEntries.data.length > 0) {
+          // Process the proposal entries
+          const items = await Promise.all(
+            tableEntries.data.map(async (entry) => {
+              try {
+                // Get the full object data
+                const proposalObj = await provider.getObject({
+                  id: entry.objectId,
+                  options: { showContent: true }
+                });
+                console.log("Proposal data:", proposalObj.data);
+                
+                // Extract proposal data from the object
+                const content = (proposalObj.data as any).content;
+                if (!content || !content.fields) {
+                  console.error("Invalid proposal format:", proposalObj.data);
+                  return null;
+                }
+                
+                // Try different field structures based on how Sui represents Table entries
+                let proposalData;
+                
+                // Log the entire structure for debugging
+                console.log("Full proposal object structure:", content);
+                
+                // Extract the proposal ID from the name field or directly from content
+                let id = 0;
+                try {
+                  id = Number(entry.name.value || 0);
+                } catch (e) {
+                  console.log("Could not extract ID from name:", entry.name);
+                }
+                
+                // Try to extract fields from different possible structures
+                if (content.fields.value && content.fields.value.fields) {
+                  proposalData = content.fields.value.fields;
+                } else if (content.fields) {
+                  proposalData = content.fields;
+                } else {
+                  console.error("Cannot determine proposal structure");
+                  return null;
+                }
+                
+                // Extract text fields (title, description) using TextDecoder
+                const decoder = new TextDecoder();
+                let title = "Unknown";
+                let description = "Unknown";
+                
+                // Try different paths to find the title and description
+                if (proposalData.title && proposalData.title.fields) {
+                  title = decoder.decode(new Uint8Array(proposalData.title.fields));
+                } else if (proposalData.title) {
+                  title = proposalData.title.toString();
+                }
+                
+                if (proposalData.description && proposalData.description.fields) {
+                  description = decoder.decode(new Uint8Array(proposalData.description.fields));
+                } else if (proposalData.description) {
+                  description = proposalData.description.toString();
+                }
+                
+                // Extract voting status
+                const status = proposalData.status && proposalData.status.fields 
+                  ? proposalData.status.fields 
+                  : proposalData.status || {};
+                
+                return {
+                  id: id,
+                  title,
+                  description,
+                  votesFor: Number(status.votes_for || 0),
+                  votesAgainst: Number(status.votes_against || 0),
+                  totalVoters: Number(status.total_voters || 0),
+                  isActive: status.is_active || false,
+                  isExecuted: status.is_executed || false,
+                  isCanceled: status.is_canceled || false
+                };
+              } catch (fieldError) {
+                console.error("Error processing proposal entry:", entry, fieldError);
+                return null;
+              }
+            })
+          );
+          
+          // Filter out null entries and update state
+          const validItems = items.filter(item => item !== null);
+          console.log("Valid proposals found:", validItems);
+          
+          if (validItems.length > 0) {
+            setProposals(validItems);
+            setLoading(false);
+            return;
+          }
+        }
+      }
+      
+      // If we've checked all fields and found no proposals
+      console.log("No valid proposals found after scanning all fields");
+      setProposals([]);
     } catch (e: any) {
       console.error("Error fetching proposals:", e);
-      setError("Failed to fetch proposals");
+      setError("Failed to fetch proposals: " + (e.message || e));
     } finally {
       setLoading(false);
     }
@@ -119,30 +464,22 @@ export function DaoComponent() {
 
   async function pickPlhhCoin() {
     try {
-      const { data } = await provider.getCoins({ owner: wallet.address!, coinType: PLHH_COIN_TYPE });
-      if (data.length === 0) throw new Error("No PLHH tokens in wallet");
+      console.log("Using PLHH type:", PLHH_COIN_TYPE);
+      
+      const { data } = await provider.getCoins({ 
+        owner: wallet.address!, 
+        coinType: PLHH_COIN_TYPE 
+      });
+      
+      if (data.length === 0) {
+        throw new Error("No PLHH tokens found in wallet. You need PLHH tokens to interact with the DAO.");
+      }
+      
+      console.log("Found PLHH coin:", data[0].coinObjectId);
       return data[0].coinObjectId;
     } catch (e) {
+      console.error("Error finding PLHH coins:", e);
       throw new Error(`Failed to find PLHH tokens: ${(e as Error).message}`);
-    }
-  }
-
-  async function moveCall(fn: string, args: ((txb: TransactionBlock) => any)[]) {
-    setLoading(true);
-    setError(null);
-    try {
-      if (!clockId) throw new Error("Clock not set");
-      const tx = new TransactionBlock();
-      tx.moveCall({ target: `${PACKAGE_ID}::plhh_dao::${fn}`, arguments: args.map((a) => a(tx)) });
-      const result = await wallet.signAndExecuteTransactionBlock({ transactionBlock: tx });
-      console.log("Transaction result:", result);
-      return result;
-    } catch (e: any) {
-      console.error(`Error in ${fn}:`, e);
-      setError(e.message);
-      throw e;
-    } finally {
-      setLoading(false);
     }
   }
 
@@ -152,21 +489,70 @@ export function DaoComponent() {
       return;
     }
     
+    if (!wallet.connected) {
+      setError("Please connect your wallet first");
+      return;
+    }
+    
     setSuccessMessage(null);
+    setLoading(true);
     
     try {
+      // Get a PLHH coin
       const coin = await pickPlhhCoin();
-      const result = await moveCall("create_proposal", [
-        (tx) => tx.object(DAO_CONFIG_ID),
-        (tx) => tx.object(DAO_STORAGE_ID),
-        (tx) => tx.pure(Array.from(new TextEncoder().encode(newTitle))),
-        (tx) => tx.pure(Array.from(new TextEncoder().encode(newDesc))),
-        (tx) => tx.pure(newActionType),
-        (tx) => tx.object(clockId),
-        (tx) => tx.object(coin),
-      ]);
+      console.log("Using PLHH coin:", coin);
       
-      // Show success message/toast
+      // Log all parameters for debugging
+      console.log("Transaction parameters:", {
+        DAO_CONFIG_ID,
+        DAO_STORAGE_ID,
+        title: newTitle,
+        description: newDesc,
+        actionType: DEFAULT_ACTION_TYPE,
+        clockId,
+        coin,
+        PLHH_COIN_TYPE
+      });
+      
+      // Create transaction with explicit type annotationsc
+      const tx = new TransactionBlock();
+      
+      // Add PLHH coin to transaction and get a reference
+      console.log("Creating transaction and adding coin...");
+      
+      // Create proposal with simpler structure
+      console.log("Adding create_proposal call...");
+      tx.moveCall({
+        target: `${PACKAGE_ID}::plhh_dao::create_proposal`,
+        arguments: [
+          tx.object(DAO_CONFIG_ID),
+          tx.object(DAO_STORAGE_ID),
+          tx.pure(Array.from(new TextEncoder().encode(newTitle))),
+          tx.pure(Array.from(new TextEncoder().encode(newDesc))),
+          tx.pure(DEFAULT_ACTION_TYPE),
+          tx.object(clockId),
+          tx.object(coin)
+        ],
+        typeArguments: []
+      });
+      
+      console.log("Transaction block:", tx);
+      console.log("Executing create_proposal...");
+      
+      // Execute with full options and capture detailed response
+      const result = await wallet.signAndExecuteTransactionBlock({
+        transactionBlock: tx
+      });
+      
+      console.log("Proposal created successfully:", result);
+      
+      // Verify that the proposal was created by fetching immediately
+      console.log("Verifying proposal creation...");
+      setTimeout(async () => {
+        await fetchProposalsFromEvents();
+      }, 2000); // Wait 2 seconds for the blockchain to process
+      
+      // Show success message
       setSuccessMessage(`Proposal "${newTitle}" created successfully!`);
       toast({
         title: "Success!",
@@ -174,95 +560,237 @@ export function DaoComponent() {
         action: <ToastAction altText="OK">OK</ToastAction>,
       });
       
-      // Reset form
+      // Reset form and refresh
       setNewTitle(""); 
       setNewDesc("");
-      
-      // Refetch updated proposals list
-      fetchProposals();
     } catch (e: any) {
-      // Error is already set in moveCall
+      console.error("Transaction error details:", e);
+      
+      // Try to extract a more user-friendly error message
+      let errorMsg = e.message || "Failed to create proposal";
+      
+      // Check for specific error patterns
+      if (errorMsg.includes("Failed to get a quorum")) {
+        errorMsg = "Transaction validation failed. This may be due to a token type mismatch with the contract.";
+      }
+      
+      setError(errorMsg);
       toast({
         variant: "destructive",
         title: "Error",
-        description: e.message || "Failed to create proposal",
+        description: errorMsg,
       });
+    } finally {
+      setLoading(false);
     }
   };
 
+  // Add localStorage persistence
+  useEffect(() => {
+    // Load proposals from localStorage on initial render
+    const savedProposals = localStorage.getItem('daoProposals');
+    if (savedProposals) {
+      try {
+        const parsed = JSON.parse(savedProposals);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          console.log("Loaded proposals from localStorage:", parsed);
+          setProposals(parsed);
+        }
+      } catch (e) {
+        console.error("Error parsing saved proposals:", e);
+      }
+    }
+  }, []);
+
+  // Save proposals to localStorage whenever they change
+  useEffect(() => {
+    if (proposals.length > 0) {
+      console.log("Saving proposals to localStorage:", proposals);
+      localStorage.setItem('daoProposals', JSON.stringify(proposals));
+    }
+  }, [proposals]);
+
+  // Modified voting function to ensure state is properly updated
   const handleVote = async (proposalId: number, voteFor: boolean) => {
     try {
+      setLoading(true);
       const coin = await pickPlhhCoin();
-      await moveCall("cast_vote", [
-        (tx) => tx.object(DAO_STORAGE_ID), 
-        (tx) => tx.pure(proposalId), 
-        (tx) => tx.pure(voteFor), 
-        (tx) => tx.object(clockId), 
-        (tx) => tx.object(coin)
-      ]);
+      console.log("Voting on proposal", proposalId);
+      
+      // Simple transaction
+      const tx = new TransactionBlock();
+      
+      tx.moveCall({
+        target: `${PACKAGE_ID}::plhh_dao::cast_vote`,
+        arguments: [
+          tx.object(DAO_STORAGE_ID), 
+          tx.pure(proposalId), 
+          tx.pure(voteFor), 
+          tx.object(clockId), 
+          tx.object(coin)
+        ]
+      });
+      
+      const result = await wallet.signAndExecuteTransactionBlock({
+        transactionBlock: tx
+      });
+      
+      console.log("Vote cast successfully:", result);
       
       toast({
         title: "Vote Cast",
         description: `You voted ${voteFor ? "for" : "against"} proposal #${proposalId}.`,
       });
       
-      fetchProposals();
+      // Update the local state immediately before fetching from blockchain
+      setProposals(prevProposals => 
+        prevProposals.map(p => {
+          if (p.id === proposalId) {
+            // Update the local state to reflect the vote
+            return {
+              ...p,
+              votesFor: voteFor ? p.votesFor + 1 : p.votesFor,
+              votesAgainst: !voteFor ? p.votesAgainst + 1 : p.votesAgainst,
+              totalVoters: p.totalVoters + 1
+            };
+          }
+          return p;
+        })
+      );
+      
+      // Refresh proposals from blockchain after a delay
+      setTimeout(() => {
+        fetchProposalsFromEvents();
+      }, 2000);
     } catch (e: any) {
-      // Error is already set in moveCall
+      console.error("Error casting vote:", e);
+      setError(e.message || "Failed to cast vote");
       toast({
         variant: "destructive",
         title: "Vote Failed",
         description: e.message || "Failed to cast vote",
       });
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleCancel = async (proposalId: number) => {
     try {
-      await moveCall("cancel_proposal", [
-        (tx) => tx.object(DAO_CONFIG_ID), 
-        (tx) => tx.object(DAO_STORAGE_ID), 
-        (tx) => tx.pure(proposalId), 
-        (tx) => tx.object(clockId)
-      ]);
+      setLoading(true);
+      console.log("Canceling proposal", proposalId);
+      
+      // Simple transaction
+      const tx = new TransactionBlock();
+      
+      tx.moveCall({
+        target: `${PACKAGE_ID}::plhh_dao::cancel_proposal`,
+        arguments: [
+          tx.object(DAO_CONFIG_ID), 
+          tx.object(DAO_STORAGE_ID), 
+          tx.pure(proposalId), 
+          tx.object(clockId)
+        ]
+      });
+      
+      const result = await wallet.signAndExecuteTransactionBlock({
+        transactionBlock: tx
+      });
+      
+      console.log("Proposal canceled successfully");
       
       toast({
         title: "Proposal Canceled",
         description: `Proposal #${proposalId} has been canceled.`,
       });
       
-      fetchProposals();
+      // Update the local state immediately
+      setProposals(prevProposals => 
+        prevProposals.map(p => {
+          if (p.id === proposalId) {
+            return {
+              ...p,
+              isActive: false,
+              isCanceled: true
+            };
+          }
+          return p;
+        })
+      );
+      
+      // Refresh proposals from blockchain after a delay
+      setTimeout(() => {
+        fetchProposalsFromEvents();
+      }, 2000);
     } catch (e: any) {
-      // Error is already set in moveCall
+      console.error("Error canceling proposal:", e);
+      setError(e.message || "Failed to cancel proposal");
       toast({
         variant: "destructive",
         title: "Cancel Failed",
         description: e.message || "Failed to cancel proposal",
       });
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleExecute = async (proposalId: number) => {
     try {
-      await moveCall("execute_proposal", [
-        (tx) => tx.object(DAO_STORAGE_ID), 
-        (tx) => tx.pure(proposalId), 
-        (tx) => tx.object(clockId)
-      ]);
+      setLoading(true);
+      console.log("Executing proposal", proposalId);
+      
+      // Simple transaction
+      const tx = new TransactionBlock();
+      
+      tx.moveCall({
+        target: `${PACKAGE_ID}::plhh_dao::execute_proposal`,
+        arguments: [
+          tx.object(DAO_STORAGE_ID), 
+          tx.pure(proposalId), 
+          tx.object(clockId)
+        ]
+      });
+      
+      const result = await wallet.signAndExecuteTransactionBlock({
+        transactionBlock: tx
+      });
+      
+      console.log("Proposal executed successfully");
       
       toast({
         title: "Proposal Executed",
         description: `Proposal #${proposalId} has been executed successfully.`,
       });
       
-      fetchProposals();
+      // Update the local state immediately
+      setProposals(prevProposals => 
+        prevProposals.map(p => {
+          if (p.id === proposalId) {
+            return {
+              ...p,
+              isActive: false,
+              isExecuted: true
+            };
+          }
+          return p;
+        })
+      );
+      
+      // Refresh proposals from blockchain after a delay
+      setTimeout(() => {
+        fetchProposalsFromEvents();
+      }, 2000);
     } catch (e: any) {
-      // Error is already set in moveCall
+      console.error("Error executing proposal:", e);
+      setError(e.message || "Failed to execute proposal");
       toast({
         variant: "destructive",
         title: "Execution Failed",
         description: e.message || "Failed to execute proposal",
       });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -304,7 +832,7 @@ export function DaoComponent() {
 
             {/* content */}
             <motion.section
-              className="relative z-20 h-screen overflow-auto flex flex-col items-center justify-center px-6 text-white text-center space-y-8 max-w-3xl mx-auto py-16"
+              className="relative z-20 h-screen overflow-auto flex flex-col items-center justify-center px-6 text-white text-center space-y-8 max-w-5xl mx-auto py-16"
               variants={sectionVariants}
               initial="hidden"
               animate="visible"
@@ -337,94 +865,127 @@ export function DaoComponent() {
                 </div>
               )}
 
-              {wallet.connected && proposals.length === 0 && !loading && (
-                <div className="w-full p-4 bg-gray-800 rounded">
-                  <p>No proposals found. Create one below!</p>
-                </div>
-              )}
-
-              {wallet.connected && proposals.map((p) => (
-                <div key={p.id} className="w-full p-4 bg-gray-800 rounded">
-                  <h3 className="font-semibold">#{p.id}: {p.title}</h3>
-                  <p className="text-sm mb-1">{p.description}</p>
-                  <p className="text-xs">
-                    👍 {p.votesFor} · 👎 {p.votesAgainst} · Voters: {p.totalVoters}
-                  </p>
-                  <div className="mt-2 space-x-2">
-                    <Button 
-                      onClick={() => handleVote(p.id, true)} 
-                      disabled={!p.isActive || loading}
-                      variant={p.isActive ? "default" : "ghost"}
-                      size="sm"
-                    >
-                      Vote For
-                    </Button>
-                    <Button 
-                      onClick={() => handleVote(p.id, false)} 
-                      disabled={!p.isActive || loading}
-                      variant={p.isActive ? "default" : "ghost"}
-                      size="sm"
-                    >
-                      Vote Against
-                    </Button>
-                    {p.isActive && (
-                      <Button 
-                        onClick={() => handleCancel(p.id)}
-                        disabled={loading}
-                        variant="destructive"
-                        size="sm"
-                      >
-                        Cancel
-                      </Button>
-                    )}
-                    {!p.isActive && !p.isExecuted && !p.isCanceled && (
-                      <Button 
-                        onClick={() => handleExecute(p.id)}
-                        disabled={loading}
-                        variant="secondary"
-                        size="sm"
-                      >
-                        Execute
-                      </Button>
-                    )}
-                  </div>
-                </div>
-              ))}
-
+              {/* Two-column layout */}
               {wallet.connected && (
-                <div className="w-full space-y-2">
-                  <h3 className="font-bold text-xl">Create Proposal</h3>
-                  <input
-                    type="text"
-                    value={newTitle}
-                    onChange={(e) => setNewTitle(e.target.value)}
-                    placeholder="Title"
-                    className="w-full px-4 py-2 rounded bg-gray-700"
-                  />
-                  <textarea
-                    value={newDesc}
-                    onChange={(e) => setNewDesc(e.target.value)}
-                    placeholder="Description"
-                    className="w-full px-4 py-2 rounded bg-gray-700"
-                    rows={3}
-                  />
-                  <div className="flex items-center space-x-2 w-full">
-                    <label className="text-sm">Action Type:</label>
-                    <input
-                      type="number"
-                      value={newActionType}
-                      onChange={(e) => setNewActionType(Number(e.target.value))}
-                      className="w-20 px-2 py-1 rounded bg-gray-700"
-                      min={1}
-                    />
-                    <Button 
-                      onClick={handleCreate} 
-                      className="bg-amber-400 text-gray-900 hover:bg-amber-500 flex-1"
-                      disabled={loading || !newTitle || !newDesc}
-                    >
-                      {loading ? <Loader2 className="animate-spin mr-2" size={16} /> : null}
-                      Create Proposal
-                    </Button>
+                <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {/* Left column - Create proposals */}
+                  <div className="space-y-4">
+                    <h3 className="font-bold text-xl text-left border-b border-gray-700 pb-2">Create Proposal</h3>
+                    <div className="w-full space-y-3">
+                      <input
+                        type="text"
+                        value={newTitle}
+                        onChange={(e) => setNewTitle(e.target.value)}
+                        placeholder="Title"
+                        className="w-full px-4 py-2 rounded bg-gray-700"
+                      />
+                      <textarea
+                        value={newDesc}
+                        onChange={(e) => setNewDesc(e.target.value)}
+                        placeholder="Description"
+                        className="w-full px-4 py-2 rounded bg-gray-700"
+                        rows={5}
+                      />
+                      <Button 
+                        onClick={handleCreate} 
+                        className="bg-amber-400 text-gray-900 hover:bg-amber-500 w-full"
+                        disabled={loading || !newTitle || !newDesc}
+                      >
+                        {loading ? <Loader2 className="animate-spin mr-2" size={16} /> : null}
+                        Create Proposal
+                      </Button>
+                    </div>
+                  </div>
+                  
+                  {/* Right column - Proposals list */}
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between border-b border-gray-700 pb-2">
+                      <h3 className="font-bold text-xl text-left">Proposals</h3>
+                      <Button 
+                        onClick={() => {
+                          setLoading(true);
+                          fetchProposalsFromEvents().finally(() => setLoading(false));
+                        }}
+                        className="bg-amber-400 hover:bg-amber-600 text-white"
+                        size="sm"
+                        disabled={loading}
+                      >
+                        {loading ? <Loader2 className="animate-spin mr-2" size={16} /> : null}
+                        <span>Refresh</span>
+                      </Button>
+                    </div>
+                    
+                    {proposals.length === 0 && !loading && (
+                      <div className="w-full p-4 bg-gray-800 rounded text-left">
+                        <p>Click "Refresh" to fetch the latest proposals from the blockchain.</p>
+                        <p className="text-sm mt-2 text-gray-400">If you've just created a proposal, please wait a few seconds before refreshing.</p>
+                      </div>
+                    )}
+                    
+                    <div className="space-y-4 max-h-[50vh] overflow-y-auto pr-2">
+                      {proposals.map((p) => (
+                        <div key={p.id} className="w-full p-4 bg-gray-800 rounded text-left">
+                          <h3 className="font-semibold">#{p.id}: {p.title}</h3>
+                          <p className="text-sm mb-2 text-gray-300">{p.description}</p>
+                          <div className="flex justify-between items-center text-xs text-gray-400 mb-3">
+                            <div>
+                              <span className="text-green-400">👍 {p.votesFor}</span> · 
+                              <span className="text-red-400"> 👎 {p.votesAgainst}</span> · 
+                              <span> Voters: {p.totalVoters}</span>
+                            </div>
+                            <div>
+                              {p.isActive ? (
+                                <span className="bg-green-900 text-green-200 px-2 py-1 rounded-full text-xs">Active</span>
+                              ) : p.isExecuted ? (
+                                <span className="bg-blue-900 text-blue-200 px-2 py-1 rounded-full text-xs">Executed</span>
+                              ) : p.isCanceled ? (
+                                <span className="bg-red-900 text-red-200 px-2 py-1 rounded-full text-xs">Canceled</span>
+                              ) : (
+                                <span className="bg-gray-700 text-gray-300 px-2 py-1 rounded-full text-xs">Closed</span>
+                              )}
+                            </div>
+                          </div>
+                          <div className="flex flex-wrap gap-2">
+                            <Button 
+                              onClick={() => handleVote(p.id, true)} 
+                              disabled={!p.isActive || loading}
+                              variant={p.isActive ? "default" : "ghost"}
+                              size="sm"
+                            >
+                              Vote For
+                            </Button>
+                            <Button 
+                              onClick={() => handleVote(p.id, false)} 
+                              disabled={!p.isActive || loading}
+                              variant={p.isActive ? "default" : "ghost"}
+                              size="sm"
+                            >
+                              Vote Against
+                            </Button>
+                            {p.isActive && (
+                              <Button 
+                                onClick={() => handleCancel(p.id)}
+                                disabled={loading}
+                                variant="destructive"
+                                size="sm"
+                              >
+                                Cancel
+                              </Button>
+                            )}
+                            {!p.isActive && !p.isExecuted && !p.isCanceled && (
+                              <Button 
+                                onClick={() => handleExecute(p.id)}
+                                disabled={loading}
+                                variant="secondary"
+                                size="sm"
+                              >
+                                Execute
+                              </Button>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 </div>
               )}
