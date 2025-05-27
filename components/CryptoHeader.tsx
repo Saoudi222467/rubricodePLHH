@@ -118,11 +118,10 @@ export default function CryptoHeader() {
 
   return (
     <header
-      className={`sticky top-0 z-[100] w-full transition-all duration-700 ${
-        isScrolled
+      className={`sticky top-0 z-[100] w-full transition-all duration-700 ${isScrolled
           ? "bg-gradient-to-r from-amber-950/95 via-yellow-900/95 to-amber-950/95 shadow-[0_10px_30px_-10px_rgba(0,0,0,0.5)] backdrop-blur-md"
           : "bg-gradient-to-r from-amber-950 via-yellow-900 to-amber-950"
-      }`}
+        }`}
     >
       {/* Top accent bar */}
       <div className="h-[3px] w-full bg-gradient-to-r from-amber-700/30 via-yellow-300 to-amber-700/30 relative overflow-hidden">
@@ -132,26 +131,28 @@ export default function CryptoHeader() {
       {/* Main header */}
       <div className="container mx-auto flex h-20 items-center justify-between">
         {/* Logo */}
-        <div className="flex items-center gap-4 group">
-          <div className="relative h-16 w-16 overflow-hidden rounded-full shadow-[0_0_20px_rgba(255,215,0,0.5)] transition-all duration-500 group-hover:shadow-[0_0_30px_rgba(255,215,0,0.7)]">
-            <div className="absolute inset-0 bg-gradient-to-r from-yellow-300/20 via-transparent to-yellow-300/20 rounded-full animate-[spin_8s_linear_infinite]" />
-            <Image
-              src="/images/plhh-logo.png"
-              alt="PLHH Coin Logo"
-              width={64}
-              height={64}
-              className="object-cover scale-110 transition-transform duration-700 group-hover:scale-125"
-            />
-          </div>
-          <div className="flex flex-col">
-            <div className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 via-amber-200 to-yellow-400 text-3xl font-bold tracking-wide transition-all duration-500 group-hover:from-yellow-200 group-hover:via-amber-100 group-hover:to-yellow-300">
-              PLHH Coin
+        <Link href="/">
+          <div className="flex items-center gap-4 group">
+            <div className="relative h-16 w-16 overflow-hidden rounded-full shadow-[0_0_20px_rgba(255,215,0,0.5)] transition-all duration-500 group-hover:shadow-[0_0_30px_rgba(255,215,0,0.7)]">
+              <div className="absolute inset-0 bg-gradient-to-r from-yellow-300/20 via-transparent to-yellow-300/20 rounded-full animate-[spin_8s_linear_infinite]" />
+              <Image
+                src="/images/plhh-logo.png"
+                alt="PLHH Coin Logo"
+                width={64}
+                height={64}
+                className="object-cover scale-110 transition-transform duration-700 group-hover:scale-125"
+              />
             </div>
-            <div className="text-amber-400/70 text-xs font-medium tracking-widest">
-              PEACE LOVE &amp; HARMONY
+            <div className="flex flex-col">
+              <div className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 via-amber-200 to-yellow-400 text-3xl font-bold tracking-wide transition-all duration-500 group-hover:from-yellow-200 group-hover:via-amber-100 group-hover:to-yellow-300">
+                PLHH Coin
+              </div>
+              <div className="text-amber-400/70 text-xs font-medium tracking-widest">
+                PEACE LOVE &amp; HARMONY
+              </div>
             </div>
           </div>
-        </div>
+        </Link>
 
         {/* Desktop Navigation */}
         <nav className="hidden xl:block">

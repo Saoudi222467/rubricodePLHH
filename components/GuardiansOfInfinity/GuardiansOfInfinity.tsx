@@ -55,7 +55,7 @@ export default function GuardiansOfInfinity() {
               className="relative z-10 mb-8 flex items-center justify-center"
               variants={itemVariants}
             >
-              <div className="w-64 h-64 md:w-80 md:h-80">
+              <div className="w-64 h-64 md:w-80 md:h-80 -mt-32 pb-20">
                 <InfinityLoop />
               </div>
             </motion.div>
@@ -64,7 +64,7 @@ export default function GuardiansOfInfinity() {
             <motion.h2
               variants={headerVariants}
               className="
-                relative z-10 text-4xl md:text-5xl font-extrabold uppercase tracking-wide
+                relative z-10 text-4xl md:text-5xl font-extrabold uppercase tracking-wide mt-20
                 bg-clip-text text-transparent
                 bg-gradient-to-r from-[#FFE066] via-[#FFE060] to-[#7B245A]
               "
@@ -72,7 +72,7 @@ export default function GuardiansOfInfinity() {
               Guardians of Infinity
             </motion.h2>
 
-            {/* Intro text (unchanged) */}
+            {/* Intro text */}
             <motion.p
               variants={itemVariants}
               className="relative z-10 mt-4 max-w-xl text-[#FFE060] text-lg leading-relaxed"
@@ -80,7 +80,7 @@ export default function GuardiansOfInfinity() {
               The ones who rise in devotion. These community members have:
             </motion.p>
 
-            {/* Styled bullets like CoreChoices */}
+            {/* Styled bullets */}
             <motion.ul
               variants={containerVariants}
               className="relative z-10 mt-6 flex flex-col gap-6 max-w-xl"

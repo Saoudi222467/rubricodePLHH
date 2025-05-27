@@ -7,16 +7,29 @@ import InfinityLoop from "@/components/InfinityLoop";
 const listContainer: Variants = {
   hidden: {},
   visible: {
-    transition: { staggerChildren: 0.25, delayChildren: 0.2 },
+    transition: { 
+      staggerChildren: 0.8,
+      delayChildren: 1.2,
+    },
   },
 };
 
 const listItem: Variants = {
-  hidden: { scale: 0.8, opacity: 0 },
+  hidden: { 
+    opacity: 0,
+    y: 50,
+    scale: 0.95
+  },
   visible: {
-    scale: 1,
     opacity: 1,
-    transition: { type: "spring", stiffness: 300, damping: 20 },
+    y: 0,
+    scale: 1,
+    transition: { 
+      type: "spring",
+      stiffness: 100,
+      damping: 20,
+      duration: 1.2
+    },
   },
 };
 
@@ -24,9 +37,9 @@ export default function WhoWeAre() {
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { amount: 0.5 });
   const lines = [
-    "We are not a company.",
-    "We are not a logo.",
-    "We are not a launch.",
+    { prefix: "We are not a", word: "company" },
+    { prefix: "We are not a", word: "logo" },
+    { prefix: "We are not a", word: "launch" },
   ];
 
   return (
@@ -43,14 +56,14 @@ export default function WhoWeAre() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 0.8, ease: "easeInOut" }}
+              transition={{ duration: 1.2, ease: "easeInOut" }}
             >
               {/* Pulsing blob */}
               <motion.div
                 initial={{ scale: 1 }}
-                animate={{ scale: [1, 10, 1] }}
+                animate={{ scale: [1, 8, 1] }}
                 transition={{
-                  duration: 4,
+                  duration: 6,
                   repeat: Infinity,
                   ease: "easeInOut",
                 }}
@@ -70,10 +83,10 @@ export default function WhoWeAre() {
               <motion.img
                 src="/earth-section-bg.png"
                 alt="Earth background"
-                className="absolute inset-0 w-full h-full object-cover z-10 opacity-70"
+                className="absolute inset-0 w-full h-full object-cover z-10 opacity-50"
                 initial={{ scale: 1.1 }}
                 animate={{ scale: 1 }}
-                transition={{ duration: 2, ease: "easeInOut" }}
+                transition={{ duration: 2.5, ease: "easeInOut" }}
               />
 
               {/* Soft gradient overlay */}
@@ -84,27 +97,27 @@ export default function WhoWeAre() {
                 transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
                 style={{
                   background:
-                    "radial-gradient(circle at center, rgba(255,107,107,0.2), transparent 80%)",
+                    "radial-gradient(circle at center, rgba(255,107,107,0.15), transparent 80%)",
                 }}
               />
 
               {/* Foreground content */}
-              <div className="relative z-20 max-w-3xl text-center space-y-8">
+              <div className="relative z-20 max-w-4xl text-center space-y-16">
                 {/* Title */}
                 <motion.h2
-                  initial={{ scale: 0.8, opacity: 0 }}
+                  initial={{ scale: 0.9, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
-                  transition={{ duration: 0.8, ease: "easeOut" }}
-                  whileHover={{ scale: 1.05 }}
+                  transition={{ duration: 1.2, ease: "easeOut" }}
                   className="
-                    text-4xl sm:text-5xl font-extrabold
+                    text-5xl sm:text-6xl font-extrabold
                     bg-gradient-to-r from-[#FFD43B] via-[#FFA94D] to-[#FF6B6B]
                     bg-clip-text text-transparent
                     uppercase tracking-wide
+                    leading-tight
                   "
                 >
                   Who We Are{" "}
-                  <span className="text-[#FFD43B]">(and Aren’t)</span>
+                  <span className="text-[#FFD43B] block mt-2">(and Aren't)</span>
                 </motion.h2>
 
                 {/* Animated list with gradient text and hover pop */}
@@ -112,43 +125,41 @@ export default function WhoWeAre() {
                   variants={listContainer}
                   initial="hidden"
                   animate="visible"
-                  className="flex flex-col gap-4 text-left text-lg sm:text-xl"
+                  className="flex flex-col gap-8 text-center"
                 >
                   {lines.map((line, i) => (
                     <motion.li
                       key={i}
                       variants={listItem}
-                      whileHover={{ scale: 1.02 }}
-                      className="flex items-start"
+                      className={`
+                        text-${4 - i}xl sm:text-${5 - i}xl
+                        font-bold
+                        tracking-wide
+                      `}
                     >
-                      <div
-                        className="w-4 h-4 mt-1 mr-3 rounded-full animate-pulse flex-shrink-0"
-                        style={{
-                          background:
-                            "linear-gradient(to bottom right, #FF6B6B, #F06595)",
-                        }}
-                      />
-                      <span
-                        className="
-                          bg-gradient-to-r from-[#FF6B6B] via-[#F06595] to-[#FF8787]
-                          bg-clip-text text-transparent
-                          font-semibold
-                          hover:underline
-                        "
-                      >
-                        {line}
-                      </span>
+                      <span className="text-white">{line.prefix} </span>
+                      <span className="text-[#FFD43B]">{line.word}</span>
                     </motion.li>
                   ))}
                 </motion.ul>
 
                 {/* Tagline: bold white with glow */}
                 <motion.p
-                  initial={{ y: 20, opacity: 0 }}
+                  initial={{ y: 30, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
-                  transition={{ duration: 0.6, ease: "easeOut", delay: 0.6 }}
-                  className="mt-6 text-lg sm:text-xl font-bold text-white"
-                  style={{ textShadow: "0 0 12px rgba(255,255,255,0.9)" }}
+                  transition={{ duration: 1.2, ease: "easeOut", delay: 3.6 }}
+                  className="
+                    text-2xl sm:text-3xl
+                    font-bold text-white
+                    max-w-3xl mx-auto
+                    leading-relaxed
+                  "
+                  style={{ 
+                    textShadow: "0 0 20px rgba(255,255,255,0.4)",
+                    background: "linear-gradient(to right, #ffffff, #f0f0f0)",
+                    WebkitBackgroundClip: "text",
+                    WebkitTextFillColor: "transparent"
+                  }}
                 >
                   We are a field where humans, intelligence & earth co-create
                   the future.
@@ -157,9 +168,6 @@ export default function WhoWeAre() {
             </motion.div>
           )}
         </AnimatePresence>
-
-        {/* Spacer */}
-        {/* <div className="h-[100vh]" /> */}
       </section>
     </>
   );

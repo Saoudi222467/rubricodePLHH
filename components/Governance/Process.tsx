@@ -88,7 +88,7 @@ export function GovernanceProcess() {
               exit={{ opacity: 0 }}
               transition={{ duration: 0.8 }}
             >
-              <InfinityLoop />
+              
             </motion.div>
 
             {/* gold gradient overlay */}

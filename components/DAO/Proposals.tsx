@@ -104,7 +104,7 @@ export function DaoProposals() {
           >
             {/* Infinity-loop background */}
             <motion.div
-              className="fixed inset-0 -z-20 pointer-events-none"
+              className="fixed inset-0 -z-20 pointer-events-none pb-20 -mt-12"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
@@ -147,13 +147,13 @@ export function DaoProposals() {
                 not just heard—but seen, voted on, and if the community
                 agrees—brought to life.
               </motion.p>
-
+              {/* 
               <motion.div
                 className="grid grid-cols-1 lg:grid-cols-3 gap-8"
                 variants={proposalsItemVariants}
                 custom={1}
               >
-                {/* Proposal List */}
+               
                 <div className="lg:col-span-2 space-y-4">
                   {activeProposals.map((p) => (
                     <motion.div
@@ -210,7 +210,7 @@ export function DaoProposals() {
                   ))}
                 </div>
 
-                {/* Detail Card */}
+             
                 <div
                   className="bg-white/10 backdrop-blur-sm rounded-lg p-6 space-y-4"
                   style={{ boxShadow: "0 0 0 2px #D4AF37" }}
@@ -303,6 +303,7 @@ export function DaoProposals() {
                   </motion.div>
                 </div>
               </motion.div>
+              */}
             </motion.div>
           </motion.section>
         )}

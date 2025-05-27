@@ -1,4 +1,5 @@
 "use client";
+import { useEffect, useState } from "react";
 import Header from "@/components/CryptoHeader";
 import LandingHero from "@/components/LandingSections/LandingHero";
 import Ticker from "@/components/sections/ticker";
@@ -17,31 +18,48 @@ import ClosingThought from "@/components/LandingSections/ClosingThought";
 import QnASection from "@/components/LandingSections/QnASection";
 
 export default function Home() {
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsInitialLoad(false);
+    }, 1000); // Give enough time for the hero section to be fully visible
+
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
     <>
       <Ticker />
-
-      {/* Sticky Header (handled within CryptoHeader) */}
       <Header />
       <main className="bg-black text-white overflow-x-hidden">
-        {/* Ticker in normal document flow */}
+        <div className="relative bg-black w-full">
+          {/* Hero section is always visible */}
+          <div className="relative z-50">
+            <LandingHero />
+          </div>
 
-        {/* Page Content */}
-        <div className="relative z-10 bg-black w-full">
-          <LandingHero />
-          <WhatWeDo />
-          <YourRole />
-          <MissionStatement />
-          <HarmonySpectrum />
-          <EarthSection />
-          <FoundationSection />
-          <CoCreateSection />
-          <DreamFieldSection />
-          <FictionFunction />
-          <WhatYouCanExpect />
-          <CTASection />
-          <ClosingThought />
-          <QnASection />
+          {/* Other sections with controlled initial opacity */}
+          <div 
+            className={`relative transition-opacity duration-1000 ${
+              isInitialLoad ? 'opacity-0' : 'opacity-100'
+            }`}
+            style={{ zIndex: isInitialLoad ? -1 : 40 }}
+          >
+            <WhatWeDo />
+            <YourRole />
+            <MissionStatement />
+            <HarmonySpectrum />
+            <EarthSection />
+            <FoundationSection />
+            <CoCreateSection />
+            <DreamFieldSection />
+            <FictionFunction />
+            <WhatYouCanExpect />
+            <CTASection />
+            <ClosingThought />
+            <QnASection />
+          </div>
         </div>
       </main>
     </>

@@ -55,7 +55,7 @@ export function GovernanceCTA() {
               exit={{ opacity: 0 }}
               transition={{ duration: 0.8 }}
             >
-              <InfinityLoop />
+             
             </motion.div>
 
             <motion.div

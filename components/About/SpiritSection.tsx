@@ -49,12 +49,16 @@ const SpiritSection = () => {
               className="fixed inset-0 z-50 flex items-center justify-center px-6 text-center overflow-hidden"
             >
               {/* Infinity loop background */}
-              <div className="absolute inset-0 pointer-events-none">
-                <InfinityLoop />
+              <div className="absolute inset-0 pointer-events-none z-[60]">
+                <div className="w-full h-full flex items-center justify-center -mt-64">
+                  <div className="w-[800px] h-[400px] relative">
+                    <InfinityLoop />
+                  </div>
+                </div>
               </div>
 
               {/* Content */}
-              <div className="relative z-10 max-w-4xl space-y-8">
+              <div className="relative z-10 max-w-4xl space-y-8 mt-32">
                 <motion.h2
                   variants={headingVariants}
                   className="
@@ -85,9 +89,6 @@ const SpiritSection = () => {
           )}
         </AnimatePresence>
       </section>
-
-      {/* Spacer to allow scrolling */}
-      {/* <div className="h-[100vh]" /> */}
     </>
   );
 };

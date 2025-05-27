@@ -96,7 +96,7 @@ export default function MintingSection({ isMobile }: { isMobile: boolean }) {
 
                 <div className="w-full p-4 rounded-lg bg-black/70 backdrop-blur-md flex flex-row items-center justify-between">
                   <p className="text-white text-lg md:text-xl font-semibold">
-                    1 PLHH = <span className="text-[#a67c00]">$0.006</span>
+                    1 PLHH = <span className="text-[#a67c00]">$0.08</span>
                   </p>
 
                   <PurchaseTokensButton

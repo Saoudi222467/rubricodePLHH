@@ -5,7 +5,7 @@ import Image from "next/image";
 
 export default function LandingHero() {
   const ref = useRef(null);
-  const inView = useInView(ref, { amount: 0.5 });
+  const inView = useInView(ref, { amount: 0 });
 
   return (
     <>
@@ -17,31 +17,31 @@ export default function LandingHero() {
           transition={{ duration: 1, ease: "easeOut" }}
         >
           <div className="max-w-2xl text-center space-y-6">
-            <p className="text-white text-xl md:text-3xl font-light italic leading-relaxed tracking-wide drop-shadow-md">
-              You know every tree’s whisper. Every path’s memory. Every cow’s
-              eyes.
-            </p>
-            <p className="text-white text-xl md:text-3xl font-light italic leading-relaxed tracking-wide drop-shadow-md">
-              Your roots run deeper than the seasons reach.
-            </p>
-            <p className="text-white text-xl md:text-3xl font-light italic leading-relaxed tracking-wide drop-shadow-md">
-              But the world keeps turning. And sometimes, it feels like farming
-              no longer has a place.
-            </p>
+            <motion.div
+              animate={{ rotate: 360 }}
+              transition={{
+                duration: 20,
+                repeat: Infinity,
+                ease: "linear"
+              }}
+              className="w-1/2 mx-auto mb-8"
+            >
+              <Image 
+                src="/images/plhh-logo.png" 
+                width={128} 
+                height={128} 
+                alt="PLHH Logo" 
+                className="w-full h-auto" 
+              />
+            </motion.div>
             <p className="text-yellow-300 text-2xl md:text-4xl font-semibold italic leading-snug tracking-wide drop-shadow-lg">
               We believe otherwise.
             </p>
             <p className="bg-clip-text text-transparent bg-gradient-to-r from-yellow-400 to-red-500 text-xl md:text-3xl font-semibold leading-relaxed tracking-wide">
-              Peace, Love & Harmony is more than a project. It’s a living Garden
+              Peace, Love & Harmony is more than a project. It's a living Garden
               of Eden concept –
             </p>
-            <p className="text-white text-xl md:text-3xl font-light italic leading-relaxed tracking-wide drop-shadow-md">
-              for you, your farm, your family. A sacred space to rethink. To
-              feel again. To create anew.
-            </p>
-            <p className="text-white text-xl md:text-3xl font-light italic leading-relaxed tracking-wide drop-shadow-md">
-              Freely. With dignity. Carried by community.
-            </p>
+            
           </div>
         </motion.div>
 

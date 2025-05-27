@@ -53,7 +53,7 @@ export function GovernanceHero() {
           >
             {/* 1) Infinity-loop background */}
             <motion.div
-              className="fixed inset-0 -z-20 pointer-events-none"
+              className="fixed inset-0 -z-20 pointer-events-none pb-20 -mt-20"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
@@ -73,7 +73,7 @@ export function GovernanceHero() {
 
             {/* 3) Content */}
             <motion.div
-              className="relative z-30 max-w-3xl px-6 text-center space-y-4"
+              className="relative z-30 max-w-3xl px-6 text-center space-y-4 mt-52"
               variants={containerVariants}
               initial="hidden"
               animate="show"

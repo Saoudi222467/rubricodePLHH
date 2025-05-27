@@ -46,15 +46,15 @@ export default function RegenerativeCircle() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.6, ease: "easeInOut" }}
-              className="fixed inset-0 bg-black text-white z-50 flex items-center justify-center px-6 overflow-hidden"
+              className="fixed inset-0 bg-black text-white z-50 flex flex-col items-center justify-center px-6 overflow-hidden"
             >
               {/* Background loop */}
-              <div className="absolute inset-0 pointer-events-none">
+              <div className="w-[800px] h-[400px] relative -mt-32">
                 <InfinityLoop />
               </div>
 
               {/* Content */}
-              <div className="relative z-10 max-w-4xl space-y-8">
+              <div className="relative z-10 max-w-4xl space-y-8 text-center">
                 {/* Animated gradient headline */}
                 <motion.h2
                   initial={{ scale: 0.8, opacity: 0 }}
@@ -76,22 +76,16 @@ export default function RegenerativeCircle() {
                   variants={listContainer}
                   initial="hidden"
                   animate="visible"
-                  className="space-y-4 text-left text-lg sm:text-xl"
+                  className="space-y-4 text-lg sm:text-xl"
                 >
                   {points.map((point, idx) => (
                     <motion.li
                       key={idx}
                       variants={listItem}
-                      className="flex items-start"
+                      className="flex items-center justify-center"
                     >
                       {/* Animated gradient bullet */}
-                      <span
-                        className="
-                          mt-2 flex-shrink-0 w-3 h-3 rounded-full
-                          bg-gradient-to-br from-[#F9CD13] to-[#539241]
-                          animate-pulse
-                        "
-                      />
+                      
                       <span className="ml-3">{point}</span>
                     </motion.li>
                   ))}
@@ -116,7 +110,6 @@ export default function RegenerativeCircle() {
           )}
         </AnimatePresence>
       </section>
-      {/* <div className="h-[100vh]" /> Spacer */}
     </>
   );
 }

@@ -53,10 +53,10 @@ const DAOSection = () => {
                   custom={0}
                   initial="hidden"
                   animate="visible"
-                  className="flex justify-center pt-20 text-lg sm:text-xl"
+                  className="flex justify-center pt-20 text-xl sm:text-2xl"
                 >
                   Every&nbsp;
-                  <span className="text-[#F9CD13] font-extrabold">voice</span>
+                  <span className="text-[#000000] font-extrabold">voice</span>
                   &nbsp; matters.
                 </motion.div>
 

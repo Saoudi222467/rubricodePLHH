@@ -843,7 +843,9 @@ export function DaoComponent() {
                 DAO Dashboard
               </h2>
 
-              <ConnectButton />
+              <ConnectButton 
+                className="bg-gradient-to-r from-yellow-700 via-yellow-600 to-yellow-500 text-white font-bold rounded-lg px-6 py-2 shadow-md border border-yellow-600/60 hover:from-yellow-600 hover:to-yellow-400 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-yellow-300"
+              />
 
               {error && (
                 <div className="w-full p-4 bg-red-900/70 rounded flex items-center space-x-2">

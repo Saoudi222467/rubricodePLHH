@@ -48,7 +48,7 @@ export default function MotionSection({ isMobile }: { isMobile: boolean }) {
           style={{ opacity: animated(sectionOpacity, 1) }}
         >
           <div className="flex justify-center items-center flex-col max-w-2xl">
-            <div className="text-center mb-2">
+            <div className="text-center -mt-20">
               <motion.div
                 className="text-center"
                 style={{
@@ -80,7 +80,7 @@ export default function MotionSection({ isMobile }: { isMobile: boolean }) {
             </div>
 
             <motion.div
-              className="transform scale-50 md:scale-60 my-0"
+              className="transform scale-50 md:scale-60 my-0 pb-20  -mt-40"
               style={{
                 opacity: animated(loopOpacity, 1),
                 scale: animated(loopScale, 1),
