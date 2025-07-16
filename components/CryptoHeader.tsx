@@ -118,7 +118,7 @@ export default function CryptoHeader() {
 
   return (
     <header
-      className={`sticky top-0 z-[100] w-full transition-all duration-700 ${isScrolled
+      className={`fixed top-[40px] left-0 w-full z-[100] transition-all duration-700 ${isScrolled
           ? "bg-gradient-to-r from-amber-950/95 via-yellow-900/95 to-amber-950/95 shadow-[0_10px_30px_-10px_rgba(0,0,0,0.5)] backdrop-blur-md"
           : "bg-gradient-to-r from-amber-950 via-yellow-900 to-amber-950"
         }`}

@@ -99,13 +99,7 @@ const CTASection = () => {
                 Your vision is our mission.
               </motion.h2>
 
-              <motion.button
-                variants={childVariants}
-                className="bg-yellow-500 hover:bg-yellow-600 text-black font-semibold py-2 px-6 rounded-xl shadow-md transition cursor-pointer"
-                onClick={() => alert("I’m Ready!")}
-              >
-                Apply
-              </motion.button>
+              
             </motion.div>
           </motion.div>
         )}

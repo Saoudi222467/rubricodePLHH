@@ -70,7 +70,7 @@ export default function QnASectionWithHeading() {
   );
 
   const renderGrid = () => (
-    <div className="relative z-10000 max-w-7xl mx-auto pb-20 pt-2 px-6">
+    <div className="relative z-10000 max-w-7xl mx-auto pb-20 pt-8 px-6">
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 justify-items-center">
         {sortedQAs.slice(0, 4).map(({ q, a }, idx) => (
           <motion.div

@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import Header from "@/components/CryptoHeader";
-import LandingHero from "@/components/LandingSections/LandingHero";
+import NewLandingHero from "@/components/LandingSections/newLandingHero";
 import Ticker from "@/components/sections/ticker";
 import MissionStatement from "@/components/LandingSections/MissionStatement";
 import HarmonySpectrum from "@/components/LandingSections/HarmonySpectrum";
@@ -16,6 +16,7 @@ import YourRole from "@/components/LandingSections/YourRole";
 import WhatYouCanExpect from "@/components/LandingSections/WhatYouCanExpect";
 import ClosingThought from "@/components/LandingSections/ClosingThought";
 import QnASection from "@/components/LandingSections/QnASection";
+import FooterTicker from "@/components/sections/footer-ticker";
 
 export default function Home() {
   const [isInitialLoad, setIsInitialLoad] = useState(true);
@@ -32,11 +33,11 @@ export default function Home() {
     <>
       <Ticker />
       <Header />
-      <main className="bg-black text-white overflow-x-hidden">
+      <main className="bg-black text-white overflow-x-hidden pt-[123px]">
         <div className="relative bg-black w-full">
           {/* Hero section is always visible */}
-          <div className="relative z-50">
-            <LandingHero />
+          <div className="relative z-[5]">
+            <NewLandingHero />
           </div>
 
           {/* Other sections with controlled initial opacity */}
@@ -62,6 +63,7 @@ export default function Home() {
           </div>
         </div>
       </main>
+     
     </>
   );
 }
