@@ -87,7 +87,7 @@ export default function TotalSupply() {
           >
             <motion.h1
               variants={titleVariants}
-              className="text-4xl sm:text-5xl md:text-6xl font-extrabold leading-tight text-white drop-shadow-2xl"
+              className="mt-24 text-4xl sm:text-5xl md:text-6xl font-extrabold leading-tight text-white drop-shadow-2xl"
             >
               TOKENOMICS
               <br />
