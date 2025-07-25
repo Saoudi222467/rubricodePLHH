@@ -101,7 +101,13 @@ export default function SectionIntro() {
             >
               <motion.h2
                 variants={titleVariants}
-                className=" mt-24 text-5xl md:text-6xl font-extrabold text-white drop-shadow-[0_4px_8px_rgba(212,175,55,0.5)]"
+                className=" mt-24 
+                              text-[clamp(2rem,6vw,3.75rem)]  
+                              font-extrabold 
+                              text-white 
+                              drop-shadow-[0_4px_8px_rgba(212,175,55,0.5)]
+                              whitespace-nowrap
+                              text-center"
               >
                 GUARDIANS OF INFINITY
               </motion.h2>

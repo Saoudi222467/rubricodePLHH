@@ -75,7 +75,7 @@ export default function FoundationalCircle() {
             <div className="relative max-w-2xl w-full mb-12">
               <motion.h4
                 variants={headerVariants}
-                className="relative text-4xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-yellow-300 to-red-400 drop-shadow-lg mb-4"
+                className="mt-20 relative text-4xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-yellow-300 to-red-400 drop-shadow-lg mb-4"
               >
                 THE FOUNDATIONAL CIRCLE
               </motion.h4>
