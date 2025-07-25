@@ -47,14 +47,14 @@ export default function FoundationalCircle() {
 
   // Updated avatar data – placeholders for image links
   const avatars = [
-    { id: 1, name: "Mathias", link: "#", src: "https://via.placeholder.com/150?text=Mathias" },
-    { id: 2, name: "Sonja", link: "#", src: "https://via.placeholder.com/150?text=Sonja" },
-    { id: 3, name: "Volker", link: "#", src: "https://via.placeholder.com/150?text=Volker" },
-    { id: 4, name: "Monika", link: "#", src: "https://via.placeholder.com/150?text=Monika" },
-    { id: 5, name: "Lisa", link: "#", src: "https://via.placeholder.com/150?text=Lisa" },
-    { id: 6, name: "Stephan", link: "#", src: "https://via.placeholder.com/150?text=Stephan" },
-    { id: 7, name: "Andrea", link: "#", src: "https://via.placeholder.com/150?text=Andrea" },
-    { id: 8, name: "Nico", link: "#", src: "https://via.placeholder.com/150?text=Nico" },
+    { id: 1, name: "Mathias", link: "#", src: "https://i.pravatar.cc/150?img=5" },
+    { id: 2, name: "Sonja", link: "#", src: "https://i.pravatar.cc/150?img=15" },
+    { id: 3, name: "Volker", link: "#", src: "https://i.pravatar.cc/150?img=16" },
+    { id: 4, name: "Monika", link: "#", src: "https://i.pravatar.cc/150?img=17" },
+    { id: 5, name: "Lisa", link: "#", src: "https://i.pravatar.cc/150?img=5" },
+    { id: 6, name: "Stephan", link: "#", src: "https://i.pravatar.cc/150?img=16" },
+    { id: 7, name: "Andrea", link: "#", src: "https://i.pravatar.cc/150?img=17" },
+    { id: 8, name: "Nico", link: "#", src: "https://i.pravatar.cc/150?img=5" },
   ];
 
   return (
