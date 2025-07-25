@@ -99,7 +99,7 @@ export default function CircleContributors() {
               {/* Updated Heading */}
               <motion.h2
                 variants={headerVariants}
-                className="
+                className="mt-30
                   text-4xl sm:text-5xl md:text-6xl font-extrabold uppercase
                   bg-clip-text text-transparent
                   bg-gradient-to-r from-[#FFE066] via-[#FFE060] to-[#7B245A]

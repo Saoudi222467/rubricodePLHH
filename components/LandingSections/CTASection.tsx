@@ -4,7 +4,7 @@ import { motion, useInView, AnimatePresence } from "framer-motion";
 
 const CTASection = () => {
   const ref = useRef(null);
-  const inView = useInView(ref, { margin: "-30% 0px -30% 0px"});
+  const inView = useInView(ref, { margin: "-30% 0px -30% 0px" });
 
   const containerVariants = {
     visible: {
@@ -29,7 +29,7 @@ const CTASection = () => {
   return (
     <section
       ref={ref}
-      className="relative w-full h-[200vh] overflow-hidden  text-white"
+      className="relative w-full h-[200vh] overflow-hidden text-white"
     >
       <AnimatePresence>
         {inView && (
@@ -65,7 +65,7 @@ const CTASection = () => {
 
             {/* Text Content */}
             <motion.div
-              className="relative text-center px-6 pointer-events-auto z-10"
+              className="relative text-center px-6 pointer-events-auto z-10 leading-snug"
               initial="hidden"
               animate="visible"
               exit="exit"
@@ -73,34 +73,33 @@ const CTASection = () => {
             >
               <motion.h2
                 variants={childVariants}
-                className="text-3xl md:text-5xl font-bold mb-4"
+                className="text-2xl md:text-4xl font-semibold mb-2"
               >
-                Farm calling for more?
+                Do you need support as a farmer?
               </motion.h2>
 
               <motion.h2
                 variants={childVariants}
-                className="text-3xl md:text-5xl font-bold mb-4"
+                className="text-2xl md:text-4xl font-semibold mb-2"
               >
-                Next chapter: supported, free, rooted.
+                Let us hear your story and vision.
               </motion.h2>
 
               <motion.h2
                 variants={childVariants}
-                className="text-3xl md:text-5xl font-bold mb-4"
+                className="text-2xl md:text-4xl font-semibold mb-2"
               >
-                Let your story be heard.
+                We will tell it and make it come true with you!
               </motion.h2>
 
               <motion.h2
                 variants={childVariants}
-                className="text-3xl md:text-5xl font-bold mb-6"
+                className="mt-7 text-2xl md:text-4xl font-extrabold"
               >
                 Your vision is our mission.
               </motion.h2>
-
-              
             </motion.div>
+
           </motion.div>
         )}
       </AnimatePresence>
