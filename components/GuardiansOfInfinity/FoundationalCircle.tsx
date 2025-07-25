@@ -7,7 +7,6 @@ export default function FoundationalCircle() {
   const ref = useRef<HTMLElement>(null);
   const isInView = useInView(ref, { amount: 0.5 });
 
-  // Animation variants
   const containerVariants: Variants = {
     hidden: {},
     show: { transition: { staggerChildren: 0.3, when: "beforeChildren" } },
@@ -46,12 +45,16 @@ export default function FoundationalCircle() {
     exit: { opacity: 0, scale: 0.8, transition: { duration: 0.2 } },
   };
 
-  // Avatar data
+  // Updated avatar data – placeholders for image links
   const avatars = [
-    { id: 1, name: "Alice", src: "https://i.pravatar.cc/150?img=5" },
-    { id: 2, name: "Bob", src: "https://i.pravatar.cc/150?img=15" },
-    { id: 3, name: "Carol", src: "https://i.pravatar.cc/150?img=16" },
-    { id: 4, name: "Dave", src: "https://i.pravatar.cc/150?img=17" },
+    { id: 1, name: "Mathias", link: "#", src: "https://via.placeholder.com/150?text=Mathias" },
+    { id: 2, name: "Sonja", link: "#", src: "https://via.placeholder.com/150?text=Sonja" },
+    { id: 3, name: "Volker", link: "#", src: "https://via.placeholder.com/150?text=Volker" },
+    { id: 4, name: "Monika", link: "#", src: "https://via.placeholder.com/150?text=Monika" },
+    { id: 5, name: "Lisa", link: "#", src: "https://via.placeholder.com/150?text=Lisa" },
+    { id: 6, name: "Stephan", link: "#", src: "https://via.placeholder.com/150?text=Stephan" },
+    { id: 7, name: "Andrea", link: "#", src: "https://via.placeholder.com/150?text=Andrea" },
+    { id: 8, name: "Nico", link: "#", src: "https://via.placeholder.com/150?text=Nico" },
   ];
 
   return (
@@ -68,36 +71,33 @@ export default function FoundationalCircle() {
             exit="exit"
             className="fixed inset-0 z-50 flex flex-col items-center justify-center px-6 text-center"
           >
-            {/* Text Container */}
+            {/* Header + Description */}
             <div className="relative max-w-2xl w-full mb-12">
-              {/* Header with Gradient Text */}
               <motion.h4
                 variants={headerVariants}
                 className="relative text-4xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-yellow-300 to-red-400 drop-shadow-lg mb-4"
               >
                 THE FOUNDATIONAL CIRCLE
               </motion.h4>
-
-              {/* Description with Underline Animation */}
               <motion.p
                 variants={textVariants}
                 className="relative text-gray-200 mb-8 before:block before:absolute before:-inset-1 before:-skew-y-2 before:bg-yellow-600/30 before:z-[-1] p-4 rounded-lg"
               >
-                “The ones who lit the first fire.” These are the original vision
-                holders. The initiators. The builders. The seed-planters. They
-                didn’t create this to be seen – they created this so others
-                could belong.
+                “The ones who lit the first fire.” These are the original vision holders. The initiators. The builders. The seed-planters. They didn’t create this to be seen – they created this so others could belong.
               </motion.p>
             </div>
 
-            {/* Avatars Grid with Entrance Animation */}
+            {/* Avatar Grid */}
             <motion.div
               variants={containerVariants}
-              className="flex flex-wrap justify-center gap-8"
+              className="grid grid-cols-2 md:grid-cols-4 gap-8"
             >
-              {avatars.map(({ id, name, src }) => (
-                <motion.div
+              {avatars.map(({ id, name, link, src }) => (
+                <motion.a
                   key={id}
+                  href={link}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   variants={itemVariants}
                   whileHover={{ scale: 1.15, rotate: [0, 5, -5, 0] }}
                   className="flex flex-col items-center"
@@ -110,7 +110,7 @@ export default function FoundationalCircle() {
                   <span className="mt-2 text-sm text-gray-300 uppercase tracking-wide">
                     {name}
                   </span>
-                </motion.div>
+                </motion.a>
               ))}
             </motion.div>
           </motion.div>

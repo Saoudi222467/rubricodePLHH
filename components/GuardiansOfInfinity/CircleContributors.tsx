@@ -45,18 +45,21 @@ export default function CircleContributors() {
       role: "Lead Designer",
       location: "New York, USA",
       contribution: "Crafted the UI mockups and visual identity.",
+      image: "https://i.pravatar.cc/150?img=1",
     },
     {
       name: "Ravi Patel",
       role: "Frontend Developer",
       location: "London, UK",
       contribution: "Built the React components and Framer Motion animations.",
+      image: "https://i.pravatar.cc/150?img=2",
     },
     {
       name: "Mei Chen",
       role: "Content Strategist",
       location: "Sydney, Australia",
       contribution: "Authored the site copy and messaging framework.",
+      image: "https://i.pravatar.cc/150?img=3",
     },
   ];
 
@@ -93,7 +96,7 @@ export default function CircleContributors() {
               animate="show"
               exit="exit"
             >
-              {/* Big Gradient Heading */}
+              {/* Updated Heading */}
               <motion.h2
                 variants={headerVariants}
                 className="
@@ -103,10 +106,10 @@ export default function CircleContributors() {
                   drop-shadow-lg
                 "
               >
-                Circle Contributors
+                Join the Circle
               </motion.h2>
 
-              {/* Styled Blockquote */}
+              {/* Updated Call-to-Action Quote */}
               <motion.blockquote
                 variants={textVariants}
                 className="
@@ -117,15 +120,14 @@ export default function CircleContributors() {
                   drop-shadow-lg
                 "
               >
-                “The builders behind the scenes.” Designers, developers,
-                writers, strategists, creators – the ones who laid the stones,
-                wrote the code, shaped the vision.
+                “We’d love for you and your international team to be part of this.”
+                Bring your ideas, your energy, your story — and your photo!
               </motion.blockquote>
 
-              {/* Cards Grid */}
+              {/* Contributor Cards */}
               <motion.div
                 variants={containerVariants}
-                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-8"
+                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-10"
               >
                 {contributors.map((c, i) => (
                   <motion.div
@@ -139,13 +141,22 @@ export default function CircleContributors() {
                       bg-white bg-opacity-10
                       shadow-lg
                       backdrop-blur-sm
+                      flex flex-col items-center text-center
                     "
                   >
+                    <img
+                      src={c.image}
+                      alt={c.name}
+                      className="w-24 h-24 rounded-full object-cover shadow-lg border-2 border-white mb-4"
+                    />
                     <h5 className="font-medium text-white text-xl">
-                      {c.name} &mdash; {c.role}
+                      {c.name}
                     </h5>
-                    <p className="mt-1 text-white/70 italic">{c.location}</p>
-                    <p className="mt-4 text-white/80">{c.contribution}</p>
+                    <p className="text-white/70 text-sm">{c.role}</p>
+                    <p className="text-white/60 text-xs italic mb-2">
+                      {c.location}
+                    </p>
+                    <p className="text-white/80 text-sm">{c.contribution}</p>
                   </motion.div>
                 ))}
               </motion.div>
