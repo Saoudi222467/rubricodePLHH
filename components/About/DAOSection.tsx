@@ -7,7 +7,6 @@ const DAOSection = () => {
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { amount: 0.5 });
 
-  // Common animation props for each row, typed as Variants
   const rowVariants: Variants = {
     hidden: { opacity: 0, y: 20 },
     visible: (custom: number) => ({
@@ -19,7 +18,7 @@ const DAOSection = () => {
 
   return (
     <>
-      <section ref={ref} className="w-full h-[100vh] relative overflow-hidden ">
+      <section ref={ref} className="w-full h-[100vh] relative overflow-hidden">
         <AnimatePresence>
           {isInView && (
             <motion.div
@@ -28,9 +27,9 @@ const DAOSection = () => {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.6, ease: "easeInOut" }}
-              className="fixed inset-0 bg-black text-white z-50 flex flex-col justify-between h-full overflow-hidden mt-10"
+              className="fixed inset-0 bg-black text-white z-50 flex flex-col justify-between h-full"
             >
-              {/* Background image with continuous zoom */}
+              {/* Background with dark overlay */}
               <motion.div
                 initial={{ scale: 1 }}
                 animate={{ scale: 1.1 }}
@@ -39,74 +38,55 @@ const DAOSection = () => {
                   ease: "linear",
                   repeat: Infinity,
                 }}
+                className="absolute inset-0 bg-cover bg-center bg-no-repeat"
                 style={{
                   backgroundImage: "url('/assets/images/landing/CoCreate.jpg')",
                 }}
-                className="absolute inset-0 bg-cover bg-center bg-no-repeat"
               />
+              <div className="absolute inset-0 bg-black bg-opacity-60 z-0" />
 
-              {/* Overlay content (static layer above the background) */}
-              <div className="relative z-10 flex flex-col justify-between h-full">
-                {/* 1st row: Every voice matters */}
-                <motion.div
+              {/* Foreground content */}
+              <div className="relative z-10 flex flex-col justify-center items-center text-center h-full px-4 space-y-8">
+                
+                {/* KEY MESSAGE */}
+                <motion.h1
                   variants={rowVariants}
                   custom={0}
                   initial="hidden"
                   animate="visible"
-                  className="flex justify-center pt-20 text-xl sm:text-2xl"
+                  className="text-4xl sm:text-5xl font-extrabold text-white"
                 >
-                  Every&nbsp;
-                  <span className="text-[#000000] font-extrabold">voice</span>
-                  &nbsp; matters.
-                </motion.div>
+                  WE ARE ALL <span className="text-[#F9CD13]">ONE</span>
+                </motion.h1>
 
-                {/* 2nd row: Our Structure */}
-                <motion.h2
+                {/* Sub Message */}
+                <motion.p
                   variants={rowVariants}
                   custom={1}
                   initial="hidden"
                   animate="visible"
-                  className="flex justify-center text-3xl sm:text-4xl font-bold"
+                  className="text-lg sm:text-xl max-w-3xl text-white"
                 >
-                  Our Structure: A&nbsp;
-                  <span className="text-[#F9CD13] font-extrabold">DAO</span>
-                  &nbsp;for All
-                </motion.h2>
+                  Every <span className="font-bold text-[#F9CD13]">voice</span> matters. 
+                  Our Structure: A <span className="font-bold text-[#F9CD13]">DAO</span> for All.
+                </motion.p>
 
-                {/* 3rd row: Freedom … co-create */}
-                <motion.div
+                {/* Freedom Message */}
+                <motion.p
                   variants={rowVariants}
                   custom={2}
                   initial="hidden"
                   animate="visible"
-                  className="
-                    flex flex-col items-center space-y-4
-                    sm:flex-row sm:justify-between sm:items-center
-                    px-16 pb-20 text-lg sm:text-xl
-                  "
+                  className="text-lg sm:text-xl text-white"
                 >
-                  <span>
-                    <span className="text-[#F9CD13] font-extrabold">
-                      Freedom
-                    </span>{" "}
-                    is coded in.
-                  </span>
-                  <span>
-                    We&nbsp;
-                    <span className="text-[#F9CD13] font-extrabold">
-                      co-create
-                    </span>
-                    , not rule.
-                  </span>
-                </motion.div>
+                  <span className="font-bold text-[#F9CD13]">Freedom</span> is coded in.
+                  We <span className="font-bold text-[#F9CD13]">co-create</span>, not rule.
+                </motion.p>
               </div>
             </motion.div>
           )}
         </AnimatePresence>
       </section>
-
-      {/* Spacer to allow scrolling */}
-      {/* <div className="h-[100vh]" /> */}
     </>
   );
 };
