@@ -64,6 +64,11 @@ export default function ClosingThought() {
             mixBlendMode: "screen",
           }}
         />
+           {/* Scroll Down Indicator – Bottom Center */}
+              <div className="absolute bottom-6 left-1/2 -translate-x-1/2 text-sm text-gray-400 animate-bounce z-20">
+                ↓ Scroll to continue ↓
+              </div>
+
       </motion.div>
     </section>
   );

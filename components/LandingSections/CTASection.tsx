@@ -98,6 +98,10 @@ const CTASection = () => {
               >
                 Your vision is our mission.
               </motion.h2>
+              {/* Scroll Down Indicator */}
+            <div className="pt-6 text-sm text-gray-400 animate-bounce">
+            ↓ Scroll to continue ↓
+          </div>
             </motion.div>
 
           </motion.div>

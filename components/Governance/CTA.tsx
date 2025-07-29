@@ -151,7 +151,7 @@ export function GovernanceCTA() {
                 duration: 1,
               }}
             >
-              <span className="text-[#D4AF37]">↓ Scroll ↓</span>
+              <span className="text-[#D4AF37]">The End</span>
             </motion.div>
           </motion.section>
         )}

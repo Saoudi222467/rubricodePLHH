@@ -110,11 +110,18 @@ const DreamFieldSection = () => {
               transition={{ duration: 0.8, ease: "easeInOut" }}
             >
               <h2>
-                This is not a <span className="text-[#A67C00]">Dream.</span>
-              </h2>
-              <h2>
-                This is a <span className="text-[#539241]">Field.</span>
-              </h2>
+                  This is not a{" "}
+                  <span className="text-transparent bg-clip-text bg-gradient-to-br from-yellow-400 to-yellow-200 drop-shadow-[0_0_8px_rgba(255,204,0,0.8)]">
+                    Dream.
+                  </span>
+                </h2>
+                <h2>
+                  This is a{" "}
+                  <span className="text-transparent bg-clip-text bg-gradient-to-br from-green-400 to-lime-200 drop-shadow-[0_0_8px_rgba(0,255,128,0.8)]">
+                    Field.
+                  </span>
+                </h2>
+
             </motion.div>
 
             {/* Globe & Blobs */}
@@ -143,7 +150,7 @@ const DreamFieldSection = () => {
                 isVisible={isInView}
                 delayOrder={1}
                 size="w-12 h-12"
-                className="top-[10%] left-[10%]"
+                className="top-[22%] left-[18%]"
                 label="Oasis"
                 sublabel="Kenya"
               />
@@ -151,10 +158,11 @@ const DreamFieldSection = () => {
                 isVisible={isInView}
                 delayOrder={2}
                 size="w-12 h-12"
-                className="top-[10%] right-[10%]"
+                className="top-[22%] right-[18%]"
                 label="Haven"
                 sublabel="Rwanda"
               />
+
               <Blob
                 isVisible={isInView}
                 delayOrder={3}

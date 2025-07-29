@@ -132,7 +132,7 @@ export function DaoProposals() {
             >
               <motion.h3
                 variants={proposalsItemVariants}
-                className="text-4xl md:text-5xl font-extrabold text-center bg-gradient-to-r from-[#D4AF37] via-[#FFE066] to-[#D4AF37] bg-clip-text text-transparent"
+                className=" mt-20 text-4xl md:text-5xl font-extrabold text-center bg-gradient-to-r from-[#D4AF37] via-[#FFE066] to-[#D4AF37] bg-clip-text text-transparent"
               >
                 DAO PROPOSALS – YOUR VOICE, YOUR VISION
               </motion.h3>

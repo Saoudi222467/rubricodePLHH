@@ -53,8 +53,17 @@ export default function YourRole() {
             Not to judge. But to{" "}
             <span className="text-white font-medium">understand</span>.
           </p>
+
+           {/* Scroll Down Indicator */}
+          <div className="pt-6 text-sm text-gray-400 animate-bounce">
+            ↓ Scroll to continue ↓
+          </div>
         </div>
       </motion.div>
+
+
+              
+
 
       {/* Background Blob */}
       <motion.div

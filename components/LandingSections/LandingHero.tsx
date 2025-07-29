@@ -9,29 +9,29 @@ export default function LandingHero() {
 
   return (
     <>
-      <section ref={ref} className="w-full h-[100vh]  relative overflow-hidden">
-        {/* Intro Text – fixed centered with enhanced typography */}
+      <section ref={ref} className="w-full h-[100vh] relative overflow-hidden">
+        {/* Intro Text */}
         <motion.div
           className="fixed inset-0 z-10 flex items-center justify-center p-4"
           animate={{ opacity: inView ? 1 : 0 }}
           transition={{ duration: 1, ease: "easeOut" }}
         >
-          <div className="max-w-2xl text-center space-y-6">
+          <div className="max-w-2xl text-center space-y-6 mt-[-40px]">
             <motion.div
               animate={{ rotate: 360 }}
               transition={{
                 duration: 20,
                 repeat: Infinity,
-                ease: "linear"
+                ease: "linear",
               }}
               className="w-1/2 mx-auto mb-8"
             >
-              <Image 
-                src="/images/plhh-logo.png" 
-                width={128} 
-                height={128} 
-                alt="PLHH Logo" 
-                className="w-full h-auto" 
+              <Image
+                src="/images/plhh-logo.png"
+                width={128}
+                height={128}
+                alt="PLHH Logo"
+                className="w-full h-auto"
               />
             </motion.div>
             <p className="text-yellow-300 text-2xl md:text-4xl font-semibold italic leading-snug tracking-wide drop-shadow-lg">
@@ -41,11 +41,10 @@ export default function LandingHero() {
               Peace, Love & Harmony is more than a project. It's a living Garden
               of Eden concept –
             </p>
-            
           </div>
         </motion.div>
 
-        {/* Gradient Glow */}
+        {/* Glowing background */}
         <motion.div
           className="fixed inset-0 z-0 flex items-center justify-center pointer-events-none"
           animate={{
@@ -73,9 +72,9 @@ export default function LandingHero() {
           />
         </motion.div>
 
-        {/* Footer Text – fixed centered column */}
+        {/* Scroll text & icon at bottom */}
         <motion.div
-          className="fixed inset-0 z-10 flex flex-col items-center justify-end pb-10 text-white"
+          className="fixed bottom-0 z-10 flex flex-col items-center justify-center w-full mb-0 text-white"
           animate={{ opacity: inView ? 1 : 0 }}
           transition={{ duration: 0.8, ease: "easeInOut" }}
         >
@@ -94,7 +93,7 @@ export default function LandingHero() {
         </motion.div>
       </section>
 
-      {/* Dummy content after section */}
+      {/* Filler to enable scroll */}
       <div className="h-[100vh]" />
     </>
   );

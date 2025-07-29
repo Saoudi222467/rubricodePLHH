@@ -2,12 +2,11 @@
 
 import React, { useRef } from "react";
 import { motion, useInView, AnimatePresence, Variants } from "framer-motion";
-import InfinityLoop from "@/components/InfinityLoop";
 
 const listContainer: Variants = {
   hidden: {},
   visible: {
-    transition: { 
+    transition: {
       staggerChildren: 0.8,
       delayChildren: 1.2,
     },
@@ -15,20 +14,20 @@ const listContainer: Variants = {
 };
 
 const listItem: Variants = {
-  hidden: { 
+  hidden: {
     opacity: 0,
     y: 50,
-    scale: 0.95
+    scale: 0.95,
   },
   visible: {
     opacity: 1,
     y: 0,
     scale: 1,
-    transition: { 
+    transition: {
       type: "spring",
       stiffness: 100,
       damping: 20,
-      duration: 1.2
+      duration: 1.2,
     },
   },
 };
@@ -36,6 +35,7 @@ const listItem: Variants = {
 export default function WhoWeAre() {
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { amount: 0.5 });
+
   const lines = [
     { prefix: "We are not a", word: "company" },
     { prefix: "We are not a", word: "logo" },
@@ -52,7 +52,7 @@ export default function WhoWeAre() {
           {isInView && (
             <motion.div
               key="who-we-are"
-              className="fixed inset-0 z-50 flex items-center justify-center px-6 overflow-hidden"
+              className="fixed inset-0 z-50 flex items-start justify-center px-6 overflow-hidden pt-40"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
@@ -116,26 +116,24 @@ export default function WhoWeAre() {
                     leading-tight
                   "
                 >
-                  Who We Are{" "}
-                  <span className="text-[#FFD43B] block mt-2">(and Aren't)</span>
+                  Who We Are
+                  <span className="block text-3xl sm:text-4xl mt-2 text-[#FFD43B] font-semibold tracking-wide">
+                    (and Aren’t)
+                  </span>
                 </motion.h2>
 
-                {/* Animated list with gradient text and hover pop */}
+                {/* Animated list */}
                 <motion.ul
                   variants={listContainer}
                   initial="hidden"
                   animate="visible"
-                  className="flex flex-col gap-8 text-center"
+                  className="flex flex-col gap-3 text-center"
                 >
                   {lines.map((line, i) => (
                     <motion.li
                       key={i}
                       variants={listItem}
-                      className={`
-                        text-${4 - i}xl sm:text-${5 - i}xl
-                        font-bold
-                        tracking-wide
-                      `}
+                      className="text-4xl sm:text-5xl font-bold tracking-wide "
                     >
                       <span className="text-white">{line.prefix} </span>
                       <span className="text-[#FFD43B]">{line.word}</span>
@@ -143,26 +141,25 @@ export default function WhoWeAre() {
                   ))}
                 </motion.ul>
 
-                {/* Tagline: bold white with glow */}
+                {/* Center-aligned tagline */}
                 <motion.p
                   initial={{ y: 30, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
                   transition={{ duration: 1.2, ease: "easeOut", delay: 3.6 }}
                   className="
                     text-2xl sm:text-3xl
-                    font-bold text-white
+                    font-bold
                     max-w-3xl mx-auto
-                    leading-relaxed
+                    leading-relaxed text-center
                   "
-                  style={{ 
+                  style={{
                     textShadow: "0 0 20px rgba(255,255,255,0.4)",
                     background: "linear-gradient(to right, #ffffff, #f0f0f0)",
                     WebkitBackgroundClip: "text",
-                    WebkitTextFillColor: "transparent"
+                    WebkitTextFillColor: "transparent",
                   }}
                 >
-                  We are a field where humans, intelligence & earth co-create
-                  the future.
+                  We are a field where humans, intelligence & earth <br/>co-create the future.
                 </motion.p>
               </div>
             </motion.div>

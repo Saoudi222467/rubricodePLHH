@@ -84,7 +84,7 @@ export default function NewLandingHero() {
 
         {/* Scroll Indicator (Bottom Layer) */}
         <motion.div
-          className="absolute bottom-6 left-0 right-0 z-20 flex flex-col items-center text-white"
+          className="absolute bottom-6 left-0 right-0 z-20 flex flex-col items-center text-white "
           animate={{ opacity: inView ? 1 : 0 }}
           transition={{ duration: 0.8, ease: "easeInOut" }}
         >

@@ -1,8 +1,8 @@
-// components/DAO/Definition.tsx
 "use client";
 
 import React, { useRef } from "react";
 import { AnimatePresence, motion, Variants, useInView } from "framer-motion";
+import InfinityLoop from "@/components/InfinityLoop";
 
 const sectionVariants: Variants = {
   hidden: { opacity: 0, y: 20 },
@@ -30,8 +30,19 @@ export function DaoDefinition() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.6, ease: "easeInOut" }}
-            className="fixed inset-0 w-full h-screen z-50"
+            className="fixed inset-0 w-full h-screen z-50 flex items-center justify-center overflow-hidden"
           >
+            {/* Infinity-loop background */}
+            <motion.div
+              className="fixed inset-0 -z-20 pointer-events-none pb-20 -mt-12"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.8 }}
+            >
+              <InfinityLoop />
+            </motion.div>
+
             {/* Gradient Overlay */}
             <motion.div
               className="absolute inset-0 bg-gradient-to-br from-[#4E2A1E]/50 via-[#3A1F0B]/30 to-[#D4AF37]/40 z-10"
@@ -63,19 +74,16 @@ export function DaoDefinition() {
 
               <p className="text-xl sm:text-2xl leading-relaxed">
                 Every person, in every country, in every time zone – has the
-                same <span className="text-amber-400 font-semibold">voice</span>
-                . The same{" "}
+                same <span className="text-amber-400 font-semibold">voice</span>. The same{" "}
                 <span className="text-amber-400 font-semibold">vote</span>. The
-                same <span className="text-amber-400 font-semibold">power</span>
-                .
+                same <span className="text-amber-400 font-semibold">power</span>.
               </p>
 
               <p className="text-lg sm:text-xl md:text-2xl leading-relaxed">
                 No project can move forward unless the community says{" "}
                 <span className="text-amber-400 font-semibold">yes</span>. Not
                 by a founder. Not by a council. Not by a whale. Only by us – the{" "}
-                <span className="text-amber-400 font-semibold">collective</span>
-                .
+                <span className="text-amber-400 font-semibold">collective</span>.
               </p>
             </motion.section>
           </motion.div>

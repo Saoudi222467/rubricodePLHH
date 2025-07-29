@@ -8,13 +8,11 @@ const HarmonySpectrum = () => {
 
   return (
     <>
-      {/* <div className="h-[100vh]" /> */}
-
       <section
         ref={ref}
         className="relative w-full h-[100vh] bg-black overflow-hidden"
       >
-        {/* Background Image (visible only on large screens and up) */}
+        {/* Background Image */}
         <motion.img
           src="/harmony-spectrum-line.png"
           alt="Harmony Spectrum Line"
@@ -24,7 +22,7 @@ const HarmonySpectrum = () => {
           transition={{ duration: 0.8, ease: "easeInOut" }}
         />
 
-        {/* Technology Blob */}
+        {/* Technology with Soul */}
         <motion.div
           className="fixed z-10 flex flex-col items-center gap-4 top-[20%] left-[5%] sm:top-[28%] sm:left-[10%] md:top-[40%] md:left-[12%] lg:top-[40%] lg:left-[10%]"
           initial={{ opacity: 0, y: 60 }}
@@ -35,16 +33,17 @@ const HarmonySpectrum = () => {
             className="w-28 h-28 rounded-full"
             style={{
               background: "radial-gradient(circle, #001B1B 0%, #024242 100%)",
+              filter: "blur(1px)",
             }}
             animate={{
               boxShadow: [
-                "0 0 0px 0px #02424288",
-                "0 0 80px 40px #02424288",
-                "0 0 0px 0px #02424288",
+                "0 0 0px 0px rgba(0, 0, 0, 0)",
+                "0 0 120px 60px #00ffff88",
+                "0 0 0px 0px rgba(0, 0, 0, 0)",
               ],
             }}
             transition={{
-              duration: 3,
+              duration: 4,
               ease: "easeInOut",
               repeat: Infinity,
             }}
@@ -61,14 +60,13 @@ const HarmonySpectrum = () => {
           </motion.div>
         </motion.div>
 
-        {/* Nature Blob */}
+        {/* Nature with Purpose */}
         <motion.div
           className="fixed z-10 flex flex-col items-center gap-4 bottom-[20%] left-[42%] sm:bottom-[10%] md:bottom-[10%] lg:bottom-[12%]"
           initial={{ opacity: 0, y: -60 }}
           animate={{ opacity: inView ? 1 : 0, y: 0 }}
           transition={{ duration: 0.8, ease: "easeInOut" }}
         >
-          {/* Animate text entry from top */}
           <motion.div
             initial={{ y: -60, opacity: 0 }}
             animate={{ y: inView ? 0 : -60, opacity: inView ? 1 : 0 }}
@@ -78,29 +76,32 @@ const HarmonySpectrum = () => {
             <p>
               Nature with <span className="text-green-400">Purpose.</span>
             </p>
+
+            
           </motion.div>
 
           <motion.div
             className="w-28 h-28 rounded-full"
             style={{
               background: "radial-gradient(circle, #00210e 0%, #027d40 100%)",
+              filter: "blur(1px)",
             }}
             animate={{
               boxShadow: [
-                "0 0 0px 0px #027d4088",
-                "0 0 80px 40px #027d4088",
-                "0 0 0px 0px #027d4088",
+                "0 0 0px 0px rgba(0, 0, 0, 0)",
+                "0 0 120px 60px #00ff8888",
+                "0 0 0px 0px rgba(0, 0, 0, 0)",
               ],
             }}
             transition={{
-              duration: 3,
+              duration: 4,
               ease: "easeInOut",
               repeat: Infinity,
             }}
           />
         </motion.div>
 
-        {/* Humanity Blob */}
+        {/* Humanity with Vision */}
         <motion.div
           className="fixed z-10 flex flex-col items-center gap-4 top-[20%] right-[5%] sm:top-[28%] sm:right-[10%] md:top-[42%] md:right-[12%] lg:top-[40%] lg:right-[10%]"
           initial={{ opacity: 0, y: 60 }}
@@ -111,16 +112,17 @@ const HarmonySpectrum = () => {
             className="w-28 h-28 rounded-full"
             style={{
               background: "radial-gradient(circle, #331b00 0%, #a04200 100%)",
+              filter: "blur(1px)",
             }}
             animate={{
               boxShadow: [
-                "0 0 0px 0px #a0420088",
-                "0 0 80px 40px #a0420088",
-                "0 0 0px 0px #a0420088",
+                "0 0 0px 0px rgba(0, 0, 0, 0)",
+                "0 0 120px 60px #ffa50088",
+                "0 0 0px 0px rgba(0, 0, 0, 0)",
               ],
             }}
             transition={{
-              duration: 3,
+              duration: 4,
               ease: "easeInOut",
               repeat: Infinity,
             }}
@@ -134,11 +136,15 @@ const HarmonySpectrum = () => {
             <p>
               Humanity with <span className="text-orange-400">Vision.</span>
             </p>
-          </motion.div>
-        </motion.div>
-      </section>
 
+          </motion.div>
+           
+        </motion.div>
+         
+      </section>
+                
       <div className="h-[100vh]" />
+         
     </>
   );
 };

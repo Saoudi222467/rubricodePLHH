@@ -24,7 +24,7 @@ const StakingDetails = () => {
     { years: "5 years", frequency: "Expansion", apy: "55%" },
     { years: "6 years", frequency: "Integration", apy: "66%" },
     { years: "7 years", frequency: "Mastery", apy: "77%" },
-    { years: "8 years", frequency: "Infinity", apy: "77%" },
+    { years: "8 years", frequency: "Transcendence", apy: "88%" },
   ];
 
   const containerVariants = {

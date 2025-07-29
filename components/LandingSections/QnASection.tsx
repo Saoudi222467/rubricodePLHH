@@ -162,9 +162,14 @@ export default function QnASectionWithHeading() {
           >
             {renderBlob}
             {renderGrid()}
+
+            
           </motion.section>
+
+          
         )}
       </AnimatePresence>
+       
     </div>
   );
 }

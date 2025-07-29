@@ -67,7 +67,7 @@ const FictionFunction = () => {
                 {/* Clockwise Animated Links with Larger Font */}
                 <motion.a
                   href="/guardians-of-infinity"
-                  className="absolute top-4 left-4 text-base sm:text-lg md:text-xl text-white hover:text-amber-400 transition"
+                  className="absolute top-12 left-2 text-base sm:text-lg md:text-xl text-white hover:text-amber-400 transition"
                   variants={linkVariants}
                   initial="hidden"
                   animate="visible"
@@ -89,7 +89,7 @@ const FictionFunction = () => {
 
                 <motion.a
                   href="/dao"
-                  className="absolute bottom-4 right-4 text-base sm:text-lg md:text-xl text-white hover:text-amber-400 transition"
+                  className="absolute bottom-12 right-4 text-base sm:text-lg md:text-xl text-white hover:text-amber-400 transition"
                   variants={linkVariants}
                   initial="hidden"
                   animate="visible"
@@ -100,7 +100,7 @@ const FictionFunction = () => {
 
                 <motion.a
                   href="/governance"
-                  className="absolute bottom-4 left-4 text-base sm:text-lg md:text-xl text-white hover:text-amber-400 transition"
+                  className="absolute bottom-12 left-2 text-base sm:text-lg md:text-xl text-white hover:text-amber-400 transition"
                   variants={linkVariants}
                   initial="hidden"
                   animate="visible"

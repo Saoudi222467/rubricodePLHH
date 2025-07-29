@@ -113,7 +113,7 @@ export default function CryptoHeader() {
     { name: "Home", href: "/" },
     { name: "About", href: "/about" },
     { name: "Tokenomics", href: "/tokenomics" },
-    { name: "Guardians of Infinity", href: "/guardians-of-infinity" },
+   
   ];
 
   return (
@@ -168,6 +168,40 @@ export default function CryptoHeader() {
                 <div className="absolute bottom-0 left-1/2 w-0 h-[2px] bg-gradient-to-r from-yellow-300/0 via-yellow-300 to-yellow-300/0 group-hover:w-4/5 group-hover:left-[10%] transition-all duration-300" />
               </li>
             ))}
+
+            {/* Guardians of Dropdown */}
+            <li className="relative group">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Link href="/guardians-of-infinity">
+                  <button className="px-5 py-3 text-amber-100 transition-all duration-300 rounded-md font-medium tracking-wide flex items-center hover:text-yellow-300 hover:bg-gradient-to-b hover:from-amber-800/30 hover:to-amber-900/30">
+                    Guardians of
+                    <ChevronDown className="ml-1 h-4 w-4 transition-transform duration-300 group-hover:rotate-180" />
+                  </button>
+                </Link>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent
+                  align="end"
+                  className="z-[200] w-48 bg-gradient-to-b from-amber-900 to-amber-950 border border-yellow-600/30 text-amber-100 shadow-[0_10px_25px_-5px_rgba(0,0,0,0.3),0_0_15px_rgba(255,215,0,0.3)] rounded-md overflow-hidden"
+                >
+                  {[
+                    { name: "Infinity", href: "/guardians-of-infinity" },
+                    { name: "Farmers", href: "/guardians-of-farmers" },
+                  ].map((item) => (
+                    <DropdownMenuItem key={item.name}>
+                      <Link
+                        href={item.href}
+                        className="w-full px-4 py-3 flex items-center justify-between hover:bg-amber-800/40 hover:text-yellow-300 text-sm font-medium"
+                      >
+                        {item.name}
+                        <ChevronRight className="h-4 w-4 opacity-50" />
+                      </Link>
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+              <div className="absolute bottom-0 left-1/2 w-0 h-[2px] bg-gradient-to-r from-yellow-300/0 via-yellow-300 to-yellow-300/0 group-hover:w-4/5 group-hover:left-[10%] transition-all duration-300" />
+            </li>
 
             {/* Utility Dropdown */}
             <li className="relative group">

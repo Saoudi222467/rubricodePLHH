@@ -101,13 +101,7 @@ export default function SectionIntro() {
             >
               <motion.h2
                 variants={titleVariants}
-                className=" mt-24 
-                              text-[clamp(2rem,6vw,3.75rem)]  
-                              font-extrabold 
-                              text-white 
-                              drop-shadow-[0_4px_8px_rgba(212,175,55,0.5)]
-                              whitespace-nowrap
-                              text-center"
+                className="mt-24 text-[clamp(2rem,6vw,3.75rem)] font-extrabold text-white drop-shadow-[0_4px_8px_rgba(212,175,55,0.5)] whitespace-nowrap text-center"
               >
                 GUARDIANS OF INFINITY
               </motion.h2>
@@ -131,26 +125,21 @@ export default function SectionIntro() {
             </motion.div>
           )}
         </AnimatePresence>
-
-        {/* Scroll Hint */}
-        <AnimatePresence>
-          {isInView && (
-            <motion.div
-              className="fixed bottom-10 z-40 w-full flex justify-center"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{
-                repeat: Infinity,
-                repeatType: "reverse",
-                duration: 1,
-              }}
-            >
-              <span className="text-[#D4AF37]">↓ Scroll ↓</span>
-            </motion.div>
-          )}
-        </AnimatePresence>
       </section>
+
+      {/* Scroll Hint - Always visible */}
+      <motion.div
+        className="fixed bottom-10 z-40 w-full flex justify-center"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{
+          repeat: Infinity,
+          repeatType: "reverse",
+          duration: 1,
+        }}
+      >
+        <span className="text-[#D4AF37] text-sm sm:text-base">↓ Scroll ↓</span>
+      </motion.div>
     </div>
   );
 }

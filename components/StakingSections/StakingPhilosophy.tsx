@@ -24,7 +24,7 @@ const StakingPhilosophy = () => {
       >
         <div className="text-2xl font-semibold w-full h-full flex flex-col justify-between">
           {/* 🖥️ Top Fixed Row (Desktop) */}
-          <div className="hidden md:flex justify-between fixed w-full px-10 pt-10 top-12">
+          <div className="hidden md:flex justify-between fixed w-full px-20 pt-10 top-20">
             <motion.div
               initial={{ x: -100, opacity: 0 }}
               animate={{ x: isInView ? 0 : -100, opacity: isInView ? 1 : 0 }}
@@ -74,7 +74,7 @@ const StakingPhilosophy = () => {
           </div>
 
           {/* 🖥️ Bottom Fixed Row (Desktop) */}
-          <div className="hidden md:flex justify-between fixed bottom-0 w-full px-10 pb-10">
+          <div className="hidden md:flex justify-between fixed bottom-20 w-full px-20 pb-10">
             <motion.div
               initial={{ x: -100, opacity: 0 }}
               animate={{ x: isInView ? 0 : -100, opacity: isInView ? 1 : 0 }}
@@ -97,7 +97,7 @@ const StakingPhilosophy = () => {
           </div>
 
           {/* 📱 Bottom Row (Mobile) */}
-          <div className="flex md:hidden flex-col fixed bottom-0 w-full px-6 pb-10 gap-y-6 text-center">
+          <div className="flex md:hidden flex-col fixed bottom-10 w-full px-6 pb-10 gap-y-6 text-center">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: isInView ? 1 : 0, y: isInView ? 0 : 30 }}

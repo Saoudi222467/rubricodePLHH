@@ -24,9 +24,9 @@ const StakingHero = () => {
         ref={sectionRef}
         className="relative w-full h-screen overflow-hidden text-white flex pt-20"
       >
-        <div className="text-2xl font-semibold w-full h-full flex flex-col justify-between">
+        <div className="text-4xl font-semibold w-full h-full flex flex-col justify-between">
           {/* Top Fixed Row */}
-          <div className="flex justify-between fixed w-full px-10 pt-10 top-12">
+          <div className="flex justify-between fixed w-full px-40 pt-10 top-40">
             <motion.div
               initial={{ x: -100, opacity: 0 }}
               animate={{ x: isInView ? 0 : -100, opacity: isInView ? 1 : 0 }}
@@ -39,7 +39,7 @@ const StakingHero = () => {
           </div>
 
           {/* Bottom Fixed Row */}
-          <div className="flex justify-end fixed bottom-0 w-full px-10 pb-10 ">
+          <div className="flex justify-end fixed bottom-0 w-full px-40 pb-20 ">
             <motion.div
               initial={{ x: 100, opacity: 0 }}
               animate={{ x: isInView ? 0 : 100, opacity: isInView ? 1 : 0 }}

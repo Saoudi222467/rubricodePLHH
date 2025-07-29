@@ -66,9 +66,20 @@ const MissionStatement = () => {
             <h2 className="text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.8)]">
               Create.
             </h2>
+             {/* Scroll Down Indicator */}
+                  <div className="pt-6 left-1/2 text-sm text-gray-400 animate-bounce">
+                       ↓ Scroll to continue ↓
+                </div>
+
           </motion.div>
         </motion.div>
+
+                 
+        
+        
       </section>
+
+                          
 
       <div className="h-[100vh]" />
     </>

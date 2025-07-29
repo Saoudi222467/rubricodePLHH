@@ -1,8 +1,8 @@
-// components/DAO/Participation.tsx
 "use client";
 
 import React, { useRef } from "react";
 import { AnimatePresence, motion, Variants, useInView } from "framer-motion";
+import InfinityLoop from "@/components/InfinityLoop"; // Make sure this component exists
 
 const sectionVariants: Variants = {
   hidden: { opacity: 0, y: 20 },
@@ -30,8 +30,19 @@ export function DaoParticipation() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.6, ease: "easeInOut" }}
-            className="fixed inset-0 w-full h-screen z-50"
+            className="fixed inset-0 w-full h-screen z-50 overflow-hidden"
           >
+            {/* Infinity-loop background */}
+            <motion.div
+              className="fixed inset-0 -z-20 pointer-events-none pb-20 -mt-12"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.8 }}
+            >
+              <InfinityLoop />
+            </motion.div>
+
             {/* Gradient Overlay */}
             <motion.div
               className="absolute inset-0 bg-gradient-to-br from-[#4E2A1E]/50 via-[#3A1F0B]/30 to-[#D4AF37]/40 z-10"

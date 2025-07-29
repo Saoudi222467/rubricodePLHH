@@ -34,7 +34,7 @@ const CoCreateSection = () => {
               />
 
               {/* Text Content */}
-              <div className="relative z-10 w-full h-full flex flex-col sm:flex-row justify-between items-center sm:items-start sm:text-left text-center px-4 sm:px-10 md:px-16 py-10 text-white font-bold text-lg sm:text-2xl md:text-4xl gap-y-10 sm:gap-y-0 pt-28">
+              <div className="relative z-10 w-full h-full flex flex-col sm:flex-row justify-between items-center sm:items-start sm:text-left text-center px-4 sm:px-10 md:px-16 pt-40 text-white font-bold text-lg sm:text-2xl md:text-4xl gap-y-10 sm:gap-y-0">
                 {/* Left Text - From Left */}
                 <motion.h2
                   initial={{ x: "-100%", opacity: 0 }}
